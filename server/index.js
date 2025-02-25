@@ -51,6 +51,6 @@ app.use("/api/v1/subItems", subItemRoute)
 app.use("/api/v1/itemCategories", itemRouteCategoryRoute)
 
 const port = 8080
-app.listen((port) =>{
-    console.log(`Listening to port ${port}`)
+app.listen(port, ()=>{
+  console.log(`Listening to port ${port}`)
 })

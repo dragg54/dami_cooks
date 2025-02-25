@@ -16,13 +16,13 @@ export const Item = db.define("item", {
     allowNull: false,
   },
   imageUrl: {
-    type: DataTypes.STRING, // Store image path/URL
+    type: DataTypes.STRING, 
     allowNull: true,
   },
-  isAvailable: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: true, // Available by default
-  },
+  status:{
+    type: DataTypes.ENUM('OFFLINE', 'ONLINE', 'OUTOFSTOCK'),
+    defaultValue: 'OFFLINE'
+  }
 });
 
 Item.belongsTo(ItemCategory, {onDelete: 'CASCADE'})

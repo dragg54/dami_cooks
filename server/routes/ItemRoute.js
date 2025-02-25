@@ -5,8 +5,8 @@ import upload from '../middlewares/upload.js'
 
 export const itemRoute = Router()
 
-itemRoute.post("/", createItem)
+itemRoute.post("/", upload.single('image'), createItem)
 itemRoute.put("/:id", upload.single('image'), updateItem)
 itemRoute.get("/:id", getItemById)
-itemRoute.get("/", upload.single('image'), getAllItems)
+itemRoute.get("/",  getAllItems)
 itemRoute.delete("/:id", deleteItem)
