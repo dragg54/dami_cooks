@@ -2,8 +2,9 @@ import bcrypt from 'bcryptjs'
 import User from '../models/User.js';
 import { DuplicateError } from '../exceptions/DuplicateError.js'
 import { BadRequestError } from '../exceptions/BadRequestError.js';
+import * as cartService from './CartService.js'
 
-export const createUser = async (req) => {
+export const createUser = async (req, trans) => {
     const { name, email, isAdmin, password } = req.body;
     const existingUser = await User.findOne({where:{email}})
     if(existingUser){
@@ -12,7 +13,14 @@ export const createUser = async (req) => {
     }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    const user = await User.create({ name, email, isAdmin, password: hashedPassword });
+   
+    const user = await User.create({ name, email, isAdmin, password: hashedPassword }, {transaction: trans});
+    if(!req.isAdmin){
+        const createCartRequest = {
+          userId: user.id
+        }
+        await cartService.createCart(createCartRequest, trans)
+     }
     return user.id
 }
 

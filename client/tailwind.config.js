@@ -8,7 +8,8 @@ export default {
     extend: {
       backgroundColor: {
         primary: "#d01110",
-        secondary: "#fdb750"
+        secondary: "#fdb750",
+        tertiary: "#f9e9e9"
       },
       fontFamily: {
         playwrite: ['Playwrite NZ', 'sans-serif'],

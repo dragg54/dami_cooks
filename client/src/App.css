@@ -35,6 +35,12 @@ h5 {
 
 body::-webkit-scrollbar {
   display: none;
+  background-color: #efefef;
+}
+
+section{
+  background-color: #efefef;
+
 }
 
 p, label, li {

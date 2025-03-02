@@ -9,6 +9,8 @@ import cors from 'cors'
 import { itemRoute } from './routes/ItemRoute.js'
 import { subItemRoute } from './routes/SubItemRoute.js'
 import { itemRouteCategoryRoute } from './routes/ItemCategoryRoute.js'
+import { orderRoute } from './routes/OrderRoute.js'
+import { cartRoute } from './routes/CartRoute.js'
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -48,7 +50,9 @@ app.use((req, res, next) => {
 app.use("/api/v1/users", userRouter)
 app.use("/api/v1/items", itemRoute)
 app.use("/api/v1/subItems", subItemRoute)
+app.use("/api/v1/orders", orderRoute)
 app.use("/api/v1/itemCategories", itemRouteCategoryRoute)
+app.use("/api/v1/carts", cartRoute)
 
 const port = 8080
 app.listen(port, ()=>{

@@ -1,6 +1,7 @@
 import { BadRequestError } from "../exceptions/BadRequestError.js";
 import { DuplicateError } from "../exceptions/DuplicateError.js";
 import { NotFoundError } from "../exceptions/NotFoundError.js"
+import { UnauthorizedError } from "../exceptions/UnauthorizedError.js"
 import {Item} from "../models/Item.js";
 import { v2 as cloudinary } from 'cloudinary';
 import { uploadImage } from "../utils/uploadImage.js";
@@ -22,6 +23,11 @@ export const getItemById = async (req) => {
 export const createItem = async (req) => {
     const { itemCategoryId, name } = req.body
     const { path } = req.file
+    const { isAdmin } = req.user
+    if(!isAdmin){
+        const errMsg = `Failed to create item: Only admin is authorized to create an item`
+        throw new UnauthorizedError(errMsg)
+    } 
     const existingItem = await Item.findOne({ where: { itemCategoryId, name } })
     if (existingItem) {
         const errMsg = "Item already exists"
@@ -34,6 +40,11 @@ export const createItem = async (req) => {
 export const updateItem = async (req) => {
     const { id } = req.params
     const { path } = req.files
+    const { isAdmin } = req.user
+    if(!isAdmin){
+        const errMsg = `Failed to create item: Only admin is authorized to create an item`
+        throw new UnauthorizedError(errMsg)
+    } 
     const item = await Item.findByPk(id);
     if (!item) {
         const errMsg = `Item with id ${id} does not exist`

@@ -6,7 +6,7 @@ import { Cart } from "./Cart.js";
 
 export const Order = db.define("order", {
     status: {
-        type: DataTypes.ENUM('PENDING', 'ACCEPTED', 'REJECTED', 'CANCELLED'),
+        type: DataTypes.ENUM('PENDING', 'ACCEPTED', 'REJECTED', 'CANCELLED', 'DELIVERED'),
         defaultValue: 'PENDING'
     }
 }) 

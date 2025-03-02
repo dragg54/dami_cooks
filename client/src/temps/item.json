@@ -1,0 +1,91 @@
+[
+    {
+      "id": 1,
+      "name": "Jollof Rice",
+      "category": "Rice Dishes",
+      "price": 2500,
+      "uom": "Plate",
+      "item_code": "NR001",
+      "status": "Available",
+      "description": "A delicious West African rice dish cooked in tomato sauce and spices.",
+      "imageurl": "https://example.com/images/jollof-rice.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Egusi Soup",
+      "category": "Soups",
+      "price": 3000,
+      "uom": "Bowl",
+      "item_code": "NS002",
+      "status": "Available",
+      "description": "A thick and hearty Nigerian soup made with ground melon seeds, spinach, and assorted meats.",
+      "imageurl": "https://example.com/images/egusi-soup.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Suya",
+      "category": "Grilled Meats",
+      "price": 2000,
+      "uom": "Stick",
+      "item_code": "NM003",
+      "status": "Available",
+      "description": "Spicy grilled skewered meat, commonly served with onions and tomatoes.",
+      "imageurl": "https://example.com/images/suya.jpg"
+    },
+    {
+      "id": 4,
+      "name": "Pounded Yam & Efo Riro",
+      "category": "Swallow & Soups",
+      "price": 3500,
+      "uom": "Plate",
+      "item_code": "NS004",
+      "status": "Available",
+      "description": "Smooth pounded yam served with rich and flavorful spinach stew cooked with assorted meats.",
+      "imageurl": "https://example.com/images/pounded-yam-efo-riro.jpg"
+    },
+    {
+      "id": 5,
+      "name": "Moi Moi",
+      "category": "Side Dishes",
+      "price": 1000,
+      "uom": "Wrap",
+      "item_code": "ND005",
+      "status": "Available",
+      "description": "Steamed bean pudding made with blended beans, peppers, and spices.",
+      "imageurl": "https://example.com/images/moi-moi.jpg"
+    },
+    {
+      "id": 6,
+      "name": "Akara",
+      "category": "Breakfast",
+      "price": 800,
+      "uom": "3 Pieces",
+      "item_code": "NB006",
+      "status": "Available",
+      "description": "Deep-fried bean cakes made from ground beans, onions, and peppers.",
+      "imageurl": "https://example.com/images/akara.jpg"
+    },
+    {
+      "id": 7,
+      "name": "Ofada Rice & Ayamase (Designer Stew)",
+      "category": "Rice Dishes",
+      "price": 4000,
+      "uom": "Plate",
+      "item_code": "NR007",
+      "status": "Available",
+      "description": "Local Ofada rice served with spicy green pepper sauce and assorted meats.",
+      "imageurl": "https://example.com/images/ofada-rice.jpg"
+    },
+    {
+      "id": 8,
+      "name": "Boli & Groundnut",
+      "category": "Snacks",
+      "price": 1500,
+      "uom": "Portion",
+      "item_code": "NS008",
+      "status": "Available",
+      "description": "Grilled plantain served with roasted groundnuts.",
+      "imageurl": "https://example.com/images/boli-groundnut.jpg"
+    }
+  ]
+  

@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { IoMenu } from "react-icons/io5";
 import { IoCartOutline } from "react-icons/io5";
+import { IoNotificationsOutline } from "react-icons/io5";
 
 export const Header = ({setNavIsOpen}) => {
   return (
@@ -13,6 +14,7 @@ export const Header = ({setNavIsOpen}) => {
       <li>Contact Us</li>
      </ul>
       <div className="flex gap-2">
+        <IoNotificationsOutline className="text-3xl"/>
         <div className="text-2xl md:text-3xl"><IoCartOutline /></div>
         <button onClick={()=> setNavIsOpen(true)} className="text-2xl md:hidden"><IoMenu /></button>
       </div>

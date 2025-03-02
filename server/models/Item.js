@@ -19,6 +19,10 @@ export const Item = db.define("item", {
     type: DataTypes.STRING, 
     allowNull: true,
   },
+  uom:{
+    type: DataTypes.STRING,
+    allowNull: false
+  },
   status:{
     type: DataTypes.ENUM('OFFLINE', 'ONLINE', 'OUTOFSTOCK'),
     defaultValue: 'OFFLINE'

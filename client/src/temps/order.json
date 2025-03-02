@@ -1,0 +1,67 @@
+[
+    {
+        "id": 1,
+        "Order ID": "TR1234",
+        "Item ID": "RC3945",
+        "Item Name": "Jollof Rice",
+        "Customer Mame": "Tolu Omoniyi",
+        "Customer Address": "No 22, Southampon Offshore, UK.",
+        "Phone": "+44-4845-4844-48",
+        "Quantity": "2 Plates",
+        "Amount Payable": "448",
+        "Amount Paid": "448",
+        "Status": "Pending"
+    },
+    {
+        "id": 2,
+        "Order ID": "TR1234",
+        "Item ID": "RC3945",
+        "Item Name": "Jollof Rice",
+        "Customer Mame": "Tolu Omoniyi",
+        "Customer Address": "No 32, London Street, UK.",
+        "Phone": "+44-4845-4844-48",
+        "Quantity": "3 Plates",
+        "Amount Payable": "448",
+        "Amount Paid": "448",
+        "Status": "Pending"
+    },
+    {
+        "id": 3,
+        "Order ID": "TR1234",
+        "Item ID": "RC3946",
+        "Item Name": "Fried Rice",
+        "Customer Mame": "Kemi Oyetunde",
+        "Customer Address": "No 22, Southampon Offshore, UK.",
+        "Phone": "+44-4845-4844-48",
+        "Quantity": "5 Plates",
+        "Amount Payable": "578",
+        "Amount Paid": "444",
+        "Status": "Pending"
+    },
+    {
+        "id": 4,
+        "Order ID": "TR1236",
+        "Item ID": "RC3944",
+        "Item Name": "Fried Rice",
+        "Customer Mame": "Alao Omoniyi",
+        "Customer Address": "No 22, Southampon Offshore, UK.",
+        "Phone": "+44-4845-4844-38",
+        "Quantity": "5 Plates",
+        "Amount Payable": "528",
+        "Amount Paid": "442",
+        "Status": "Pending"
+    },
+    {
+        "id": 5,
+        "Order ID": "TE1234",
+        "Item ID": "RC7946",
+        "Item Name": "Amala",
+        "Customer Mame": "Kehinde Bodunde",
+        "Customer Address": "No 24, Colshire Street, UK.",
+        "Phone": "+44-4845-4844-48",
+        "Quantity": "5 Plates",
+        "Amount Payable": "578",
+        "Amount Paid": "444",
+        "Status": "Pending"
+    }
+]

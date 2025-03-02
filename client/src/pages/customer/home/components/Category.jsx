@@ -5,7 +5,7 @@ const Category = () => {
     { name: "Pastries", image: "/images/Pastries.png" },
     { name: "Drinks", image: "/images/Drinks.png" }]
     return (
-        <div className='w-full gap-3 flex justify-between pb-4 border-b border-gray-300'>
+        <div className='w-full gap-8 md:gap-12 flex justify-center pb-4 '>
             {categoryImages.map((catImg, index) => (
                 <CategoryCard key={index} {...{ img: catImg}} />
             ))}

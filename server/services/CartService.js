@@ -1,14 +1,14 @@
 import { DuplicateError } from "../exceptions/DuplicateError"
 import { Cart } from "../models/Cart"
 
-export const createCart = async (req) => {
+export const createCart = async (req, trans) => {
     const userId = req.user.id
     const existingCart = await Cart.findOne({where: {userId}})
     if(existingCart){
         const errmsg = `Failed to created cart: cart already exist`
         throw new DuplicateError(errmsg)
     }
-    await Cart.create({...req.body, userId})
+    await Cart.create({...req.body, userId}, { transaction: trans})
 }
 
 export const getAllCarts = async (req) => {
