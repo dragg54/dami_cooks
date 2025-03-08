@@ -22,6 +22,9 @@ export const getItemById = async (req) => {
 
 export const createItem = async (req) => {
     const { itemCategoryId, name } = req.body
+    if(!req.file){
+        throw new BadRequestError("Invalid file upload")
+    }
     const { path } = req.file
     const { isAdmin } = req.user
     if(!isAdmin){

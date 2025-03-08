@@ -3,6 +3,8 @@ import User from '../models/User.js';
 import { DuplicateError } from '../exceptions/DuplicateError.js'
 import { BadRequestError } from '../exceptions/BadRequestError.js';
 import * as cartService from './CartService.js'
+import { UnauthorizedError } from '../exceptions/UnauthorizedError.js';
+import { generateToken } from '../utils/generateToken.js';
 
 export const createUser = async (req, trans) => {
     const { name, email, isAdmin, password } = req.body;
@@ -15,7 +17,7 @@ export const createUser = async (req, trans) => {
     const hashedPassword = await bcrypt.hash(password, salt);
    
     const user = await User.create({ name, email, isAdmin, password: hashedPassword }, {transaction: trans});
-    if(!req.isAdmin){
+    if(!isAdmin){
         const createCartRequest = {
           userId: user.id
         }
@@ -32,7 +34,7 @@ export const loginUser = async(req) =>{
         }
     },
         {
-            attributes: ["id", "email", "password"]
+            attributes: ["id", "email", "password", "firstName", "lastName"]
         }
 
     )
@@ -44,11 +46,10 @@ export const loginUser = async(req) =>{
     if (!isPasswordValid) {
         throw new BadRequestError('Invalid email or password');
     }
-    if (!existingUser.isVerifiedEmail) {
-        const errMsg = 'User email is not yet verified'
-        logger.error(errMsg)
-        throw new UnauthorizedError(errMsg)
-    }
+    // if (!existingUser.isVerifiedEmail) {
+    //     const errMsg = 'User email is not yet verified'
+    //     throw new UnauthorizedError(errMsg)
+    // }
     const token = generateToken(existingUser)
     return {
         token, userDetails: {

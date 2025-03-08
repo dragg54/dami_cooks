@@ -1,55 +1,17 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { Field, ErrorMessage } from "formik";
 
-const NumberInput = ({ min = 1, max = 100, step = 1, onChange }) => {
-  const [value, setValue] = useState(min);
-
-  const handleChange = (e) => {
-    const newValue = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
-    setValue(newValue === "" ? "" : Math.min(Math.max(Number(newValue), min), max));
-    onChange && onChange(newValue);
-  };
-
-  const increase = () => {
-    if (value < max) {
-      setValue((prev) => {
-        const newValue = Math.min(prev + step, max);
-        onChange && onChange(newValue);
-        return newValue;
-      });
-    }
-  };
-
-  const decrease = () => {
-    if (value > min) {
-      setValue((prev) => {
-        const newValue = Math.max(prev - step, min);
-        onChange && onChange(newValue);
-        return newValue;
-      });
-    }
-  };
-
+const NumberInput = ({ label, name,  ...props }) => {
   return (
-    <div className="flex items-center space-x-2 border rounded-md p-2 w-32">
-      <button
-        onClick={decrease}
-        className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"
-      >
-        -
-      </button>
-      <input
-        type="text"
-        value={value}
-        onChange={handleChange}
-        className="w-12 text-center outline-none"
+    <div className="">
+      <label className="block text-sm font-medium mb-3">{label}</label>
+      <Field
+        type='number'
+        name={name}
+        className="w-full border rounded-md p-2 text-sm md:text-base"
+        {...props}
       />
-      <button
-        onClick={increase}
-        className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300"
-      >
-        +
-      </button>
+      <ErrorMessage name={name} component="div" className="text-red-500 text-sm" />
     </div>
   );
 };

@@ -1,7 +1,7 @@
-import { orderStatus } from "../constants/OrderStatus"
-import { BadRequestError } from "../exceptions/BadRequestError"
-import { Cart } from "../models/Cart"
-import { Order } from "../models/Order"
+import { orderStatus } from "../constants/OrderStatus.js"
+import { BadRequestError } from "../exceptions/BadRequestError.js"
+import { Cart } from "../models/Cart.js"
+import { Order } from "../models/Order.js"
 
 export const createOrder = async (req) => {
     const { cartId } = req.body

@@ -7,7 +7,7 @@ const FileInput = ({ onFileSelect, title}) => {
         const file = event.target.files[0];
         if (file) {
           setFileName(file.name);
-          onFileSelect(file); // Send file to parent component
+          onFileSelect(file);
         }
       };
   return (

@@ -7,10 +7,11 @@ import AddButton from "../button/AddButton.jsx";
 import { capitalizeString } from "../../utils/capitalizeString.js";
 import { removeSpecialChars } from "../../utils/removeSpecialCharacters.js";
 import { FaEdit } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 
 // eslint-disable-next-line react/prop-types
-const CustomTable = ({ tableData, placeholder, caption }) => {
+const CustomTable = ({ tableData, placeholder, caption, formRoute }) => {
 
   const [sorting, setSorting] = useState([]);
   const columns = Object.keys(tableData[0]).filter(dt => dt != "id").map((dataKey) => ({
@@ -27,6 +28,8 @@ const CustomTable = ({ tableData, placeholder, caption }) => {
     onSortingChange: setSorting,
   });
 
+  const navigate = useNavigate()
+
   return (
     <div className="w-full border  rounded-lg p-4 bg-white overflow-hidden  !overflow-x-hidden">
       <div className="flex justify-between  items-center sticky z-40 top-0">
@@ -35,7 +38,7 @@ const CustomTable = ({ tableData, placeholder, caption }) => {
           <div className="w-[190px] h-[40px] md:w-[240px] md:h-[40px]">
             <SearchInput placeholder={placeholder} />
           </div>
-          <AddButton />
+          <AddButton onClick={()=> navigate(formRoute)}/>
         </div>
       </div>
       <div className="max-h-[500px] overflow-y-scroll relative w-full overflow-x-scroll ">

@@ -1,11 +1,55 @@
+/* eslint-disable react/prop-types */
 import { IoMdInformationCircleOutline } from "react-icons/io";
+import { IoMdCheckmark } from "react-icons/io";
+import { CiWarning } from "react-icons/ci";
+import { VscError } from "react-icons/vsc";
 
-const Response = () => {
-  return (
-    <div className='w-full px-4 items-center py-3 flex bg-secondary'>
-      <IoMdInformationCircleOutline />
-    </div>
-  )
+
+const Response = ({ style, responseStatus }) => {
+  switch (responseStatus) {
+    case 200:
+      return (
+        <div className={style + ` md:mt-12 w-full px-4 gap-6 text-gray-600 items-center py-3 flex bg-green-500`}>
+          <IoMdCheckmark />
+          <p>Request Successful</p>
+        </div>
+      )
+    case 201:
+      return (
+        <div className={style + ` md:mt-12 w-full px-4 gap-6 text-gray-600 items-center py-3 flex bg-green-500`}>
+          <IoMdCheckmark />
+          <p>Request Successful</p>
+        </div>
+      )
+      case 400:
+      return (
+        <div className={style + ` md:mt-12 w-full px-4 gap-6 items-center py-3 text-gray-200 flex bg-red-500`}>
+          <CiWarning />
+          <p>Operation Failed: Seems like your request is invalid</p>
+        </div>
+      )
+    case 409:
+      return (
+        <div className={style + ` md:mt-12 w-full px-4 gap-6 items-center py-3 text-gray-200 flex bg-red-500`}>
+          <CiWarning />
+          <p>Operation Failed: Duplicate Request</p>
+        </div>
+      )
+    case 500:
+      return (
+        <div className={style + ` md:mt-12 w-full px-4 gap-6 items-center py-3 flex bg-green-500`}>
+          <VscError />
+          <p>Ooops!! Something happened</p>
+        </div>
+      )
+    default:
+      return (
+        <div className={style + ` md:mt-12 w-full px-4 items-center py-3 flex bg-secondary`}>
+          <IoMdInformationCircleOutline />
+        </div>
+      )
+  }
+ 
 }
 
 export default Response

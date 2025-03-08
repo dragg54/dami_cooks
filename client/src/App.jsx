@@ -6,6 +6,9 @@ import ItemList from "./pages/admin/item/ItemList"
 import OrderList from "./pages/admin/order/OrderList"
 import Home from "./pages/customer/home/Home"
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Register from "./pages/register/Register"
+import AuthLayout from "./components/layout/AuthLayout"
+import Login from "./pages/login/Login"
 
 function App() {
   return (
@@ -19,6 +22,10 @@ function App() {
           <Route path="/itemlist" element={<ItemList />} />
           <Route path="/additem" element={<AddItem />} />
           <Route path="/orderlist" element={<OrderList />} />
+        </Route>
+        <Route element={<AuthLayout />}>
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
         </Route>
       </Routes>
     </BrowserRouter>

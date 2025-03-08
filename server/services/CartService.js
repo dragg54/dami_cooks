@@ -1,5 +1,5 @@
-import { DuplicateError } from "../exceptions/DuplicateError"
-import { Cart } from "../models/Cart"
+import { DuplicateError } from "../exceptions/DuplicateError.js"
+import { Cart } from "../models/Cart.js"
 
 export const createCart = async (req, trans) => {
     const userId = req.user.id

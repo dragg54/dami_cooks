@@ -9,6 +9,7 @@ export const createUser = async (req, res) => {
         res.status(201).json("user created");
     } catch (error) {
       await transaction.rollback()
+      console.log(error.message)
         res.status(error.statusCode || 500).json(error.message
                 || "Internal server error"
         );
@@ -16,8 +17,9 @@ export const createUser = async (req, res) => {
 };
 
 export const loginUser = async (req, res) => {
+  const transaction = await db.transaction()
     try {
-      const user = await userService.loginUser(req.body)
+      const user = await userService.loginUser(req)
       res.cookie('token', user.token, {
         sameSite: 'None',
         secure: true,
@@ -25,6 +27,7 @@ export const loginUser = async (req, res) => {
       }).send(user)
     }
     catch (error) {
+      console.log(error.message)
       res.status(error.statusCode || 500).json(error.message || "Internal server error")
     }
   }

@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import { FaAngleDown } from "react-icons/fa";
 
 
-const SelectInput = ({ options, selectedValue, onChange, label }) => {
+const SelectInput = ({ options, selectedValue, onChange, label, name }) => {
     const [open, setOpen] = useState(false)
     const dropdownRef = useRef(null);
 
@@ -21,20 +21,20 @@ const SelectInput = ({ options, selectedValue, onChange, label }) => {
     }, []);
     return (
         <div ref={dropdownRef} className="w-full text-sm md:text-base">
-            <p>{label}</p>
+            <p className="mb-2">{label}</p>
             <button
                 onClick={() => setOpen(!open)}
                 className="w-full border px-2 md:px-4 py-2 bg-white rounded shadow text-xs md:text-base text-gray-400 flex justify-between items-center"
             >
-                {selectedValue?.label || "Select an option"}
+                {selectedValue[name].label || "Select an option"}
                 <span><FaAngleDown /></span>
             </button>
-            <SelectOptions {...{ open, options, setOpen, onChange }} />
+            <SelectOptions {...{ open, options, setOpen, onChange, selectedValue , name}} />
         </div>
     )
 }
 
-const SelectOptions = ({ open, options, setOpen, onChange }) => {
+const SelectOptions = ({ open, options, setOpen, onChange, selectedValue, name}) => {
     return (
         <>
             {open && (
@@ -43,7 +43,7 @@ const SelectOptions = ({ open, options, setOpen, onChange }) => {
                         <li
                             key={option.value}
                             onClick={() => {
-                                onChange(option);
+                                onChange({...selectedValue, [name]: option});
                                 setOpen(false);
                             }}
                             className="px-4 py-2 cursor-pointer hover:bg-red-500 hover:text-white"
