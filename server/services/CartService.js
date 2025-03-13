@@ -1,18 +1,21 @@
+import { BadRequestError } from "../exceptions/BadRequestError.js"
 import { DuplicateError } from "../exceptions/DuplicateError.js"
 import { Cart } from "../models/Cart.js"
 
 export const createCart = async (req, trans) => {
-    const userId = req.user.id
-    const existingCart = await Cart.findOne({where: {userId}})
+    const existingCart = await Cart.findOne({where: {userId: req.userId}})
     if(existingCart){
         const errmsg = `Failed to created cart: cart already exist`
         throw new DuplicateError(errmsg)
     }
-    await Cart.create({...req.body, userId}, { transaction: trans})
+    await Cart.create({userId: req.userId}, { transaction: trans})
 }
 
-export const getAllCarts = async (req) => {
-    return await Cart.findAll();
+
+
+export const getUserCart = async (req) => {
+    const userId = req.user.id
+    return await Cart.findOne({where: {userId}});
 };
 
 export const getCartById = async (req) => {

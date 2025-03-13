@@ -4,8 +4,6 @@ import { Button } from '../../components/button/Button'
 import CheckBoxInput from "../../components/input/CheckBoxInput"
 import Image from "../../components/image/Image"
 import { PostLogin } from "./api/PostLogin"
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
 
 
 const Login = () => {
@@ -16,18 +14,14 @@ const Login = () => {
         password: ""
     }
 
-    const [inputValues, setInputValues ] = useState(initialValues)
-    const navigate = useNavigate()
-
     const handleSubmit = (values) =>{
-        console.log(values)
         mutate(values)
     }
     const { mutate, isLoading, error } = PostLogin()   
     
     return (
         <div className="w-full h-screen flex">
-            <div className='w-full p-4 md:w-1/2 md:px-20 md:pl-40 md:mt-20'>
+            <div className='w-full p-4 md:w-1/2 md:px-20 md:pl-40 md:pr-40 md:mt-20'>
                 <p className="font-semibold mt-6 md:text-3xl text-[#013a20] text-[1.2rem]">Sign in</p>
                 <small className="text-gray-400">Sign in to your account</small>
                 <Formik initialValues={initialValues}

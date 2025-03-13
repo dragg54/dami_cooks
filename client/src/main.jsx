@@ -5,18 +5,23 @@ import App from './App.jsx'
 import './index.css'
 import store, { persistor } from './redux/store.js';
 import { PersistGate } from 'redux-persist/integration/react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from '@stripe/stripe-js';
 
 const queryClient = new QueryClient()
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
+      <Elements stripe={stripePromise}>
     <Provider store={store}>
-      <PersistGate persistor={persistor}>
-        <App />
-      </PersistGate>
+      <QueryClientProvider client={queryClient}>
+        <PersistGate persistor={persistor}>
+          <App />
+        </PersistGate>
+      </QueryClientProvider>
     </Provider>
-    </QueryClientProvider>
+    </Elements>
   </React.StrictMode>,
 )

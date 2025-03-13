@@ -17,9 +17,10 @@ const Footer = () => {
                         <p className="mt-2 inline-flex items-center"><FaInstagram className="mr-2" /></p>
                         <p className="mt-2 inline-flex items-center"><FaFacebook className="mr-2" /></p>
                         <p className="mt-2 inline-flex items-center"><FaTwitter className="mr-2" /></p>
-
                     </div>
-
+                    <div>
+                      
+                    </div>
                 </div>
             </div>
             <div className="w-full h-[0.8px] bg-white my-6">

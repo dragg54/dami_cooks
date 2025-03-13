@@ -5,9 +5,26 @@ import { UnauthorizedError } from "../exceptions/UnauthorizedError.js"
 import {Item} from "../models/Item.js";
 import { v2 as cloudinary } from 'cloudinary';
 import { uploadImage } from "../utils/uploadImage.js";
+import { getPagination, getPagingData } from "../utils/pagination.js";
 
 export const getAllItems = async (req) => {
-    return await Item.findAll();
+    const { page, size, status } = req.query; 
+    const { limit, offset } = getPagination(page, size);
+
+    const queryOpts = {}
+
+    if(status != null){
+        queryOpts['where'] = {status: status.toUpperCase()}
+    }
+
+    const data = await Item.findAndCountAll({
+        limit,
+      offset,
+      order: [["createdAt", "DESC"]],
+      ...queryOpts
+    });
+
+    return getPagingData(data, page, limit)
 };
 
 export const getItemById = async (req) => {

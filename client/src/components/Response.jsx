@@ -3,9 +3,20 @@ import { IoMdInformationCircleOutline } from "react-icons/io";
 import { IoMdCheckmark } from "react-icons/io";
 import { CiWarning } from "react-icons/ci";
 import { VscError } from "react-icons/vsc";
+import Spinner from "./Spinner";
 
 
-const Response = ({ style, responseStatus }) => {
+const Response = ({ style, responseStatus, isLoading }) => {
+  if(isLoading){
+    return(
+      <div className={style + ` md:mt-12 gap-6 w-full px-4 items-center py-3 flex bg-secondary`}>
+       <div className="w-6 h-6">
+          <Spinner {...{isLoading}}/>
+       </div>
+          <p className="text-gray-600">Process request...</p>
+    </div>
+    )
+  }
   switch (responseStatus) {
     case 200:
       return (

@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query"
+import { useMutation } from "react-query"
 import Axios from "../services/apiClient";
 
 const postData =  async ({ payload, url, headers }) => {

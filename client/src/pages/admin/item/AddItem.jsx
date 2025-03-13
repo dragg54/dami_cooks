@@ -1,13 +1,12 @@
-import { Form, Formik } from "formik"
 import FormContainer from "../../../components/form/FormContainer"
 import TextInput from "../../../components/input/TextInput"
 import Select from "../../../components/input/SelectInput"
-import { useState } from "react"
+import {  useState } from "react"
 import FileInput from "../../../components/input/FileInput"
 import NumberInput from "../../../components/input/NumberInput"
 import { PostItem } from "./api/PostItem"
-import BackButton from "../../../components/button/BackButton"
-import AddButton from "../../../components/button/AddButton"
+import * as Yup from 'yup'
+
 
 const AddItem = () => {
     const [selectValues, setSelectValues] = useState({
@@ -16,9 +15,11 @@ const AddItem = () => {
     })
     const [responseStatus, setResponseStatus ] = useState()
     const [file, setFile] = useState()
-    const { mutate, isLoading, error } = PostItem({setResponseStatus})
+    const { mutate, isError, isPending } = PostItem({setResponseStatus})
+
 
     const handleSubmit = (values, resetForm) => {
+        setResponseStatus(null)
         const updatedValues = { ...values, itemCategoryId: selectValues.itemCategory.value, itemType: selectValues.itemType.value }
         const formData = new FormData()
         formData.append('image', file);
@@ -29,10 +30,15 @@ const AddItem = () => {
         formData.append('uom', updatedValues.uom);
         formData.append('itemCategoryId', updatedValues.itemCategoryId);
 
-        mutate(formData)
-
-        setFile()
+        mutate(formData, {resetForm, setFile})
     }
+
+    const validationSchema = Yup.object({
+        name: Yup.string().required("Item Name is required"),
+        description: Yup.string().required("Item Description is required"),
+        uom: Yup.string().required("Unit of Measurement is required"),
+        price: Yup.number().min(0.1, "Item price must be greater than 0")
+      });
 
     const initialValues = {
         name: "",
@@ -41,10 +47,9 @@ const AddItem = () => {
         price: 0
     }
 
-
     return (
         <div className="w-[100%] md:w-4/5 h-screen overflow-y-scroll">
-            <FormContainer {...{ title: "Add Item", handleSubmit, initialValues, responseStatus }}>
+            <FormContainer {...{ title: "Add Item", handleSubmit, isLoading: isPending, initialValues, responseStatus, validationSchema, isError, setFile }}>
                 <div className="w-full mb-2">
                     <TextInput name='name' label='Item Name' />
                 </div>
@@ -62,7 +67,7 @@ const AddItem = () => {
                 </div>
                 <div className="w-full mb-2 md:mb-0">
                     Item Image
-                    <FileInput onFileSelect={setFile} />
+                    <FileInput onFileSelect={setFile} file={file}/>
                 </div>
                 <div className="w-full mb-2 md:mb-0">
                     Price

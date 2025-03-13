@@ -9,12 +9,22 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Register from "./pages/register/Register"
 import AuthLayout from "./components/layout/AuthLayout"
 import Login from "./pages/login/Login"
+import ItemDetail from "./pages/customer/item/ItemDetail"
+import ScrollToTop from "./components/ScrollToTop"
+import Success from "./pages/customer/checkout/Success"
+import Cancel from "./pages/customer/checkout/Cancel"
+import Checkout from "./pages/customer/checkout/Checkout"
 
 function App() {
   return (
     <BrowserRouter>
+          <ScrollToTop />
       <Routes>
         <Route element={<Layout />}>
+          <Route path="/itemdetails/:id" element={<ItemDetail />} />
+          <Route path="/success" element={<Success />} /> 
+          <Route path="/cancel" element={<Cancel />} /> 
+          <Route path='/checkout' element={<Checkout/>} />
           <Route  path="/" element={<Home />} />
         </Route>
         <Route  element={<AdminLayout />}>

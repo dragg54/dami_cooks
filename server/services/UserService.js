@@ -7,7 +7,7 @@ import { UnauthorizedError } from '../exceptions/UnauthorizedError.js';
 import { generateToken } from '../utils/generateToken.js';
 
 export const createUser = async (req, trans) => {
-    const { name, email, isAdmin, password } = req.body;
+    const { email, isAdmin, phone, password, firstName, lastName } = req.body;
     const existingUser = await User.findOne({where:{email}})
     if(existingUser){
         const errMsg = "User already exist"
@@ -16,10 +16,11 @@ export const createUser = async (req, trans) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
    
-    const user = await User.create({ name, email, isAdmin, password: hashedPassword }, {transaction: trans});
+    const user = await User.create({ firstName, lastName, phone, email, isAdmin, password: hashedPassword }, {transaction: trans});
+    console.log(user.dataValues?.id)
     if(!isAdmin){
         const createCartRequest = {
-          userId: user.id
+          userId: user.dataValues.id
         }
         await cartService.createCart(createCartRequest, trans)
      }
@@ -34,7 +35,7 @@ export const loginUser = async(req) =>{
         }
     },
         {
-            attributes: ["id", "email", "password", "firstName", "lastName"]
+            attributes: ["id", "email", "password", "firstName", "lastName", "phone", "address"]
         }
 
     )
@@ -58,6 +59,8 @@ export const loginUser = async(req) =>{
             firstName: existingUser.firstName,
             lastName: existingUser.lastName,
             isAdmin: existingUser.isAdmin,
+            address: existingUser.address,
+            phone: existingUser.phone
         }
     }
 }

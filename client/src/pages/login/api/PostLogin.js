@@ -1,11 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import { usePostData } from "../../../hooks/usePostData";
+import { useDispatch } from "react-redux";
+import { fetchUser } from "../../../redux/UserSlice";
 
 export const PostLogin = () =>{
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     const onSuccess = (res) =>{
-        if(res.userDetails.isAdmin){
+        if(res.data?.userDetails.isAdmin){
             navigate("/dashboard")
+        }
+        else{
+            dispatch(fetchUser({user: res.data?.userDetails}))
+            navigate("/")
         }
     }
 

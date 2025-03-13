@@ -6,6 +6,7 @@ export const createCart = async (req, res) => {
         res.json("Cart created")
     }
     catch (error) {
+        console.log(error.message)
         res.status(error.statusCode || 500).json(error.message
             || "Internal server error"
         );
@@ -14,7 +15,7 @@ export const createCart = async (req, res) => {
 
 export const getAllCarts = async (req, res) => {
     try {
-        const Carts = await cartService.getAllCarts(req)
+        const Carts = await cartService.getUserCart(req)
         res.json(Carts)
     }
     catch (error) {
