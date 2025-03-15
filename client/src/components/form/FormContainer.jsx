@@ -1,17 +1,17 @@
 /* eslint-disable react/prop-types */
 import { Form, Formik } from 'formik'
 
-const FormContainer = ({ children, title, handleSubmit, initialValues, validationSchema, style}) => {
+const FormContainer = ({ children, title, handleSubmit, initialValues, validationSchema, style }) => {
   return (
-    <div className={`${style} w-full rounded-md p-4 bg-white h-auto`}>
+    <div className={`${style} w-full bg-white rounded-md h-auto`}>
       <h1 className='font-semibold text-lg'>{title}</h1>
       <div className='my-3 border w-full border-gray-200'></div>
       <Formik initialValues={initialValues}
-      validationSchema={validationSchema}
+        validationSchema={validationSchema}
         onSubmit={(values, { resetForm }) => {
           handleSubmit(values, resetForm)
         }}>
-        <Form className="w-full p-2 md:p-4 bg-white ">
+        <Form className="w-full p-2 bg-white ">
           {children}
         </Form>
       </Formik>

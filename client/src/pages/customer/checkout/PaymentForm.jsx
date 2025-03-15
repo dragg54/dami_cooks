@@ -1,29 +1,72 @@
+/* eslint-disable react/prop-types */
 import { CardCvcElement, CardExpiryElement, CardNumberElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import { useState } from "react";
+import { useEffect } from "react";
+import { useNavigate } from 'react-router-dom'
 import { FaCreditCard } from "react-icons/fa";
+import { Button } from "../../../components/button/Button";
+import { useSelector } from "react-redux";
 
-function PaymentForm() {
+function PaymentForm({clientSecret, deliveryDetails}) {
   const stripe = useStripe();
-  const elements = useElements();
-  const [isLoading, setIsLoading] = useState(false);
-
+  const elements = useElements(); 
+  const navigate = useNavigate()
+  const user = useSelector(state => state.user)
+  const cartItems = useSelector(state => state.cart)?.cartItems
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!stripe || !elements) return;
+    e.preventDefault()
+    const cardElement = elements.getElement(CardNumberElement);
+  if (!cardElement) {
+    console.error("CardNumberElement not found!");
+    return;
+  }
+    try {
+      const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
+            name: `${deliveryDetails?.firstName} ${deliveryDetails?.lastName}`,
+            phone: deliveryDetails?.phone,
+            address: {
+              line1: deliveryDetails?.address || "",
+              line2: "",
+              city: "",
+              state: "",
+              postal_code: deliveryDetails?.postalCode || "",
+              country: "GB",
+            },
+          }
+      },
+      shipping:{
+        name: `${deliveryDetails?.firstName} ${deliveryDetails?.lastName}`,
+        phone: deliveryDetails?.phone,
+        address: {
+          line1: deliveryDetails?.address || "",
+          line2: "",
+          city: "",
+          state: "",
+          postal_code: deliveryDetails?.postalCode || "",
+          country: "GB",
+      }
+    },
+      });
 
-    setIsLoading(true);
-    const { error, paymentIntent } = await stripe.confirmPayment({
-      elements,
-      confirmParams: { return_url: "https://your-site.com/confirmation" },
-    });
-
-    if (error) console.log(error);
-    else console.log("PaymentIntent:", paymentIntent);
-
-    setIsLoading(false);
+      if(paymentIntent && paymentIntent.status == "succeeded"){
+        navigate("/success")
+      }
+    }
+    catch (err) {
+      console.log(err.message)
+    }
   };
 
   return (
+    <form style={{
+        maxWidth: "400px",
+        margin: "auto",
+        display: "flex",
+        flexDirection: "column",
+        gap: "20px"
+      }} onSubmit={handleSubmit}>
     <div className="mt-1 w-full" style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
       <label className="text-sm text-gray-500">Card Details</label>
       <div className="border border-gray-400 p-2 relative">
@@ -79,6 +122,12 @@ function PaymentForm() {
         </div>
       </div>
     </div>
+    <p className="text-gray-500 text-sm mt-3">
+    Your personal data will be used to process your order, support your experience throughout this website,
+      and for other purposes described in our privacy policy.
+    </p>
+     <Button className={'!rounded-full'}>Place Order</Button>
+    </form>
   );
 }
 

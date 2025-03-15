@@ -1,7 +1,12 @@
 import { orderStatus } from "../constants/OrderStatus.js"
 import { BadRequestError } from "../exceptions/BadRequestError.js"
+import { UnauthorizedError } from "../exceptions/UnauthorizedError.js"
 import { Cart } from "../models/Cart.js"
+import { Item } from "../models/Item.js"
 import { Order } from "../models/Order.js"
+import { OrderItem } from "../models/OrderItem.js"
+import User from "../models/User.js"
+import { getPagination, getPagingData } from "../utils/pagination.js"
 
 export const createOrder = async (req) => {
     const { cartId } = req.body
@@ -15,11 +20,47 @@ export const createOrder = async (req) => {
 }
 
 export const getAllOrders = async (req) => {
-    return await Order.findAll();
+    const { page, size, status } = req.query;
+    const user = req.user
+    if (!req.user.isAdmin) {
+        throw new UnauthorizedError('Only admin is allowed to complete operation')
+    }
+    const { limit, offset } = getPagination(page, size);
+    const queryOpts = {}
+
+    if (status != null) {
+        queryOpts['where'] = { status: status.toUpperCase() }
+    }
+
+    const data = await Order.findAndCountAll({
+        include: [
+            {
+                model: User,
+                attributes: ['firstName', 'lastName']
+            },
+            {
+                model: OrderItem,
+                attributes:['quantity'],
+                include: {
+                    model: Item,
+                    attributes: ['id', 'name']
+                }
+            }
+        ],
+        limit,
+        offset,
+        order: [["createdAt", "DESC"]],
+        ...queryOpts
+    });
+    return getPagingData(data, page, limit)
 };
 
 export const getOrderById = async (req) => {
     const { id } = req.param
+    const user = req.user
+    if (!req.user.isAdmin) {
+        throw new UnauthorizedError('Only admin is allowed to complete operation')
+    }
     const order = await Order.findByPk(id);
     if (!order) {
         const errMsg = $`Order with id ${id} not found`
@@ -29,6 +70,10 @@ export const getOrderById = async (req) => {
 };
 
 export const updateOrderStatus = async (req) => {
+    const user = req.user
+    if (!req.user.isAdmin) {
+        throw new UnauthorizedError('Only admin is allowed to complete operation')
+    }
     const { status } = req.body
     const { id } = req.param
     const existingOrder = await Order.findByPk(id)

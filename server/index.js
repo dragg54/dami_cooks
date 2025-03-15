@@ -19,7 +19,13 @@ const __dirname = path.dirname(__filename);
 
 dotenv.config()
 const app = express()
-app.use(express.json()); 
+app.use((req, res, next)=>{
+  if (req.originalUrl === "/api/v1/payments/webhook") {
+    next(); 
+  } else {
+    express.json()(req, res, next);
+  }
+}); 
 app.use(express.urlencoded({ extended: true })); 
 app.use(cookieParser())
 const whitelist = ['http://localhost:5173', 'https://localhost:5173', 'http://localhost:5000', 'http://127.0.0.1:5173']

@@ -19,7 +19,7 @@ const OrderSummary = () => {
                 }
             </ul>
             <div>
-                <p className="text-lg font-semibold mt-4"><span>Total</span> <span>{euro}10.00</span></p>
+                <p className="text-lg font-semibold mt-4"><span>Total</span> <span>{euro}{cartItems.length > 0 && cartItems.reduce((prevItem, nextItem)=> (Number(prevItem?.item?.price) * prevItem?.quantity) + (Number(nextItem?.item?.price) * (nextItem?.quantity)))}</span></p>
             </div>
         </div>
     )
