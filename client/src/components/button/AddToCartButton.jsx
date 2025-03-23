@@ -21,11 +21,12 @@ const AddToCartButton = ({ item, style }) => {
     }
 
     const dispatch = useDispatch()
+    
     return (
         <Button
-            disabled={addToCartMutation.isLoading}
-            onClick={() => handleAddToCart()} className={`${style} !rounded-full w-1/2 py-3 font-semibold`}>
-            {addToCartMutation.isPending ? <Spinner style={'!w-6 !h-6 mx-auto !border-white !border-t-transparent !text-white '} isLoading={addToCartMutation.isLoading} /> : "Add To Cart"}
+            onClick={() => handleAddToCart()} className={`${style} !rounded-full w-1/2 md:py-3 font-semibold`}>
+            {addToCartMutation.isPending ? <Spinner style={'!w-6 !h-6 mx-auto !border-white !border-t-transparent !text-white '}
+              isLoading={addToCartMutation.isLoading} /> : "Add To Cart"}
         </Button>)
 }
 

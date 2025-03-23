@@ -8,6 +8,7 @@ const fetchData = async ({ queryKey }) => {
 };
 
 export const useFetchAllData = (url, params = {}, queryKey = "data") => {
+  console.log(params)
   return useQuery([queryKey, url, params], fetchData, {
     staleTime: 5 * 60 * 1000, 
     refetchOnWindowFocus: false,

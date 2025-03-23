@@ -101,7 +101,7 @@ const Payment = ({deliveryDetails}) => {
   }
   return (
     <Elements stripe={stripePromise} options={{ clientSecret, appearance }}>
-      <div className="h-auto p-4 w-full border border-gray-300 shadow-md shadow-gray-300 rounded-md p-6 pb-10">
+      <div className="h-auto p-4 w-full border border-gray-300 bg-white shadow-md shadow-gray-300 rounded-md p-6 pb-10">
         <h2 className="font-bold text-2xl ">Payment</h2>
         <p className="border-b border-gray-300 mb-6 text-gray-500 pb-4 text-xs">Pay with stripe</p>
         <PaymentForm {...{clientSecret, deliveryDetails}}/>

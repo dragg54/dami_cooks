@@ -26,3 +26,16 @@ export const paymentWebhook = async(req, res) =>{
         );
     }
 }
+
+export const getPayments = async(req, res) =>{
+    try{
+        const payments = await paymentService.getPayments(req)
+        return res.json(payments)
+    }
+    catch (error) {
+        console.log(error.message)
+        res.status(error.statusCode || 500).json(error.message
+            || "Internal server error"
+        );
+    }
+}

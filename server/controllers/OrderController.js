@@ -44,6 +44,7 @@ export const getOrderById = async (req, res) => {
         res.json(order)
     }
     catch (error) {
+        console.log(error.message)
         res.status(error.statusCode || 500).json(error.message
             || "Internal server error"
         );

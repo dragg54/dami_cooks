@@ -14,6 +14,10 @@
     font-family: 'Fira', sans-serif;
 }
 
+body{
+  background-color: #efefef;
+}
+
 .logo{
   font-family: "Delicious Handrawn", serif;
   font-optical-sizing: auto;

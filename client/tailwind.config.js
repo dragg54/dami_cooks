@@ -9,7 +9,8 @@ export default {
       backgroundColor: {
         primary: "#d01110",
         secondary: "#fdb750",
-        tertiary: "#f9e9e9"
+        tertiary: "#f9e9e9",
+        modal: 'rgba(128, 128, 128, 0.5)',
       },
       fontFamily: {
         playwrite: ['Playwrite NZ', 'sans-serif'],

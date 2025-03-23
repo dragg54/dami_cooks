@@ -5,19 +5,27 @@ import User from "./User.js";
 import { Cart } from "./Cart.js";
 import { Order } from "./Order.js";
 
-export const Payment = db.define("Payment", {
-    paymentType:{
-        type: DataTypes.ENUM('STRIPE', 'PAYSTACK', 'PAYMENT_ON_DELIVERY', 'BANK_TRANSFER')
+export const Payment = db.define("payment", {
+    paymentGateway:{
+       type: DataTypes.ENUM('STRIPE', 'PAYSTACK', 'TRANSFER'),
+        defaultValue: 'STRIPE'
     },
-    amountPaid:{
-        type: DataTypes.FLOAT
+    gatewayPaymentId:{
+        type: DataTypes.STRING
+    },
+    paymentType: {
+      type: DataTypes.STRING
+    },
+    amount: {
+      type: DataTypes.INTEGER
+    },
+    status: {
+      type: DataTypes.ENUM('succeeded', 'cancelled', 'processing'),
+      defaultValue: 'processing'
     }
 }) 
 
-Payment.belongsTo(Cart, {onDelete: 'CASCADE'})
-Cart.hasOne(Payment)
-
-Payment.belongsTo(Order, {onDelete: 'CASCADE'})
+Payment.belongsTo(Order)
 Order.hasOne(Payment)
 
 db.sync()

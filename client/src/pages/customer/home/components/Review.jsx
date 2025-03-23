@@ -3,7 +3,7 @@ import Image from "../../../../components/image/Image"
 /* eslint-disable react/prop-types */
 const Review = ({review}) => {
   return (
-    <div className="w-full p-4 h-[220px] rounded-md shadow-md shadow-gray-300 border">
+    <div className="w-full p-4 h-[220px] rounded-md shadow-md shadow-gray-300 border bg-white">
         <div className="w-full flex justify-start gap-6 items-center ">
             <div className="w-[70px] h-[70px] rounded-full border overflow-hidden">
             <Image style={"!object-cover "} src={review.image}/>

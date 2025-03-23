@@ -6,6 +6,6 @@ import { authMiddleware } from '../middlewares/validate.js'
 export const orderRoute = Router()
 
 orderRoute.post("/", authMiddleware, createOrder)
-orderRoute.put("/:id", authMiddleware, updateOrderStatus)
+orderRoute.patch("/:id/status", authMiddleware, updateOrderStatus)
 orderRoute.get("/:id", authMiddleware, getOrderById)
 orderRoute.get("/", authMiddleware, getAllOrders)

@@ -24,7 +24,7 @@ const SelectInput = ({ options, selectedValue, onChange, label, name }) => {
             <p className="mb-2">{label}</p>
             <button
                 onClick={() => setOpen(!open)}
-                className="w-full border px-2 md:px-4 py-2 bg-white rounded shadow text-xs md:text-base text-gray-400 flex justify-between items-center"
+                className="w-full border border-gray-400 px-2 md:px-4 py-2 bg-white rounded shadow text-xs md:text-base text-gray-400 flex justify-between items-center"
             >
                 {selectedValue[name].label || "Select an option"}
                 <span><FaAngleDown /></span>

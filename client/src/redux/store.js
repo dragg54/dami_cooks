@@ -4,18 +4,20 @@ import storage from 'redux-persist/lib/storage'
 import { persistReducer, persistStore } from 'redux-persist';
 import  cartReducer  from './CartSlice'
 import  userReducer  from './UserSlice'
+import globalModalReducer from './GlobalModalSlice'
 
 
 const persistConfig = {
     key: "root",
     storage,
-    blacklist: ['cart']
+    blacklist: ['cart', 'globalModal']
 
   }
 
 export const rootReducer = combineReducers({
     cart: cartReducer,
-    user: userReducer
+    user: userReducer,
+    globalModal: globalModalReducer
 
 });
 

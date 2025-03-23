@@ -1,7 +1,7 @@
-import FormContainer from "../../../components/form/FormContainer"
+import CreateFormContainer from "../../../components/form/CreateFormContainer"
 import TextInput from "../../../components/input/TextInput"
 import Select from "../../../components/input/SelectInput"
-import {  useState } from "react"
+import { useState } from "react"
 import FileInput from "../../../components/input/FileInput"
 import NumberInput from "../../../components/input/NumberInput"
 import { PostItem } from "./api/PostItem"
@@ -13,9 +13,9 @@ const AddItem = () => {
         itemType: { label: "", value: "" },
         itemCategory: { label: "", value: "" }
     })
-    const [responseStatus, setResponseStatus ] = useState()
+    const [responseStatus, setResponseStatus] = useState()
     const [file, setFile] = useState()
-    const { mutate, isError, isPending } = PostItem({setResponseStatus})
+    const { mutate, isError, isPending } = PostItem({ setResponseStatus })
 
 
     const handleSubmit = (values, resetForm) => {
@@ -30,7 +30,7 @@ const AddItem = () => {
         formData.append('uom', updatedValues.uom);
         formData.append('itemCategoryId', updatedValues.itemCategoryId);
 
-        mutate(formData, {resetForm, setFile})
+        mutate(formData, { resetForm, setFile })
     }
 
     const validationSchema = Yup.object({
@@ -38,7 +38,7 @@ const AddItem = () => {
         description: Yup.string().required("Item Description is required"),
         uom: Yup.string().required("Unit of Measurement is required"),
         price: Yup.number().min(0.1, "Item price must be greater than 0")
-      });
+    });
 
     const initialValues = {
         name: "",
@@ -48,32 +48,39 @@ const AddItem = () => {
     }
 
     return (
-        <div className="w-[100%] md:w-4/5 h-screen overflow-y-scroll">
-            <FormContainer {...{ title: "Add Item", handleSubmit, isLoading: isPending, initialValues, responseStatus, validationSchema, isError, setFile }}>
-                <div className="w-full mb-2">
+        <div className="w-[100%] md:w-4/5 md:h-[550px] overflow-y-hidden p-4 md:p-8 bg-white">
+            <CreateFormContainer
+                formStyle={'grid md:grid-cols-3 grid-cols-2 gap-x-3 gap-y-3'}
+                {...{
+                    title: "Add Item", handleSubmit, isLoading: isPending,
+                    initialValues, responseStatus, validationSchema, isError, setFile
+                }}>
+                <div className="w-full ">
                     <TextInput name='name' label='Item Name' />
                 </div>
-                <div className="w-full mb-2 md:mb-0">
+                <div className="w-full  md:mb-0">
                     <Select name="itemCategory" label={'Select Category'} options={[{ label: "Meal", value: "1" }, { label: "Pastry", value: "2" }]} selectedValue={selectValues} onChange={setSelectValues} />
                 </div>
-                <div className="w-full mb-2 md:mb-0">
+                <div className="w-full  md:mb-0">
                     <TextInput name='uom' label='Unit of Measurement' />
                 </div>
-                <div className="w-full mb-2 md:mb-0">
+                <div className="w-full  md:mb-0">
                     <TextInput name='description' label='Description' />
                 </div>
-                <div className="w-full mb-2 md:mb-0">
+                <div className="w-full  md:mb-0">
                     <Select name="itemType" label={'Select Item Type'} options={[{ label: "Main Item", value: "MAIN_ITEM" }, { label: "Sub Item", value: "SUB_ITEM" }]} selectedValue={selectValues} onChange={setSelectValues} />
                 </div>
-                <div className="w-full mb-2 md:mb-0">
-                    Item Image
-                    <FileInput onFileSelect={setFile} file={file}/>
+                <div className="w-full md:mb-0">
+                    <p className="mb-2 text-sm md:text-base">
+                     Item Image
+                    </p>
+                    <FileInput onFileSelect={setFile} file={file} />
                 </div>
-                <div className="w-full mb-2 md:mb-0">
+                <div className="w-full  md:mb-0">
                     Price
-                    <NumberInput name={'price'}/>
+                    <NumberInput name={'price'} />
                 </div>
-        </FormContainer>
+            </CreateFormContainer>
         </div >
     )
 }

@@ -1,3 +1,4 @@
+import { HostNotFoundError } from "sequelize"
 import { orderStatus } from "../constants/OrderStatus.js"
 import { BadRequestError } from "../exceptions/BadRequestError.js"
 import { UnauthorizedError } from "../exceptions/UnauthorizedError.js"
@@ -5,8 +6,10 @@ import { Cart } from "../models/Cart.js"
 import { Item } from "../models/Item.js"
 import { Order } from "../models/Order.js"
 import { OrderItem } from "../models/OrderItem.js"
+import { Shipping } from "../models/Shipping.js"
 import User from "../models/User.js"
 import { getPagination, getPagingData } from "../utils/pagination.js"
+import { NotFoundError } from "../exceptions/NotFoundError.js"
 
 export const createOrder = async (req) => {
     const { cartId } = req.body
@@ -45,10 +48,15 @@ export const getAllOrders = async (req) => {
                     model: Item,
                     attributes: ['id', 'name']
                 }
+            },
+            {
+                model: Shipping,
+                attributes: ['address', 'city', 'phone', 'postalCode', 'email']
             }
         ],
         limit,
         offset,
+        distinct: true,
         order: [["createdAt", "DESC"]],
         ...queryOpts
     });
@@ -56,17 +64,36 @@ export const getAllOrders = async (req) => {
 };
 
 export const getOrderById = async (req) => {
-    const { id } = req.param
+    const { id } = req.params
     const user = req.user
     if (!req.user.isAdmin) {
         throw new UnauthorizedError('Only admin is allowed to complete operation')
     }
-    const order = await Order.findByPk(id);
+    const order = await Order.findByPk(id, {
+        include: [
+            {
+                model: User,
+                attributes: ['firstName', 'lastName']
+            },
+            {
+                model: OrderItem,
+                attributes:['quantity'],
+                include: {
+                    model: Item,
+                    attributes: ['id', 'name']
+                }
+            },
+            {
+                model: Shipping,
+                attributes: ['address', 'city', 'phone', 'postalCode', 'email']
+            }
+        ],
+    });
     if (!order) {
-        const errMsg = $`Order with id ${id} not found`
+        const errMsg = `Order with id ${id} not found`
         throw new NotFoundError(errMsg)
     }
-    return Order
+    return order
 };
 
 export const updateOrderStatus = async (req) => {
@@ -75,14 +102,18 @@ export const updateOrderStatus = async (req) => {
         throw new UnauthorizedError('Only admin is allowed to complete operation')
     }
     const { status } = req.body
-    const { id } = req.param
+    const { id } = req.params
     const existingOrder = await Order.findByPk(id)
     if (!existingOrder) {
         const errMsg = `Order ${id} not found`
         throw new BadRequestError(errMsg)
     }
     const isInvalidOrderStatus = (
-        (existingOrder.status == orderStatus.DELIVERED || existingOrder.status == orderStatus.CANCELLED) && (
+        (existingOrder.status == orderStatus.DELIVERED 
+            || existingOrder.status == orderStatus.CANCELLED
+             || existingOrder.status == orderStatus.ACCEPTED
+             || existingOrder.status == orderStatus.REJECTED     
+        ) && (
             status == orderStatus.ACCEPTED
             || status == orderStatus.REJECTED
             || status == orderStatus.PENDING))
@@ -90,4 +121,5 @@ export const updateOrderStatus = async (req) => {
         const errMsg = `Order status is invalid for this operation`
         throw new BadRequestError(errMsg)
     }
+    await Order.update({status}, {where:{id}})
 }

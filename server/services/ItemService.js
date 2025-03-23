@@ -20,6 +20,7 @@ export const getAllItems = async (req) => {
     const data = await Item.findAndCountAll({
         limit,
       offset,
+      distinct: true,
       order: [["createdAt", "DESC"]],
       ...queryOpts
     });

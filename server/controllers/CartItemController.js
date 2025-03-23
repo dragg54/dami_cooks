@@ -26,6 +26,19 @@ export const getAllCartItems = async (req, res) => {
     }
 }
 
+export const deleteCartItem = async(req, res) =>{
+    try {
+        await cartItemService.deleteCartItem(req)
+        res.json("Cart item deleted")
+    }
+    catch (error) {
+        console.log(error.message)
+        res.status(error.statusCode || 500).json(error.message
+            || "Internal server error"
+        );
+    }
+}
+
 
 
 

@@ -20,10 +20,10 @@ const Reviews = () => {
         );
     };
     return (
-        <div className="w-full md:mt-20">
+        <div className="w-full md:mt-20 ">
             <p className="md:mb-4 mb-4 font-bold text-2xl w-full text-center md:text-3xl">Customers are saying</p>
             {getScreenSize().isMobile ?
-                <div className="flex relative flex-col gap-4 w-full mb-4">
+                <div className="flex relative flex-col gap-4 w-full mb-4 px-2">
                     <motion.div
                         key={currentIndex}
                         initial={{ opacity: 0, x: 50 }}
@@ -35,18 +35,18 @@ const Reviews = () => {
 
                         <Review review={reviews[currentIndex]} key={reviews[currentIndex].id} />
                     </motion.div>
-                    <div className="absolute flex -translate-1/2 top-1/2  -right-6 -left-6 justify-between mt-4">
-                        <button onClick={prevReview} className="p-2 bg-gray-200 rounded-full">
+                    <div className="absolute flex -translate-1/2 top-1/2 -right-3 -left-3  md:-right-6 md:-left-6 justify-between mt-4">
+                        <button onClick={prevReview} className="p-2 bg-gray-200 border rounded-full">
                             <ChevronLeft />
                         </button>
-                        <button onClick={nextReview} className="p-2 bg-gray-200 rounded-full">
+                        <button onClick={nextReview} className="p-2 bg-gray-200 border rounded-full">
                             <ChevronRight />
                         </button>
                     </div>
                 </div> :
                 <div className="w-full flex justify-between">
                     {reviews.map(review => (
-                    <div className="w-[33%]" key={review.id}>
+                    <div className="md:w-[33%]" key={review.id}>
                         <Review review={review} />
                     </div>
                 ))

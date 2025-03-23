@@ -6,7 +6,7 @@ const OrderSummary = () => {
     const cartItems = useSelector(state => state.cart)?.cartItems
     return (
         <div className="w-full mt-10 h-auto md:mb-10 mb-5 md:mr-8 border border-gray-300 
-                         shadow-md shadow-gray-300 rounded-md md:p-6 p-4">
+                         shadow-md shadow-gray-300 rounded-md md:p-6 p-4 bg-white">
             <h1 className=" font-semibold text-2xl my-4">Cart History</h1>
             <ul className="first: border-t border-gray-300">
                 {
@@ -19,7 +19,8 @@ const OrderSummary = () => {
                 }
             </ul>
             <div>
-                <p className="text-lg font-semibold mt-4"><span>Total</span> <span>{euro}{cartItems.length > 0 && cartItems.reduce((prevItem, nextItem)=> (Number(prevItem?.item?.price) * prevItem?.quantity) + (Number(nextItem?.item?.price) * (nextItem?.quantity)))}</span></p>
+                <p className="text-lg font-semibold mt-4"><span>Total</span> <span>{euro}{cartItems?.length > 1 ? cartItems?.reduce((prevItem, nextItem)=> (Number(prevItem?.item?.price || 0) 
+                * Number(prevItem?.quantity || 0)) + (Number(nextItem?.item?.price || 0) * Number(nextItem?.quantity || 0))): cartItems?.length && (Number(cartItems[0].item.price) * (cartItems[0].quantity))}</span></p>
             </div>
         </div>
     )

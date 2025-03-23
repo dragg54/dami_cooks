@@ -8,7 +8,7 @@ const TextInput = ({ label, name, type = "text", ...props }) => {
       <Field
         type={type}
         name={name}
-        className="w-full border rounded-md p-2 text-gray-500 text-sm md:text-base"
+        className="w-full border  border-gray-400 rounded-md p-2 text-gray-500 text-sm md:text-base"
         {...props}
       />
       <ErrorMessage name={name} component="div" className="text-red-500 text-sm" />

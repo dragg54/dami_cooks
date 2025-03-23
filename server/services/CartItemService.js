@@ -36,3 +36,16 @@ export const getCartItems = async(req, res) =>{
     })
     return cartItems
 }
+
+export const deleteCartItem = async(req) =>{
+    const { id } = req.params
+    const existingCart = await getUserCart(req)
+    if(!existingCart){
+        throw new BadRequestError(`Cart does not exist for user`)
+    }
+    const existingItem = await Item.findOne({where:{id}})
+    if(!existingItem){
+        throw new BadRequestError(`Item with id ${id} does not exist`)
+    }
+    await CartItem.destroy({where:{itemId: id}})
+}

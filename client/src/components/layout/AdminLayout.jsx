@@ -4,11 +4,15 @@ import NavigationMenu from '../NavigationMenu'
 import { Header } from './Header'
 import { Outlet } from 'react-router-dom';
 import SideBar from './SideBar';
+import GlobalModal from '../GlobalModal';
+import { useSelector } from 'react-redux';
 
 const AdminLayout = () => {
     const [navIsOpen, setNavIsOpen] = useState(false);
+    const globalModal = useSelector(state => state.globalModal)
     return (
-        <div className='w-full h-screen'>
+        <div className={`w-full overflow-y-hidden h-screen ${globalModal.opened && 'overflow-y-hidden'}`}>
+         <GlobalModal />
             <NavigationMenu {...{ navIsOpen, setNavIsOpen }} />
             <Header {...{ navIsOpen, setNavIsOpen }} />
             <div className='w-full flex h-full'>

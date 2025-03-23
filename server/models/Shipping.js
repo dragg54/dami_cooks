@@ -16,6 +16,10 @@ export const Shipping = db.define('shipping',{
     type: DataTypes.STRING,
     allowNull: false
   },
+  city: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
   country: {
     type: DataTypes.STRING,
     defaultValue: "United Kingdom"

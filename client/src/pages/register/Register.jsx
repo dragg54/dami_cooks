@@ -15,7 +15,7 @@ const Register = () => {
     return (
         <div className="w-full h-screen flex">
             <div className='w-full p-4 md:w-1/2 md:px-20 md:pl-32'>
-                <p className="font-semibold mt-6 text-[#013a20] text-[1.2rem] md:text-[1.8rem]">Create Account</p>
+                <p className="font-semibold mt-6 text-[#d01110] text-[1.2rem] md:text-[1.8rem]">Create Account</p>
                 <small className="text-gray-400">Register your account</small>
                 <Formik initialValues={initialValues}
                     validationSchema={() => null}
@@ -38,7 +38,7 @@ const Register = () => {
                         <div className="w-full">
                             <CheckBoxInput {...{ name: "termsAndCondition", label: <>By signing up, you agreed to the <span className="text-yellow-600">Terms of use</span> and <span className="text-yellow-600">Privacy Policy</span></> }} />
                         </div>
-                        <Button className={'w-full md:py-3 !bg-[#013a20] !rounded-full mt-6'}>
+                        <Button className={'w-full md:py-3 !bg-[#d01110] !rounded-full mt-6'}>
                             Register
                         </Button>
                         <p>Already have an account? <span className="text-yellow-600">Sign in</span></p>
@@ -46,7 +46,7 @@ const Register = () => {
                 </Formik>
             </div>
             <div className="hidden md:flex w-1/2 h-full bg-white">
-                <Image src={'/images/chef.jpg'} />
+                <Image src={'/images/logiin.jpg'} />
             </div>
         </div>
     )

@@ -14,6 +14,7 @@ import ScrollToTop from "./components/ScrollToTop"
 import Success from "./pages/customer/checkout/Success"
 import Cancel from "./pages/customer/checkout/Cancel"
 import Checkout from "./pages/customer/checkout/Checkout"
+import PaymentList from "./pages/admin/payment/PaymentList"
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/itemlist" element={<ItemList />} />
           <Route path="/additem" element={<AddItem />} />
           <Route path="/orderlist" element={<OrderList />} />
+          <Route path="/paymentlist" element={<PaymentList />} />
         </Route>
         <Route element={<AuthLayout />}>
           <Route path="/register" element={<Register />} />
