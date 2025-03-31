@@ -20,9 +20,56 @@ body {
   @apply text-gray-700 text-2xl font-ibm cursor-pointer flex gap-3 items-center
 }
 
+.admin{
+  font-family: 'Fira', sans-serif;
+}
+
 
 h1,h2, h3, h4, h5 {
   font-family: "Cormorant Upright", serif;
   font-weight: 600;
   font-style: normal;
+}
+
+.swiper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3px;
+}
+
+.swiper-slide {
+  background-position: center;
+  background-size: cover;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+  height: 100%;
+}
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: purple; 
+  font-size: 1.5rem; 
+  display: none
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  color: purple; 
+}
+
+.swiper-pagination-bullet {
+  background-color: purple; 
+  opacity: 0.6;
+  width: 12px; 
+  height: 12px;
+  margin: 0 5px; 
+  transition: background-color 0.3s ease, opacity 0.3s ease
 }

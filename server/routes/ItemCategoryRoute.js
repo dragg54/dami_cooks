@@ -4,4 +4,4 @@ import { getItemCategories }
 
 export const itemRouteCategoryRoute = Router()
 
-itemRouteCategoryRoute.post("/", getItemCategories)
+itemRouteCategoryRoute.get("/", getItemCategories)

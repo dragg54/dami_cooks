@@ -10,6 +10,7 @@ import db from '../configs/db.js'
 import { Cart } from '../models/Cart.js'
 import { getPagination, getPagingData } from '../utils/pagination.js'
 import { UnauthorizedError } from '../exceptions/UnauthorizedError.js'
+import { Op } from 'sequelize'
 
 dotenv.config()
 
@@ -18,15 +19,23 @@ export const initializePayment = async (req) => {
     let clientUri = environment == "Production" ? process.env.PROD_CLIENT_URL : process.env.LOCAL_CLIENT_URL
     try {
         const { items } = req.body;
+        
         if (items && items.length > 0) {
-            const totalCartItemAmount = items.length > 1 ? items.reduce((prevItem, nextItem) => ((Number(prevItem.price) * prevItem.quantity) 
-             + (Number(nextItem.price) * nextItem.quantity))): (items?.length > 0 && (Number(items[0]?.price) && Number(items[0].quantity)))
+            const totalCartItemAmount = items.length > 1 ? items.reduce((prevItem, nextItem) => ((Number(prevItem.price || 0) * Number(prevItem.quantity || 0)) 
+            + (Number(nextItem.price || 0) * Number(nextItem.quantity || 0)))): (items?.length > 0 && (Number(items[0]?.price) && Number(items[0].quantity)))
+            const paymentItem = items.map((item)=>(
+                {
+                    name: item.name,
+                    price: item.price,
+                    quantity: item.quantity
+                }
+            ))
             const paymentIntent = await stripe.paymentIntents.create({
                 amount: totalCartItemAmount * 100,
                 currency: "usd",
                 metadata: {
                     orderedBy: req.user.id,
-                    cartItems: JSON.stringify(items)
+                    cartItems: JSON.stringify(paymentItem)
                 }
             });
             return { clientSecret: paymentIntent.client_secret };
@@ -84,7 +93,7 @@ export const paymentWebhook = async (req) => {
 }
 
 export const getPayments = async(req) =>{
-    const { page, size, status } = req.query;
+    const { page, size, status, gatewayPaymentId, paymentType, paymentGateway, amount, orderId } = req.query;
     const user = req.user
     if (!req.user.isAdmin) {
         throw new UnauthorizedError('Only admin is allowed to complete operation')
@@ -95,6 +104,61 @@ export const getPayments = async(req) =>{
     if (status != null) {
         queryOpts['where'] = { status: status.toUpperCase() }
     }
+
+     if (gatewayPaymentId) {
+            queryOpts.where = {
+                ...queryOpts.where,
+                [Op.or]: [
+                    {
+                        gatewayPaymentId: { [Op.like]: `%${gatewayPaymentId}%` }
+                    }
+                ]
+            }
+        }
+
+        if (paymentType) {
+            queryOpts.where = {
+                ...queryOpts.where,
+                [Op.or]: [
+                    {
+                        paymentType: { [Op.like]: `%${paymentType}%` }
+                    }
+                ]
+            }
+        }
+
+        if (paymentGateway) {
+            queryOpts.where = {
+                ...queryOpts.where,
+                [Op.or]: [
+                    {
+                        paymentGateway: { [Op.like]: `%${paymentGateway}%` }
+                    }
+                ]
+            }
+        }
+
+        if (orderId) {
+            queryOpts.where = {
+                ...queryOpts.where,
+                [Op.or]: [
+                    {
+                        orderId: { [Op.like]: `%${orderId}%` }
+                    }
+                ]
+            }
+        }
+
+          if(amount){
+                queryOpts.where = {
+                    ...queryOpts.where,
+                    [Op.or]: [
+                        {
+                            amount: Number(amount)
+                        }
+                    ]
+                }
+            }
 
     const data = await Payment.findAndCountAll({
         include: [

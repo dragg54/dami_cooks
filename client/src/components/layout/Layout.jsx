@@ -7,6 +7,7 @@ import Footer from './Footer';
 import { Outlet } from 'react-router-dom';
 import Cart from '../cart/Cart';
 import GlobalModal from '../GlobalModal';
+import PopUp from '../PopUp';
 
 const Layout = () => {
     const [navIsOpen, setNavIsOpen] = useState(false);
@@ -22,6 +23,7 @@ const Layout = () => {
       <Outlet />
       </div>
       <Footer />
+      <PopUp />
     </div>
   )
 }

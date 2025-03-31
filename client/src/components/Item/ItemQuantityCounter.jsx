@@ -1,9 +1,8 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { decreaseQuantity, increaseQuantity } from "../../redux/CartSlice";
 
-const ItemQuantityCounter = ({quantity=1, setQuantity, cartItem}) => {
+const ItemQuantityCounter = ({cartItem}) => {
     const dispatch = useDispatch()
     const increase = () => {
        dispatch(increaseQuantity(cartItem))

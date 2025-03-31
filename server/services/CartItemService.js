@@ -24,7 +24,11 @@ export const addCartItem = async(req, res) =>{
 }
 
 export const getCartItems = async(req, res) =>{
-    const cart = await Cart.findOne({where:{userId: req.user.id}})
+    const user = req.user
+    if(!user || user.isAdmin){
+        return 
+    }
+    const cart = await Cart.findOne({where:{userId: user.id}})
     if(!cart) throw new BadRequestError(`Cart does not exist for user`)
     const cartItems = await CartItem.findAll({
        attributes: ['id', 'cartId', 'quantity'],

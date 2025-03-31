@@ -11,7 +11,7 @@ const AdminLayout = () => {
     const [navIsOpen, setNavIsOpen] = useState(false);
     const globalModal = useSelector(state => state.globalModal)
     return (
-        <div className={`w-full overflow-y-hidden h-screen ${globalModal.opened && 'overflow-y-hidden'}`}>
+        <div className={`admin w-full overflow-y-hidden  h-screen ${globalModal.opened && 'overflow-y-hidden'}`}>
          <GlobalModal />
             <NavigationMenu {...{ navIsOpen, setNavIsOpen }} />
             <Header {...{ navIsOpen, setNavIsOpen }} />

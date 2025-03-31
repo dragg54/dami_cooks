@@ -44,6 +44,7 @@ export const getAllItems = async (req, res) => {
         res.json(items)
     }
     catch (error) {
+        console.log(error)
         res.status(error.statusCode || 500).json(error.message
             || "Internal server error"
         );

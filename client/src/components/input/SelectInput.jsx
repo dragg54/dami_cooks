@@ -23,6 +23,7 @@ const SelectInput = ({ options, selectedValue, onChange, label, name }) => {
         <div ref={dropdownRef} className="w-full text-sm md:text-base">
             <p className="mb-2">{label}</p>
             <button
+              type="button"
                 onClick={() => setOpen(!open)}
                 className="w-full border border-gray-400 px-2 md:px-4 py-2 bg-white rounded shadow text-xs md:text-base text-gray-400 flex justify-between items-center"
             >
@@ -38,7 +39,7 @@ const SelectOptions = ({ open, options, setOpen, onChange, selectedValue, name})
     return (
         <>
             {open && (
-                <ul className="absolute min-w-[150px] mt-1 bg-white border rounded shadow">
+                <ul className="absolute min-w-[150px] mt-1 bg-white z-40 border rounded shadow">
                     {options?.map((option) => (
                         <li
                             key={option.value}

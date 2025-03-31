@@ -4,10 +4,12 @@ import { addToCart } from '../../redux/CartSlice'
 import { Button } from './Button'
 import { usePostData } from '../../hooks/usePostData'
 import Spinner from '../Spinner'
+import { openPopup } from '../../redux/PopupSlice'
 
 const AddToCartButton = ({ item, style }) => {
     const onSuccess = () => {
         dispatch(addToCart(item))
+        dispatch(openPopup({message: "Item successfully added"}))
     }
 
     const onError = (error) => {

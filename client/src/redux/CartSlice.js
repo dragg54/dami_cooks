@@ -31,13 +31,13 @@ const cartSlice = createSlice({
       state.cartItems = state.cartItems.filter((item) => item.item.id !== action.payload.id);
     },
     increaseQuantity: (state, action) => {
-      const item = state.cartItems.find((i) => i.id === action.payload);
+      const item = state.cartItems.find((i) => i.item.id === action.payload.item.id);
       if (item) {
         item.quantity += 1;
       }
     },
     decreaseQuantity: (state, action) => {
-      const item = state.cartItems.find((i) => i.id === action.payload);
+      const item = state.cartItems.find((i) => i.item.id === action.payload.item.id);
       if (item && item.quantity > 1) {
         item.quantity -= 1;
       }

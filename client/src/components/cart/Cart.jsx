@@ -11,18 +11,21 @@ import { MdDeleteOutline } from "react-icons/md";
 import { removeFromCart } from "../../redux/CartSlice";
 import { useMutation } from "react-query";
 import { deleteCartItem } from "../../services/cart/cartItemService";
+import { Button } from "@headlessui/react";
+import { useNavigate } from "react-router-dom";
 
 const Cart = ({ cartOpen, setCartOpen }) => {
   const cart = useSelector(state => state.cart)
   const deleteCartItemMutation = useMutation(deleteCartItem, {
-    onError:(err)=> console.log(err.message)
+    onError: (err) => console.log(err.message)
   })
+  const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const handleDeleteCartItem = (id) =>{
-      dispatch(removeFromCart({id}))
-      deleteCartItemMutation.mutate(id)
-     }
+  const handleDeleteCartItem = (id) => {
+    dispatch(removeFromCart({ id }))
+    deleteCartItemMutation.mutate(id)
+  }
   return (
     <div className="relative">
       {cartOpen && (
@@ -41,45 +44,58 @@ const Cart = ({ cartOpen, setCartOpen }) => {
       >
         {/* Close Button */}
         <button className="self-end mb-5 text-gray-400 flex gap-2" onClick={() => setCartOpen(false)}>
-         Close  <X size={24} />
+          Close  <X size={24} />
         </button>
 
         {/* Navigation Links */}
         <div className="w-full">
           <h1 className="text-xl font-semibold mb-6 pb-4 w-full border-b border-gray-300">Cart</h1>
           <div className="w-full flex flex-col mb-8">
-          {
-            cart && cart.cartItems && cart.cartItems.length > 0 && cart.cartItems.map((cart) => (
-              <div className="w-full flex items-center gap-3  pb-4 border-b border-gray-300" key={cart.id}>
-                <div className="w-1/3">
-                  <ItemImage item={cart.item} style={'!w-16 !h-16 rounded-full'} />
+            {cart?.cartItems.length < 1 ?
+              <div className="w-full mt-5">
+                <p>No item has been added to cart</p>
+                <Button onClick={()=>{
+                  setCartOpen(false)
+                  navigate("/")
+                }} className={"w-full !rounded-full !bg-primary !py-2 mt-16 text-white"}>
+                  Return to shop
+                </Button>
+              </div> :
+              <div className="w-full">
+                {
+              cart.cartItems.map((cart) => (
+                <div className="w-full flex items-center gap-3  pb-4 border-b border-gray-300" key={cart.id}>
+                  <div className="w-1/3">
+                    <ItemImage item={cart.item} style={'!w-16 !h-16 rounded-full'} />
+                  </div>
+                  <ItemDtl {...{ cartItem: cart }} />
+                  <MdDeleteOutline onClick={() => handleDeleteCartItem(cart.item.id)} className="text-2xl mt-4 cursor-pointer text-gray-600" />
                 </div>
-                <ItemDtl {...{ cartItem: cart }} />
-                <MdDeleteOutline onClick={()=>handleDeleteCartItem(cart.item.id)} className="text-2xl mt-4 cursor-pointer text-gray-600" />
-              </div>
-            ))
-          }
+              ))
+            }
+             <div className="mb-10">
+            <span>Sub Total: {euro}{cart?.cartItems?.length > 1 ? cart?.cartItems?.reduce((prevItem, nextItem) =>
+              (Number(prevItem?.item?.price || 0) * Number(prevItem?.quantity || 0)) + (Number(nextItem?.item?.price || 0) * Number(nextItem?.quantity || 0))) :
+              cart?.cartItems?.length && (Number(cart?.cartItems[0].item.price) * Number(cart?.cartItems[0].quantity))}
+            </span>
+          </div>
+          <CheckoutButton setCartOpen={setCartOpen} items={cart.cartItems} />
+          </div>
+}
           </div>
         </div>
-      
-        <div className="mb-10">
-          <span>Sub Total: {euro}{cart?.cartItems?.length > 1 ? cart?.cartItems?.reduce((prevItem, nextItem)=> 
-          (Number(prevItem?.item?.price || 0) * Number(prevItem?.quantity || 0)) + (Number(nextItem?.item?.price || 0) * Number(nextItem?.quantity || 0))):
-           cart?.cartItems?.length && (Number(cart?.cartItems[0].item.price) * Number(cart?.cartItems[0].quantity))}
-          </span>
-        </div>
-        <CheckoutButton setCartOpen={setCartOpen} items={cart.cartItems}/>
       </motion.div>
+
     </div>
   );
 };
 
-const ItemDtl = ({cartItem}) => {
-  const [quantity, setQuantity ] = useState(1)
+const ItemDtl = ({ cartItem }) => {
+  const [quantity, setQuantity] = useState(1)
   return (
     <div className="w-[2/3] mt-4 -ml-2">
       <p className="font-semibold mb-4">{cartItem.item?.name}</p>
-      <ItemQuantityCounter {...{quantity, setQuantity, cartItem}} style={'!h-6 !mt-5'} />
+      <ItemQuantityCounter {...{ quantity, setQuantity, cartItem }} style={'!h-6 !mt-5'} />
       <p className="mt-3 text-orange-700 font-semibold">{euro}{cartItem.item?.price}</p>
     </div>
   )

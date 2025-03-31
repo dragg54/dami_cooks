@@ -7,7 +7,7 @@ const updateData =  async ({ payload, url, headers }) => {
 };
 export const useUpdateData =({ onSuccess, onError, url, headers}) =>{
     return useMutation({
-        mutationFn: (payload) => updateData({ payload, url:`${url}/${payload.id}`, headers }),
+        mutationFn: (payload) => updateData({ payload, url:`${url}`, headers }),
         onSuccess,
         onError,  
     });}

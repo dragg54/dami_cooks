@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import { motion } from "framer-motion";
-import { X } from "lucide-react";
 
 const NavigationMenu = ({navIsOpen, setNavIsOpen}) => {
   return (
@@ -19,17 +18,14 @@ const NavigationMenu = ({navIsOpen, setNavIsOpen}) => {
         transition={{ type: "spring", stiffness: 100, damping: 15 }}
         className="fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-50 p-5 flex flex-col"
       >
-        {/* Close Button */}
-        <button className="self-end mb-5" onClick={() => setNavIsOpen(false)}>
-          <X size={28} />
-        </button>
 
         {/* Navigation Links */}
-        <nav className="space-y-4">
-          <a href="#" className="block text-lg font-medium hover:text-blue-600">Home</a>
-          <a href="#" className="block text-lg font-medium hover:text-blue-600">About</a>
-          <a href="#" className="block text-lg font-medium hover:text-blue-600">Services</a>
-          <a href="#" className="block text-lg font-medium hover:text-blue-600">Contact</a>
+        <nav className="space-y-4 mt-8">
+          <a href="/" className="block  font-medium border-b ">HOME</a>
+          <a href="/about-us" className="block  font-medium border-b ">ABOUT</a>
+          <a href="#" className="block  font-medium border-b ">SERVICES</a>
+          <a href="/contact-us" className="block  font-medium border-b ">CONTACT</a>
+          <a href="#" className="block  font-medium border-b ">LOGOUT</a>
         </nav>
       </motion.div>
     </div>

@@ -4,7 +4,7 @@ import { InternalServerError } from '../exceptions/InternalServerError.js'
 
 export const uploadImage = async (imagePath) => {
   if(!imagePath){
-    throw BadRequestError("File upload failed: File cannot be empty")
+    return
   }
     const options = {
       use_filename: true,

@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { FaRegFileImage } from "react-icons/fa";
 
-const FileInput = ({ onFileSelect, title, file}) => {
+const FileInput = ({ onFileSelect, title, file, imageName}) => {
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -25,7 +25,7 @@ const FileInput = ({ onFileSelect, title, file}) => {
         items-center border-gray-300 px-4 text-gray-400 py-1 md:py-2 h-8 rounded-md shadow "
       >
         <FaRegFileImage className="absolute h-full -top-1/2 translate-y-1/2 right-1"/>
-      {file?.name ?<p className="text-gray-700">{file?.name}</p>: "Choose File"}
+      {file?.name ?<p className="text-gray-700">{file?.name}</p>: imageName != null ? imageName : "Choose File"}
       </label>
     </div>
   );

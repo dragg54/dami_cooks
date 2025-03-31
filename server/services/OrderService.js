@@ -1,4 +1,4 @@
-import { HostNotFoundError } from "sequelize"
+import { HostNotFoundError, literal, Op } from "sequelize"
 import { orderStatus } from "../constants/OrderStatus.js"
 import { BadRequestError } from "../exceptions/BadRequestError.js"
 import { UnauthorizedError } from "../exceptions/UnauthorizedError.js"
@@ -22,36 +22,76 @@ export const createOrder = async (req) => {
     await Order.create({ ...req.body, userId })
 }
 
-export const getAllOrders = async (req) => {
-    const { page, size, status } = req.query;
-    const user = req.user
-    if (!req.user.isAdmin) {
-        throw new UnauthorizedError('Only admin is allowed to complete operation')
-    }
-    const { limit, offset } = getPagination(page, size);
-    const queryOpts = {}
 
-    if (status != null) {
-        queryOpts['where'] = { status: status.toUpperCase() }
+export const getAllOrders = async (req) => {
+    const { page, size, status,
+        searchText, customerName, city, address, toDate, fromDate } = req.query;
+    const user = req.user;
+
+    if (!user.isAdmin) {
+        throw new UnauthorizedError("Only admin is allowed to complete operation");
+    }
+
+    const { limit, offset } = getPagination(page, size);
+
+    const queryOpts = { where: {} };
+    const shippingQueryOpts = { where: {} }
+    const userQueryOpts = { where: {} }
+    
+    if (searchText) {
+        queryOpts.where = {
+            [Op.or]: [
+                { status: { [Op.like]: `%${searchText}%` } }
+            ]
+        };
+    }
+    if (customerName) {
+        userQueryOpts.where = {
+            ...userQueryOpts.where,
+            [Op.or]: [
+                {
+                    firstName: { [Op.like]: `%${customerName}%` }
+                }
+            ]
+        }
+    }
+    if (city) {
+        shippingQueryOpts.where = {
+            ...shippingQueryOpts.where,
+            city: { [Op.like]: `%${city}%` }
+        }
+    }
+    if (address) {
+        shippingQueryOpts.where = {
+            ...shippingQueryOpts.where,
+            address: { [Op.like]: `%${address}%` }
+        }
+    }
+
+    // Apply status filter without overwriting `where`
+    if (status) {
+        queryOpts.where.status = status.toUpperCase();
     }
 
     const data = await Order.findAndCountAll({
         include: [
             {
                 model: User,
-                attributes: ['firstName', 'lastName']
+                ...userQueryOpts,
+                attributes: ["firstName", "lastName"],
             },
             {
                 model: OrderItem,
-                attributes:['quantity'],
+                attributes: ["quantity"],
                 include: {
                     model: Item,
-                    attributes: ['id', 'name']
+                    attributes: ["id", "name"]
                 }
             },
             {
                 model: Shipping,
-                attributes: ['address', 'city', 'phone', 'postalCode', 'email']
+                ...shippingQueryOpts,
+                attributes: ["address", "city", "phone", "postalCode", "email"],
             }
         ],
         limit,
@@ -60,8 +100,10 @@ export const getAllOrders = async (req) => {
         order: [["createdAt", "DESC"]],
         ...queryOpts
     });
-    return getPagingData(data, page, limit)
+
+    return getPagingData(data, page, limit);
 };
+
 
 export const getOrderById = async (req) => {
     const { id } = req.params
@@ -77,7 +119,7 @@ export const getOrderById = async (req) => {
             },
             {
                 model: OrderItem,
-                attributes:['quantity'],
+                attributes: ['quantity'],
                 include: {
                     model: Item,
                     attributes: ['id', 'name']
@@ -109,10 +151,10 @@ export const updateOrderStatus = async (req) => {
         throw new BadRequestError(errMsg)
     }
     const isInvalidOrderStatus = (
-        (existingOrder.status == orderStatus.DELIVERED 
+        (existingOrder.status == orderStatus.DELIVERED
             || existingOrder.status == orderStatus.CANCELLED
-             || existingOrder.status == orderStatus.ACCEPTED
-             || existingOrder.status == orderStatus.REJECTED     
+            || existingOrder.status == orderStatus.ACCEPTED
+            || existingOrder.status == orderStatus.REJECTED
         ) && (
             status == orderStatus.ACCEPTED
             || status == orderStatus.REJECTED
@@ -121,5 +163,5 @@ export const updateOrderStatus = async (req) => {
         const errMsg = `Order status is invalid for this operation`
         throw new BadRequestError(errMsg)
     }
-    await Order.update({status}, {where:{id}})
+    await Order.update({ status }, { where: { id } })
 }

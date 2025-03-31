@@ -1,4 +1,4 @@
-import CreateFormContainer from "../../../components/form/CreateFormContainer"
+import FormContainer from "../../../components/form/FormContainer"
 import TextInput from "../../../components/input/TextInput"
 import Select from "../../../components/input/SelectInput"
 import { useState } from "react"
@@ -6,6 +6,7 @@ import FileInput from "../../../components/input/FileInput"
 import NumberInput from "../../../components/input/NumberInput"
 import { PostItem } from "./api/PostItem"
 import * as Yup from 'yup'
+import OrderSwitch from "../../../components/input/Switch"
 
 
 const AddItem = () => {
@@ -15,8 +16,8 @@ const AddItem = () => {
     })
     const [responseStatus, setResponseStatus] = useState()
     const [file, setFile] = useState()
-    const { mutate, isError, isPending } = PostItem({ setResponseStatus })
-
+    const { mutate, isError, isLoading } = PostItem({ setResponseStatus })
+    const [status, setStatus] = useState(null);
 
     const handleSubmit = (values, resetForm) => {
         setResponseStatus(null)
@@ -29,7 +30,7 @@ const AddItem = () => {
         formData.append('itemType', updatedValues.itemType);
         formData.append('uom', updatedValues.uom);
         formData.append('itemCategoryId', updatedValues.itemCategoryId);
-
+        formData.append('status', status)
         mutate(formData, { resetForm, setFile })
     }
 
@@ -49,10 +50,10 @@ const AddItem = () => {
 
     return (
         <div className="w-[100%] md:w-4/5 md:h-[550px] overflow-y-hidden p-4 md:p-8 bg-white">
-            <CreateFormContainer
+            <FormContainer
                 formStyle={'grid md:grid-cols-3 grid-cols-2 gap-x-3 gap-y-3'}
                 {...{
-                    title: "Add Item", handleSubmit, isLoading: isPending,
+                    title: "Add Item", handleSubmit, isLoading,
                     initialValues, responseStatus, validationSchema, isError, setFile
                 }}>
                 <div className="w-full ">
@@ -80,7 +81,11 @@ const AddItem = () => {
                     Price
                     <NumberInput name={'price'} />
                 </div>
-            </CreateFormContainer>
+                <div className="flex flex-col items-center md:mb-5 md:-ml-40 ">
+                    Active
+                    <OrderSwitch {...{leftLabel:'OFFLINE', rightLabel: "ONLINE", status, setStatus}}/>
+                </div>
+            </FormContainer>
         </div >
     )
 }

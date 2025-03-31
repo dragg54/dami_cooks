@@ -6,21 +6,75 @@ import {Item} from "../models/Item.js";
 import { v2 as cloudinary } from 'cloudinary';
 import { uploadImage } from "../utils/uploadImage.js";
 import { getPagination, getPagingData } from "../utils/pagination.js";
+import { literal, Op } from "sequelize";
+import { ItemCategory } from "../models/ItemCategory.js";
 
 export const getAllItems = async (req) => {
-    const { page, size, status } = req.query; 
+    const { page, size, status, searchText, name, itemCategory, price, itemType } = req.query; 
     const { limit, offset } = getPagination(page, size);
 
-    const queryOpts = {}
-
+    const queryOpts = {where:{}}
+    const itemCategoryOpts = {where:{}}
     if(status != null){
-        queryOpts['where'] = {status: status.toUpperCase()}
+        queryOpts['where'] = {...queryOpts.where, status: status.toUpperCase()}
+    }
+
+    if(itemCategory){
+        itemCategoryOpts['where'] = {"name": itemCategory}
+    }
+
+    if (searchText) {
+        queryOpts['where'] = {
+            ...queryOpts['where'],
+            [Op.or]: [
+                literal(`LOWER(Item.name) LIKE LOWER('%${searchText}%')`),
+                literal(`LOWER(description) LIKE LOWER('%${searchText}%')`),
+            ]
+        }
+    }
+
+    if(name){
+        queryOpts.where = {
+            ...queryOpts.where,
+            [Op.or]: [
+                {
+                    name: { [Op.like]: `%${name}%` }
+                }
+            ]
+        }
+    }
+
+    if(price){
+        queryOpts.where = {
+            ...queryOpts.where,
+            [Op.or]: [
+                {
+                    price: Number(price)
+                }
+            ]
+        }
+    }
+
+    if(itemType){
+        queryOpts.where = {
+            ...queryOpts.where,
+            [Op.or]: [
+                {
+                    itemType: { [Op.like]: `%${itemType}%` }
+                }
+            ]
+        }
     }
 
     const data = await Item.findAndCountAll({
         limit,
       offset,
       distinct: true,
+      include:[{
+        model: ItemCategory,
+        attributes: ["id"],
+        ...itemCategoryOpts
+      }],
       order: [["createdAt", "DESC"]],
       ...queryOpts
     });
@@ -60,7 +114,7 @@ export const createItem = async (req) => {
 
 export const updateItem = async (req) => {
     const { id } = req.params
-    const { path } = req.files
+ 
     const { isAdmin } = req.user
     if(!isAdmin){
         const errMsg = `Failed to create item: Only admin is authorized to create an item`
@@ -71,8 +125,13 @@ export const updateItem = async (req) => {
         const errMsg = `Item with id ${id} does not exist`
         throw new BadRequestError(errMsg)
     };
-    const cloudinaryImageUrl = await uploadImage(path)
-    return await item.update({...req.body, imageUrl: cloudinaryImageUrl}, { where: { id } });
+    let cloudinaryImageUrl
+    if(req?.file?.path){
+        const path = req.file.path
+        cloudinaryImageUrl = await uploadImage(path)
+    }
+   
+    return await item.update({...req.body, imageUrl: cloudinaryImageUrl || req.body.imageUrl}, { where: { id } });
 };
 
 export const deleteItem = async (req) => {
