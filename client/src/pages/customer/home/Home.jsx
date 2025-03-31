@@ -35,7 +35,7 @@ const Home = () => {
           <h1 className='font-semibold mb-5 mt-4 md:mt-3 md:text-[1.5rem] text-center '>Categories</h1>
           <Category {...{selectedCategory, setSelectedCategory, refetch}}/>
         </motion.div>
-        <h1 className='font-semibold mb-2 mt-10 text-[1.3rem] md:text-[1.5rem] text-center '>All Items</h1>
+        <h1 id="item-section" className='font-semibold mb-2 mt-10 text-[1.3rem] md:text-[1.5rem] text-center '>All Items</h1>
         <motion.div
           initial={{ opacity: 0, y: 50 }} 
           whileInView={{ opacity: 1, y: 0 }} 

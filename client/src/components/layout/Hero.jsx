@@ -15,9 +15,10 @@ const Hero = () => {
       <div className="text-[#d01110] h-full w-2/3  md:w-1/2 flex flex-col justify-center">
         <p className="text-2xl md:text-5xl font-bold">Craving something delicious? {"We've"} got you covered.</p>
         <p className="mt-2 md:mt-6 font-semibold md:text-base text-sm">Authentic african flavour, just a tap away</p>
-        <Button className={"!font-semibold !rounded-full mt-4 md:mt-8 md:!py-4 text-[0.8rem] md:!text-[1.1rem]"}>
+        <a href="#item-section"><Button className={"!font-semibold !rounded-full mt-4 md:mt-8 md:!py-4 text-[0.8rem] md:!text-[1.1rem]"}>
           Go to menu
         </Button>
+        </a>
       </div>
       <div className=" overflow-hidden -mt-8 w-[200px] md:mr-0 -mr-20 h-[200px] md:w-[400px] md:h-[400px]">
       <Slider height="100%" imgs={imageCont} autoplay={true} setActiveIndex={setActiveIndex} activeIndex={activeIndex} width="100%"/>
