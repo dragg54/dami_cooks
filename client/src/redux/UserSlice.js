@@ -10,6 +10,7 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         fetchUser: (state, action) => {
+            localStorage.setItem("authToken", action.payload.token)
             state.user = action.payload.user
             state.token = action.payload.token
         },

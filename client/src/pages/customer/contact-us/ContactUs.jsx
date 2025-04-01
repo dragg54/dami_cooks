@@ -24,7 +24,7 @@ const ContactUs = () => {
   return (
     <div className="w-full max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <h2 className="text-4xl font-bold mt-8 text-center mb-4">Contact Us</h2>
-      <p className="text-center text-gray-600 mb-6">
+      <p className="text-center text-[#fdb750]  mb-6">
         Have a question or feedback? We’d love to hear from you!
       </p>
 
@@ -63,7 +63,7 @@ const ContactUs = () => {
           ></textarea>
           <Button
             type="submit"
-            className="w-full p-3 md:py-4 !rounded-full  text-white !font-semibold  hover:shadow-red-500 hover:shadow-md transition"
+            className="w-full p-3 md:py-4 !rounded-full  text-white !font-bold  hover:shadow-red-500 hover:shadow-md transition"
           >
             Send Message
           </Button>

@@ -7,8 +7,10 @@ const ItemDetail = () => {
     const { item } = location.state
     return (
         <div className="w-full  md:flex-row flex flex-col bg-white pt-8 p-5">
-            <div className="md:w-1/2 md:h-full  flex justify-center w-full h-[230px]">
-                <ItemImage style={'!w-[200px] !h-[200px] '} {...{ item }} />
+            <div className="md:w-1/2 md:h-full flex justify-center w-full h-[230px]">
+            <div className="!w-[200px] !h-[200px] rounded-full overflow-hidden flex justify-center items-center">
+            <ItemImage style={''} {...{ item }} />
+            </div>
             </div>
             <div className="md:w-1/2 w-full">
                 <p className="text-2xl font-semibold">{item.name}</p>

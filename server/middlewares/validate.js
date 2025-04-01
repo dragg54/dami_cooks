@@ -5,6 +5,7 @@ export const authMiddleware = async (req, res, next) => {
   let token = req.cookies.token;
   if(!token){
     const authHeader = req.headers['Authorization'];
+    console.log(authHeader)
     token = authHeader && authHeader.split(' ')[1];
   }
   console.log(token)
