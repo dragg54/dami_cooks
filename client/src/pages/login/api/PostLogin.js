@@ -7,11 +7,11 @@ export const PostLogin = () =>{
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const onSuccess = (res) =>{
-        if(res.data?.userDetails.isAdmin){
+        if(res.data && res.data.userDetails.isAdmin){
             dispatch(fetchUser({user: res.data?.userDetails, token: res.data?.token}))
             navigate("/dashboard")
         }
-        else{
+        else if(res.data && !res.data.userDetails.isAdmin){
             dispatch(fetchUser({user: res.data?.userDetails, token: res.data?.token}))
             navigate("/")
         }

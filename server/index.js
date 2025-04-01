@@ -69,3 +69,9 @@ const port = 8080
 app.listen(port, ()=>{
   console.log(`Listening to port ${port}`)
 })
+
+process.on("SIGINT", () => {
+  console.log("Shutting down gracefully...");
+  process.exit(0);
+});
+
