@@ -27,7 +27,7 @@ export const getAllItems = async (req) => {
         queryOpts['where'] = {
             ...queryOpts['where'],
             [Op.or]: [
-                literal(`LOWER(Item.name) LIKE LOWER('%${searchText}%')`),
+                literal(`LOWER(item.name) LIKE LOWER('%${searchText}%')`),
                 literal(`LOWER(description) LIKE LOWER('%${searchText}%')`),
             ]
         }
