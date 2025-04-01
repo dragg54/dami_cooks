@@ -13,6 +13,9 @@ const userSlice = createSlice({
             localStorage.setItem("authToken", action.payload.token)
             state.user = action.payload.user
             state.token = action.payload.token
+
+            const token = localStorage.getItem("authToken")
+            console.log(token)
         },
         clearUser: (state) =>{
             state.user ={}
