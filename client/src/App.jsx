@@ -20,6 +20,9 @@ import NotFoundPage from "./pages/NotFoundPage"
 import ProtectedRoute from "./components/ProtectedRoute"
 import AboutUs from "./pages/customer/about-us/AboutUs"
 import ContactUs from "./pages/customer/contact-us/ContactUs"
+import { UpdateOrderStatus } from "./pages/admin/order/api/UpdateOrderStatus"
+import AcceptOrRejectOrder from "./pages/admin/order/AcceptOrRejectOrder"
+import OrderView from "./pages/admin/order/OrderView"
 
 function App() {
   return (
@@ -43,6 +46,7 @@ function App() {
           <Route path="/additem" element={<AddItem />} />
           <Route path="/updateItem" element={<UpdateItemUI />} />
           <Route path="/orderlist" element={<OrderList />} />
+          <Route path="/update-order-status" element={<OrderView />} />
           <Route path="/paymentlist" element={<PaymentList />} />
         </Route>
         </Route>

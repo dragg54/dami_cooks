@@ -13,11 +13,11 @@ const TableRow = ({ children }) => <tr className="border-b sticky max-w-[100px] 
 const TableCaption = ({ children }) => <tr className="border-b">{children}</tr>;
 
 const TableHead = ({ children, className, ...props }) => (
-    <th className={`px-4 py-4 text-left ${className}`} {...props}>
+    <th className={`px-4 py-3 text-left ${className}`} {...props}>
       {children}
     </th>
   );
 
-const TableCell = ({ children, hidden }) => <td className={`${hidden && 'hidden'} px-4 !text-sm py-5 truncate max-w-[400px]`}>{children}</td>;
+const TableCell = ({ children, hidden }) => <td className={`${hidden && 'hidden'} px-4 !text-xs py-3 truncate max-w-[400px]`}>{children}</td>;
 
 export { Table, TableHeader, TableBody, TableRow, TableHead, TableCell, TableCaption };

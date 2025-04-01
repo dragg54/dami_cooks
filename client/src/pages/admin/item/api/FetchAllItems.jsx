@@ -8,8 +8,7 @@ export const FetchAllItems = ({filters}) =>{
   useEffect(()=>{
     refetch()
   }, [filters.searchText])
-  if (isLoading) return <p>Loading orders...</p>;
   if (isError) return <p>Error: {error.message}</p>;
 
-  return {data, refetch};
+  return {data, refetch, isLoading};
 }

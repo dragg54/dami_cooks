@@ -7,6 +7,7 @@ import NumberInput from "../../../components/input/NumberInput"
 import { PostItem } from "./api/PostItem"
 import * as Yup from 'yup'
 import OrderSwitch from "../../../components/input/Switch"
+import { FetchItemCategories } from "./api/FetchItemCategories"
 
 
 const AddItem = () => {
@@ -18,6 +19,8 @@ const AddItem = () => {
     const [file, setFile] = useState()
     const { mutate, isError, isLoading } = PostItem({ setResponseStatus })
     const [status, setStatus] = useState(null);
+    const {data: categoryData} = FetchItemCategories({})
+
 
     const handleSubmit = (values, resetForm) => {
         setResponseStatus(null)
@@ -48,6 +51,11 @@ const AddItem = () => {
         price: 0
     }
 
+    const categorySelections = categoryData?.map((cat)=>({
+        label: cat.name,
+        value: cat.id
+    }))
+
     return (
         <div className="w-[100%] md:w-4/5 md:h-[550px] overflow-y-hidden p-4 md:p-8 bg-white">
             <FormContainer
@@ -60,7 +68,7 @@ const AddItem = () => {
                     <TextInput name='name' label='Item Name' />
                 </div>
                 <div className="w-full  md:mb-0">
-                    <Select name="itemCategory" label={'Select Category'} options={[{ label: "Meal", value: "1" }, { label: "Pastry", value: "2" }]} selectedValue={selectValues} onChange={setSelectValues} />
+                    <Select name="itemCategory" label={'Select Category'} options={categorySelections} selectedValue={selectValues} onChange={setSelectValues} />
                 </div>
                 <div className="w-full  md:mb-0">
                     <TextInput name='uom' label='Unit of Measurement' />

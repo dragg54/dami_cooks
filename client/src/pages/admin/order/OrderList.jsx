@@ -8,7 +8,7 @@ import { useMemo, useState } from 'react'
 import MerchantEmptyState from '../../../components/MerchantEmptyState'
 
 const OrderList = () => {
-  const [size, setSize] = useState(10)
+  const [size, setSize] = useState(5)
   const [page, setPage] = useState(1)
   const [debouncedQuery, setDebouncedQuery] = useState("")   
   const [fetchEnabled, setFetchEnabled] = useState(true)
@@ -31,7 +31,7 @@ const OrderList = () => {
   }), [size, page, debouncedQuery, fetchEnabled]);
 
 
-  const {data:orderData, refetch} = FetchOrders({filters})
+  const {data:orderData, refetch, isLoading} = FetchOrders({filters})
 
 
   let processedData = orderData?.rows?.map((dta)=>(
@@ -58,7 +58,7 @@ const OrderList = () => {
 <div className="w-full">
      <CustomTable
        {...{caption: "Orders", tableData: processedData ,setFetchEnabled,
-         placeholder: "Search orders",canEdit: true,
+         placeholder: "Search orders",canEdit: true, isLoading, updateLink: "/update-order-status",
          currentPage: page, debouncedQuery, setDebouncedQuery,
          totalPages: orderData?.totalPages, filterValues,handleEnterKey, fetchEnabled,
          onPageChange:setPage,setFilterValues,

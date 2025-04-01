@@ -16,6 +16,7 @@ import { IoFilterSharp } from "react-icons/io5"
 import { TfiExport } from "react-icons/tfi";
 import Filter from "./Filter.jsx";
 import MerchantEmptyState from "../MerchantEmptyState.jsx";
+import Spinner from "../Spinner.jsx";
 
 
 // eslint-disable-next-line react/prop-types
@@ -25,14 +26,17 @@ const CustomTable = ({
   totalPages,
   onPageChange,
   fetchDisabled,
+  isLoading,
   setFetchEnabled,
   handleEnterKey,
   updateLink,
   filterValues,
   setFilterValues,
+  canAdd,
   debouncedQuery,
   setDebouncedQuery,
   formRoute, updateComponent, canEdit }) => {
+  
 
   const [sorting, setSorting] = useState([]);
   const columns =tableData && tableData.length && Object.keys(tableData[0]).map((dataKey) => ({
@@ -93,11 +97,11 @@ const CustomTable = ({
           <div className="w-[190px] h-[40px] md:w-[320px] md:h-[40px]">
             <SearchInput {...{setDebouncedQuery, debouncedQuery}} placeholder={placeholder} />
           </div>
-          <AddButton className={'!px-4 py-2 !w-[100px]'} onClick={() => navigate(formRoute)} />
+          {canAdd && <AddButton className={'!px-4 py-2 !w-[100px]'} onClick={() => navigate(formRoute)} />}
         </div>
       </div>
       <div className="max-h-[500px] min-h-[300px] mt-4 overflow-y-scroll  w-full overflow-x-scroll ">
-        {!tableData || tableData.length < 1 ? <MerchantEmptyState /> :
+        {isLoading ? <Spinner style={'!h-12 !w-12 mx-auto mt-20'} isLoading={true}/> :!tableData || tableData.length < 1 ? <MerchantEmptyState /> :
         <Table>
         <TableHeader> {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>

@@ -11,7 +11,7 @@ import { clearUser } from "../redux/UserSlice";
 const ProtectedRoute = ({isAdminRoute}) => {
     // useAuthCheck()
     const user = useSelector(state => state.user)?.user
-    const authToken = useSelector(state => state.user).user?.token
+    const authToken = useSelector(state => state.user).token
     const dispatch = useDispatch()
     // const currentTime = Date.now() / 1000  
     // if(!authToken || (jwtDecode(authToken)?.exp < currentTime)){
@@ -20,7 +20,7 @@ const ProtectedRoute = ({isAdminRoute}) => {
     if(isAdminRoute && !user.isAdmin){
        return<Navigate to="/not-found" /> 
     }
-    if(!authToken || !user.isLoggedIn ){
+    if(!authToken ){
        return  <Navigate to="/login" /> 
     }
     else{

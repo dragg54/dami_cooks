@@ -12,7 +12,7 @@ import popUpReducer from "./PopupSlice"
 const persistConfig = {
     key: "root",
     storage,
-    blacklist: ['cart', 'globalModal', 'user', 'globalSearchItem', 'popUp']
+    blacklist: ['cart', 'globalModal', 'globalSearchItem', 'popUp']
 
   }
 

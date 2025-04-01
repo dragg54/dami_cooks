@@ -6,7 +6,7 @@ import UpdateItemUI from "./UpdateItemUI"
 
 const ItemList = () => {
   const [debouncedQuery, setDebouncedQuery] = useState("")
-  const [size, setSize] = useState(10)
+  const [size, setSize] = useState(5)
   const [page, setPage] = useState(1)
   const [fetchEnabled, setFetchEnabled] = useState(true)
   const [filterValues, setFilterValues] = useState({
@@ -24,7 +24,7 @@ const ItemList = () => {
     price: filterValues["PRICE"].value,
     status: filterValues["STATUS"].value,
   }), [size, page, debouncedQuery, fetchEnabled]);
-  const {data:items, refetch} = FetchAllItems({filters})
+  const {data:items, refetch, isLoading} = FetchAllItems({filters})
 
   const processedData = items?.rows || [{}]
 
@@ -43,8 +43,8 @@ const ItemList = () => {
      <CustomTable {...{caption: "Items", 
       tableData: processedData, 
       currentPage: page,
-      setDebouncedQuery,
-      debouncedQuery,
+      setDebouncedQuery, canAdd: true,
+      debouncedQuery, isLoading,
       updateLink: "/updateItem",setSize,
          totalPages: items?.totalPages,setFilterValues,setFetchEnabled,
          onPageChange:setPage,filterValues,handleEnterKey, fetchEnabled,

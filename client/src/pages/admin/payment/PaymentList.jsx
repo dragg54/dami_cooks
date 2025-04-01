@@ -31,7 +31,7 @@ const PaymentList = () => {
         toDate: filterValues["TO DATE"]?.value,
     }), [size, page, debouncedQuery, fetchEnabled]);
 
-    const { data: paymentData, refetch } = FetchPayments({ filters })
+    const { data: paymentData, refetch, isLoading } = FetchPayments({ filters })
     let processedData = paymentData?.rows?.map((dta) => (
         {
             "id":dta.id,
@@ -59,7 +59,7 @@ const PaymentList = () => {
             <CustomTable
                 {...{
                     caption: "Payments", tableData: processedData, setFetchEnabled,
-                    placeholder: "Search payments", canEdit: false,
+                    placeholder: "Search payments", canEdit: false, isLoading,
                     currentPage: page, debouncedQuery, setDebouncedQuery,
                     totalPages: paymentData?.totalPages, filterValues, handleEnterKey, fetchEnabled,
                     onPageChange: setPage, setFilterValues, setSize
