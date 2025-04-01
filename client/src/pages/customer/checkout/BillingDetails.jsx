@@ -22,14 +22,14 @@ const BillingDetails = ({ deliveryDetails, setDeliveryDetails }) => {
 
   return (
     <div className="w-full bg-white md:w-1/2 mt-10 h-full md:mb-40 md:mr-8 border border-gray-300 shadow-md shadow-gray-300 rounded-md p-4 md:p-6">
-      <h1 className=" font-semibold text-2xl my-2 ">Billing Details</h1>
+      <h1 className=" font-semibold text-2xl my-2 border-b w-full pb-2 mb-2">Billing Details</h1>
       <Formik
         onSubmit={(values) => console.log(values)}
         validationSchema={validationSchema}
       >
         {({ values }) => (
           <Form>
-            <div className="w-full mb-3 ">
+            <div className="w-full mb-3 mt-5">
               <TextInput
                 label={'First Name'}
                 name={'firstName'}
