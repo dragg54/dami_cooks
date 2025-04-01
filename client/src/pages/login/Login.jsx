@@ -22,7 +22,7 @@ const Login = () => {
     return (
         <div className="w-full h-screen flex">
             <div className='w-full p-4 md:w-1/2 md:px-20 md:pl-40 md:pr-40 md:mt-20'>
-                <p className="font-semibold mt-6 md:text-3xl text-[#d01110] text-[1.2rem]">Sign in</p>
+                <p className="font-extrabold mt-6 md:text-3xl text-[#d01110] text-[1.6rem] md:text-[1.8rem]">Sign in</p>
                 <small className="text-gray-400">Sign in to your account</small>
                 <Formik initialValues={initialValues}
                     // validationSchema={() => null}

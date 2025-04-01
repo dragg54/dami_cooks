@@ -15,7 +15,7 @@ const Register = () => {
     return (
         <div className="w-full h-screen flex">
             <div className='w-full p-4 md:w-1/2 md:px-20 md:pl-32'>
-                <p className="font-semibold mt-6 text-[#d01110] text-[1.2rem] md:text-[1.8rem]">Create Account</p>
+                <p className="font-semibold mt-6 text-[#d01110] text-[1.4rem] md:text-[1.8rem]">Create Account</p>
                 <small className="text-gray-400">Register your account</small>
                 <Formik initialValues={initialValues}
                     validationSchema={() => null}
