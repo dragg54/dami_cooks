@@ -6,7 +6,7 @@ const Table = ({ children }) => <table className=" shadow-md shadow-gray-300 bor
 
 const TableHeader = ({ children }) => <thead className="bg-tertiary !text-sm sticky top-0 !py-5  z-20">{children}</thead>;
 
-const TableBody = ({ children }) => <tbody>{children}</tbody>;
+const TableBody = ({ children }) => <tbody className="">{children}</tbody>;
 
 const TableRow = ({ children }) => <tr className="border-b sticky max-w-[100px]   truncate">{children}</tr>;
 

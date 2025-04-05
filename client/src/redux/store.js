@@ -7,18 +7,20 @@ import  userReducer  from './UserSlice'
 import globalSearchReducer from './GlobalSearchItemSlice'
 import globalModalReducer from './GlobalModalSlice'
 import popUpReducer from "./PopupSlice"
+import notificationReducer from "./NotificationSlice"
 
 
 const persistConfig = {
     key: "root",
     storage,
-    blacklist: ['cart', 'globalModal', 'globalSearchItem', 'popUp']
+    blacklist: ['cart', 'globalModal', 'globalSearchItem', 'popUp', 'notification']
 
   }
 
 export const rootReducer = combineReducers({
     cart: cartReducer,
     user: userReducer,
+    notification: notificationReducer,
     globalModal: globalModalReducer,
     globalSearch: globalSearchReducer,
     popUp: popUpReducer

@@ -1,8 +1,9 @@
 import { MdOutlineDone } from "react-icons/md";
 import { Button } from "../../../components/button/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"
 
 const Success = () => {
+
   const navigate = useNavigate()
   return (
     <div className="h-[370px] md:h-[400px] w-[90%] mt-4 md:w-1/2 mx-auto bg-white flex flex-col items-center p-10">

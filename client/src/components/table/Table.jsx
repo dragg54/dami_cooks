@@ -25,7 +25,6 @@ const CustomTable = ({
   currentPage,
   totalPages,
   onPageChange,
-  fetchDisabled,
   isLoading,
   setFetchEnabled,
   handleEnterKey,
@@ -35,7 +34,7 @@ const CustomTable = ({
   canAdd,
   debouncedQuery,
   setDebouncedQuery,
-  formRoute, updateComponent, canEdit }) => {
+  formRoute, canEdit }) => {
   
 
   const [sorting, setSorting] = useState([]);
@@ -100,7 +99,7 @@ const CustomTable = ({
           {canAdd && <AddButton className={'!px-4 py-2 !w-[100px]'} onClick={() => navigate(formRoute)} />}
         </div>
       </div>
-      <div className="max-h-[500px] min-h-[300px] mt-4 overflow-y-scroll  w-full overflow-x-scroll ">
+      <div className="max-h-[400px] min-h-[300px] mt-4 overflow-y-scroll w-full overflow-x-scroll ">
         {isLoading ? <Spinner style={'!h-12 !w-12 mx-auto mt-20'} isLoading={true}/> :!tableData || tableData.length < 1 ? <MerchantEmptyState /> :
         <Table>
         <TableHeader> {table.getHeaderGroups().map((headerGroup) => (
@@ -131,7 +130,7 @@ const CustomTable = ({
           </TableRow>
         ))}
         </TableHeader>
-        <TableBody>
+        <TableBody className=''>
           {table.getRowModel().rows.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
@@ -159,12 +158,12 @@ const CustomTable = ({
         </TableBody>
       </Table>
         }
+      </div>
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={onPageChange}
         />
-      </div>
     </div>
   );
 };

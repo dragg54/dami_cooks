@@ -20,11 +20,48 @@ import NotFoundPage from "./pages/NotFoundPage"
 import ProtectedRoute from "./components/ProtectedRoute"
 import AboutUs from "./pages/customer/about-us/AboutUs"
 import ContactUs from "./pages/customer/contact-us/ContactUs"
-import { UpdateOrderStatus } from "./pages/admin/order/api/UpdateOrderStatus"
-import AcceptOrRejectOrder from "./pages/admin/order/AcceptOrRejectOrder"
 import OrderView from "./pages/admin/order/OrderView"
+import { socket } from "./utils/Socket"
+import { useDispatch, useSelector } from "react-redux"
+import { useEffect } from "react"
+import { addNotification, fetchNotifications } from "./redux/NotificationSlice"
+import { useQuery } from "react-query"
+import { getUnreadNotifications } from "./services/notifications/notificationService"
 
 function App() {
+  const user = useSelector(state => state.user).user
+  const message = useSelector(state => state.notification)
+  if(user && user.isAdmin){
+    socket.emit('register');
+  }
+
+  const {data: notifications} = useQuery('notifications', {
+    queryFn: getUnreadNotifications
+  })
+
+  const dispatch = useDispatch()
+  
+  useEffect(() => {
+    try { 
+      // Listen for notifications sent to this user
+      socket.on('receiveNotification', () => {
+        console.log("sending notification...")
+        dispatch(addNotification())
+      });
+
+    } catch (err) {
+      console.log('Error:', err);
+    }
+
+    return () => {
+      socket.off('receiveNotification');
+    };
+  }, [message]);
+
+  useEffect(()=>{
+    dispatch(fetchNotifications(notifications?.data))
+  }, [notifications])
+
   return (
     <BrowserRouter>
           <ScrollToTop />

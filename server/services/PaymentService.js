@@ -11,6 +11,8 @@ import { Cart } from '../models/Cart.js'
 import { getPagination, getPagingData } from '../utils/pagination.js'
 import { UnauthorizedError } from '../exceptions/UnauthorizedError.js'
 import { Op } from 'sequelize'
+import { sendNotification } from '../socket/createNotification.js'
+import { Notification } from '../models/Notification.js'
 
 dotenv.config()
 
@@ -47,8 +49,9 @@ export const initializePayment = async (req) => {
     }
 }
 
-export const paymentWebhook = async (req) => {
+export const paymentWebhook = async (req, res) => {
     const transaction = await db.transaction()
+    res.status(200).json({ received: true }); 
     try {
         const sig = req.headers["stripe-signature"];
         const event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
@@ -78,17 +81,24 @@ export const paymentWebhook = async (req) => {
                 postalCode: paymentIntent.shipping.address.postal_code,
                 state: paymentIntent.shipping.state
             }, {transaction})
-            const userCart = await Cart.findOne({where: {userId: orderedBy}, attributes:['id']})
-            await CartItem.destroy({where:{
-                cartId: userCart.id
-            }})
+
+            await Notification.create({
+                read: false,
+                message: `You have a new order`,
+                notificationType: 'OrderNotification'
+            }, {transaction: transaction})
+            // const userCart = await Cart.findOne({where: {userId: orderedBy}, attributes:['id']})
+            // await CartItem.destroy({where:{
+            //     cartId: userCart.id
+            // }})
+            sendNotification()
             await transaction.commit()
         }
     }
     catch (err) {
         await transaction.rollback()
-        console.log(err.message)
-        throw new InternalServerError(err.message)
+        console.log(err)
+        throw new InternalServerError(err)
     }
 }
 

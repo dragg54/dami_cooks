@@ -6,7 +6,7 @@ import UpdateItemUI from "./UpdateItemUI"
 
 const ItemList = () => {
   const [debouncedQuery, setDebouncedQuery] = useState("")
-  const [size, setSize] = useState(5)
+  const [size, setSize] = useState(10)
   const [page, setPage] = useState(1)
   const [fetchEnabled, setFetchEnabled] = useState(true)
   const [filterValues, setFilterValues] = useState({

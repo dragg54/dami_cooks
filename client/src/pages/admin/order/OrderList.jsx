@@ -4,14 +4,18 @@ import order from '../../../temps/order.json'
 import { FetchOrders } from './api/fetchAllOrders'
 import { format } from 'date-fns'
 import OrderView from './OrderView'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import MerchantEmptyState from '../../../components/MerchantEmptyState'
+import { UpdateNotificationStatus } from './api/UpdateNotificationStatus'
+import { useDispatch } from 'react-redux'
+import { readNotifications } from '../../../redux/NotificationSlice'
 
 const OrderList = () => {
   const [size, setSize] = useState(5)
   const [page, setPage] = useState(1)
   const [debouncedQuery, setDebouncedQuery] = useState("")   
   const [fetchEnabled, setFetchEnabled] = useState(true)
+  const mutateNotificationStatus = UpdateNotificationStatus()
   const [filterValues, setFilterValues] = useState({
     'CUSTOMER NAME': {id: "customerName", value: null},
     'CITY':  {id:"city", value: null},
@@ -32,7 +36,7 @@ const OrderList = () => {
 
 
   const {data:orderData, refetch, isLoading} = FetchOrders({filters})
-
+  const dispatch = useDispatch()
 
   let processedData = orderData?.rows?.map((dta)=>(
     {
@@ -53,6 +57,11 @@ const OrderList = () => {
      refetch()
    }
   }
+
+  useEffect(()=>{
+    mutateNotificationStatus.mutate()
+    dispatch(readNotifications())
+  },[])
 
   return (
 <div className="w-full">
