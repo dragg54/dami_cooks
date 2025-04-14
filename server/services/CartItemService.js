@@ -18,7 +18,7 @@ export const addCartItem = async(req, res) =>{
         if(!existingItem){
             throw new BadRequestError(`Item with id ${item.item.id} does not exist`)
         }
-        const existingCartItem = await CartItem.findOne({where:{itemId: item.item.id}})
+        const existingCartItem = await CartItem.findOne({where:{itemId: item.item.id, cartId: existingCart.dataValues?.id}})
         if(!existingCartItem){
             await CartItem.create({cartId: existingCart.id, itemId: item.item.id})
         }
@@ -29,7 +29,7 @@ export const addCartItem = async(req, res) =>{
         if (!existingItem) {
             throw new BadRequestError(`Item with id ${itemId} does not exist`)
         }
-        const existingCartItem = await CartItem.findOne({ where: { itemId } })
+        const existingCartItem = await CartItem.findOne({ where: { itemId, cartId: existingCart.dataValues?.id} })
         if (!existingCartItem) {
             await CartItem.create({ cartId: existingCart.id, itemId: req.body.itemId })
         }
