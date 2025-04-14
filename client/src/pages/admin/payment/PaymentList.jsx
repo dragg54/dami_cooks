@@ -38,6 +38,7 @@ const PaymentList = () => {
             "Payment Id": dta.gatewayPaymentId,
             status: dta.status,
             "Order ID": dta.order?.id,
+            amount: dta.amount,
             "Payment Type": dta.paymentType,
             "Payment Gateway": dta.paymentGateway,
             "Created At": format(new Date(dta.createdAt), 'dd-MM-yyy HH:mm')

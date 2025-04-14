@@ -6,7 +6,7 @@ export const createCartItem = async (req, res) => {
         res.json("CartItem created")
     }
     catch (error) {
-        console.log(error.message)
+        console.log(error)
         res.status(error.statusCode || 500).json(error.message
             || "Internal server error"
         );

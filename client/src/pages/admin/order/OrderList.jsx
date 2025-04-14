@@ -11,7 +11,7 @@ import { useDispatch } from 'react-redux'
 import { readNotifications } from '../../../redux/NotificationSlice'
 
 const OrderList = () => {
-  const [size, setSize] = useState(5)
+  const [size, setSize] = useState(10)
   const [page, setPage] = useState(1)
   const [debouncedQuery, setDebouncedQuery] = useState("")   
   const [fetchEnabled, setFetchEnabled] = useState(true)

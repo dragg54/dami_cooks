@@ -17,6 +17,7 @@ import { TfiExport } from "react-icons/tfi";
 import Filter from "./Filter.jsx";
 import MerchantEmptyState from "../MerchantEmptyState.jsx";
 import Spinner from "../Spinner.jsx";
+import { ExportToExcel } from "./ExportToExcel.jsx";
 
 
 // eslint-disable-next-line react/prop-types
@@ -75,12 +76,14 @@ const CustomTable = ({
     setIsFilterOpen((prev) => !prev);
   };
 
-
+  const handleExport = () => {
+    ExportToExcel(tableData, `${caption} Report`);
+  };
 
   return (
-    <div className="w-auto border relative min-w-[80%]  rounded-lg p-4 bg-white overflow-hidden  !overflow-x-hidden">
+    <div className="w-auto border relative min-w-[80%]  rounded-lg p-4 md:-ml-16 md:-mt-10  bg-white overflow-hidden  !overflow-x-hidden">
       <p className="text-xl my-4 font-semibold w-full pb-3 border-b border-gray-300">{caption}</p>
-      <div className="flex bg-white justify-between mt-6 items-center sticky z-40 ">
+      <div className="flex bg-white justify-between  items-center sticky z-40 ">
         <div className="flex gap-5 relative items-center">
           <div className="flex items-center gap-2 cursor-pointer" onClick={toggleFilter}>
             <IoFilterSharp className="text-sm text-gray-600" />
@@ -89,7 +92,7 @@ const CustomTable = ({
           </div>
           <div className="flex items-center gap-2 cursor-pointer">
             <TfiExport className="text-sm text-gray-600" />
-            <span className="text-xs font-semibold">EXPORT</span>
+            <button onClick={()=>handleExport()} className="text-xs font-semibold">EXPORT</button>
           </div>
         </div>
         <div className="flex gap-2 items-center">
@@ -99,7 +102,7 @@ const CustomTable = ({
           {canAdd && <AddButton className={'!px-4 py-2 !w-[100px]'} onClick={() => navigate(formRoute)} />}
         </div>
       </div>
-      <div className="max-h-[400px] min-h-[300px] mt-4 overflow-y-scroll w-full overflow-x-scroll ">
+      <div className="max-h-[350px] min-h-[300px] mt-4 overflow-y-scroll w-full overflow-x-scroll ">
         {isLoading ? <Spinner style={'!h-12 !w-12 mx-auto mt-20'} isLoading={true}/> :!tableData || tableData.length < 1 ? <MerchantEmptyState /> :
         <Table>
         <TableHeader> {table.getHeaderGroups().map((headerGroup) => (

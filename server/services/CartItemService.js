@@ -7,20 +7,33 @@ import { getUserCart } from "./CartService.js"
 import { getItemById } from "./ItemService.js"
 
 export const addCartItem = async(req, res) =>{
-    const { itemId } = req.body
+    const { itemId, cartItems } = req.body
     const existingCart = await getUserCart(req)
     if(!existingCart){
         throw new BadRequestError(`Cart does not exist for user`)
     }
-    const existingItem = await Item.findOne({where:{id: itemId}})
-    if(!existingItem){
-        throw new BadRequestError(`Item with id ${itemId} does not exist`)
+    if(cartItems){
+       for(let item of cartItems){
+        const existingItem = await Item.findOne({where:{id: item.item.id}})
+        if(!existingItem){
+            throw new BadRequestError(`Item with id ${item.item.id} does not exist`)
+        }
+        const existingCartItem = await CartItem.findOne({where:{itemId: item.item.id}})
+        if(!existingCartItem){
+            await CartItem.create({cartId: existingCart.id, itemId: item.item.id})
+        }
+       }
     }
-    const existingCartItem = await CartItem.findOne({where:{itemId}})
-    if(existingCartItem){
-        throw new DuplicateError(`Cart item with id ${itemId} already exists`)
+    else {
+        const existingItem = await Item.findOne({ where: { id: itemId } })
+        if (!existingItem) {
+            throw new BadRequestError(`Item with id ${itemId} does not exist`)
+        }
+        const existingCartItem = await CartItem.findOne({ where: { itemId } })
+        if (!existingCartItem) {
+            await CartItem.create({ cartId: existingCart.id, itemId: req.body.itemId })
+        }
     }
-    await CartItem.create({cartId: existingCart.id, itemId: req.body.itemId})
 }
 
 export const getCartItems = async(req, res) =>{

@@ -103,7 +103,8 @@ export const paymentWebhook = async (req, res) => {
 }
 
 export const getPayments = async(req) =>{
-    const { page, size, status, gatewayPaymentId, paymentType, paymentGateway, amount, orderId } = req.query;
+    const { page, size, status, gatewayPaymentId, paymentType,
+         paymentGateway, amount, orderId, fromDate, toDate } = req.query;
     const user = req.user
     if (!req.user.isAdmin) {
         throw new UnauthorizedError('Only admin is allowed to complete operation')
@@ -159,7 +160,29 @@ export const getPayments = async(req) =>{
             }
         }
 
-          if(amount){
+        if(fromDate && !toDate){
+            queryOpts.where = {
+                ...queryOpts.where,
+                    createdAt:  {[Op.gte]: new Date(fromDate)}
+            }
+        }
+
+        if(!fromDate && toDate){
+            queryOpts.where = {
+                ...queryOpts.where,
+                    createdAt:  {[Op.lte]: new Date(toDate)}
+            }
+        }
+
+        if(fromDate && toDate){
+            queryOpts.where = {
+                ...queryOpts.where,
+                    createdAt:  { 
+                        [Op.between]: [new Date(fromDate), new Date(toDate)]}
+            }
+        }
+
+        if(amount){
                 queryOpts.where = {
                     ...queryOpts.where,
                     [Op.or]: [
@@ -168,7 +191,7 @@ export const getPayments = async(req) =>{
                         }
                     ]
                 }
-            }
+        }
 
     const data = await Payment.findAndCountAll({
         include: [

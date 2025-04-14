@@ -5,6 +5,7 @@ import Payment from "./Payment"
 import { useSelector } from "react-redux"
 import { usePostData } from "../../../hooks/usePostData"
 import Spinner from "../../../components/Spinner"
+import UnauthenticatedCheckout from "./UnauthenticatedCheckout"
 
 const Checkout = () => {
   const user = useSelector(state => state.user)
@@ -36,15 +37,23 @@ const Checkout = () => {
     const cartItems = cart.cartItems?.map(cartItem => (
       { ...cartItem.item, quantity: cartItem.quantity }
     ))
-    mutate({ items: cartItems })
-  }, [cart, cart?.cartItems])
+    if(user?.isLoggedIn){
+      mutate({ items: cartItems })
+    }
+  }, [cart, cart?.cartItems, user])
+ 
+  if(!user || !user.user || !user?.isLoggedIn){
+    return(
+      <UnauthenticatedCheckout />
+    )
+  }
 
   if(isLoading || !clientSecret){
-    console.log("eeeee")
     return <div className="w-full h-screen -mt-40 flex items-center justify-center">
       <Spinner style={'!h-12 !w-12'} isLoading={isLoading}/>
     </div>
   }
+  
   return (
     <div className="w-full flex flex-col md:flex-row px-4 md:px-0">
       <BillingDetails {...{ deliveryDetails, setDeliveryDetails }} />

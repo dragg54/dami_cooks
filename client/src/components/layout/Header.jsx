@@ -9,18 +9,30 @@ import { useEffect, useState } from "react";
 import { useIgnoreMatchedPath } from "../../hooks/useIgnoreMatchedRoute";
 import { useNavigate } from "react-router-dom";
 import { getScreenSize } from "../../utils/getScreenSize";
+import { usePostData } from "../../hooks/usePostData";
 
 export const Header = ({ setNavIsOpen, setCartOpen }) => {
-  const { data, isLoading } = useFetchAllData("/cartItems")
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const user = useSelector(state => state.user)
+  const { data, isLoading, refetch } = useFetchAllData("/cartItems", {enabled: user?.isLoggedIn})
+  const cartItemMutation = usePostData({url:"/cartItems", onSuccess})
   const cart = useSelector(state => state.cart)
   const [currentMenu, setCurrentMenu] = useState("Menu")
 
+  function onSuccess(){
+    localStorage.removeItem("cartItems")
+    refetch()
+  }
+
   useEffect(() => {
-    dispatch(fetchToCart({ items: data }))
-  }, [data, isLoading])
+    const localStorageItems = localStorage.getItem("cartItems")
+    const parsedItems = JSON.parse(localStorageItems)
+    if (parsedItems && parsedItems.length > 0 && user?.isLoggedIn) {
+      cartItemMutation.mutate({cartItems: parsedItems})
+    }
+    dispatch(fetchToCart({ items: user?.isLoggedIn ? data : JSON.parse(localStorage.getItem("cartItems")) }))
+  }, [data, isLoading, user])
   return (
     <div className='h-16 bg-white flex md:px-16 justify-between items-center p-4 w-full border-b shadow-gray-300'>
       <h1 className="font-logo font-semibold text-[1.3rem] text-red-700">Dami Cooks</h1>

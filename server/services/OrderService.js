@@ -73,6 +73,30 @@ export const getAllOrders = async (req) => {
         queryOpts.where.status = status.toUpperCase();
     }
 
+    if (fromDate && !toDate) {
+        queryOpts.where = {
+            ...queryOpts.where,
+            createdAt: { [Op.gte]: new Date(fromDate) }
+        }
+    }
+
+    if (!fromDate && toDate) {
+        queryOpts.where = {
+            ...queryOpts.where,
+            createdAt: { [Op.lte]: new Date(toDate) }
+        }
+    }
+
+    if (fromDate && toDate) {
+        queryOpts.where = {
+            ...queryOpts.where,
+            createdAt: {
+                [Op.gte]: new Date(fromDate),
+                [Op.lte]: new Date(toDate)
+            }
+        }
+    }
+
     const data = await Order.findAndCountAll({
         include: [
             {

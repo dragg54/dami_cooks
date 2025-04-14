@@ -1,12 +1,15 @@
 /* eslint-disable react/prop-types */
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { addToCart } from '../../redux/CartSlice'
 import { Button } from './Button'
 import { usePostData } from '../../hooks/usePostData'
 import Spinner from '../Spinner'
 import { openPopup } from '../../redux/PopupSlice'
+import { useEffect } from 'react'
 
 const AddToCartButton = ({ item, style }) => {
+    const user = useSelector(state => state.user)?.user
+    const cartItems = useSelector(state => state.cart)?.cartItems
     const onSuccess = () => {
         dispatch(addToCart(item))
         dispatch(openPopup({message: "Item successfully added"}))
@@ -19,10 +22,20 @@ const AddToCartButton = ({ item, style }) => {
     const addToCartMutation = usePostData({ onSuccess, onError, url: '/cartItems', })
 
     const handleAddToCart = () => {
+       if(user.isLoggedIn){
         addToCartMutation.mutate({ itemId: item.id })
+       }
+       else {
+           dispatch(addToCart(item))
+           dispatch(openPopup({ message: "Item successfully added" }))
+       }
     }
 
     const dispatch = useDispatch()
+
+    useEffect(()=>{
+        localStorage.setItem("cartItems", JSON.stringify(cartItems))
+    }, [cartItems])
     
     return (
         <Button
