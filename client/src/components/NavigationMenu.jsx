@@ -24,6 +24,7 @@ const NavigationMenu = ({navIsOpen, setNavIsOpen}) => {
           <a href="/" className="block  font-medium border-b ">HOME</a>
           <a href="/about-us" className="block  font-medium border-b ">ABOUT</a>
           <a href="#" className="block  font-medium border-b ">SERVICES</a>
+          <a href="/customer/orders" className="block  font-medium border-b ">MY ORDERS</a>
           <a href="/contact-us" className="block  font-medium border-b ">CONTACT</a>
           <a href="#" className="block  font-medium border-b ">LOGOUT</a>
         </nav>

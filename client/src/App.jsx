@@ -27,6 +27,7 @@ import { useEffect } from "react"
 import { addNotification, fetchNotifications } from "./redux/NotificationSlice"
 import { useQuery } from "react-query"
 import { getUnreadNotifications } from "./services/notifications/notificationService"
+import OrdersForMobile from "./components/order/OrdersForMobile"
 
 function App() {
   const user = useSelector(state => state.user).user
@@ -68,6 +69,7 @@ function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/itemdetails/:id" element={<ItemDetail />} />
+          <Route path="/customer/orders" element={<OrdersForMobile />}/>
           <Route path="/success" element={<Success />} /> 
           <Route path="/cancel" element={<Cancel />} /> 
           <Route path="/about-us" element={<AboutUs />} /> 

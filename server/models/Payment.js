@@ -20,7 +20,7 @@ export const Payment = db.define("payment", {
       type: DataTypes.INTEGER
     },
     status: {
-      type: DataTypes.ENUM('succeeded', 'cancelled', 'processing'),
+      type: DataTypes.ENUM('succeeded', 'cancelled', 'processing', 'refunded'),
       defaultValue: 'processing'
     }
 }) 

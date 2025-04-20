@@ -10,6 +10,7 @@ import { Shipping } from "../models/Shipping.js"
 import User from "../models/User.js"
 import { getPagination, getPagingData } from "../utils/pagination.js"
 import { NotFoundError } from "../exceptions/NotFoundError.js"
+import { refundPayment } from "./PaymentService.js"
 
 export const createOrder = async (req) => {
     const { cartId } = req.body
@@ -25,12 +26,12 @@ export const createOrder = async (req) => {
 
 export const getAllOrders = async (req) => {
     const { page, size, status,
-        searchText, customerName, city, address, toDate, fromDate } = req.query;
+        searchText, customerName, city, address, toDate, fromDate, customerId } = req.query;
     const user = req.user;
 
-    if (!user.isAdmin) {
-        throw new UnauthorizedError("Only admin is allowed to complete operation");
-    }
+    // if (!user.isAdmin) {
+    //     throw new UnauthorizedError("Only admin is allowed to complete operation");
+    // }
 
     const { limit, offset } = getPagination(page, size);
 
@@ -55,6 +56,18 @@ export const getAllOrders = async (req) => {
             ]
         }
     }
+
+    if(customerId){
+        userQueryOpts.where = {
+            ...userQueryOpts.where,
+            [Op.or]: [
+                {
+                    id: customerId
+                }
+            ]
+        }
+    }
+
     if (city) {
         shippingQueryOpts.where = {
             ...shippingQueryOpts.where,
@@ -132,9 +145,9 @@ export const getAllOrders = async (req) => {
 export const getOrderById = async (req) => {
     const { id } = req.params
     const user = req.user
-    if (!req.user.isAdmin) {
-        throw new UnauthorizedError('Only admin is allowed to complete operation')
-    }
+    // if (!req.user.isAdmin) {
+    //     throw new UnauthorizedError('Only admin is allowed to complete operation')
+    // }
     const order = await Order.findByPk(id, {
         include: [
             {
@@ -146,7 +159,7 @@ export const getOrderById = async (req) => {
                 attributes: ['quantity'],
                 include: {
                     model: Item,
-                    attributes: ['id', 'name']
+                    attributes: ['id', 'name', 'imageUrl', 'price']
                 }
             },
             {
@@ -164,9 +177,9 @@ export const getOrderById = async (req) => {
 
 export const updateOrderStatus = async (req) => {
     const user = req.user
-    if (!req.user.isAdmin) {
-        throw new UnauthorizedError('Only admin is allowed to complete operation')
-    }
+    // if (!req.user.isAdmin) {
+    //     throw new UnauthorizedError('Only admin is allowed to complete operation')
+    // }
     const { status } = req.body
     const { id } = req.params
     const existingOrder = await Order.findByPk(id)
@@ -188,4 +201,37 @@ export const updateOrderStatus = async (req) => {
         throw new BadRequestError(errMsg)
     }
     await Order.update({ status }, { where: { id } })
+}
+
+export const cancelOrder = async(req, transaction) =>{
+    const user = req.user
+    const { status } = req.body
+    const { id } = req.params
+    const existingOrder = await Order.findByPk(id)
+    if(status != orderStatus.CANCELLED && status != orderStatus.REJECTED){
+        return
+    }
+    if (!existingOrder) {
+        const errMsg = `Order ${id} not found`
+        throw new BadRequestError(errMsg)
+    }
+    const isInvalidOrderStatus = 
+        existingOrder.status == orderStatus.DELIVERED
+            || existingOrder.status == orderStatus.CANCELLED
+            || existingOrder.status == orderStatus.ACCEPTED
+            || existingOrder.status == orderStatus.REJECTED
+    if (isInvalidOrderStatus) {
+        const errMsg = `Order status is invalid for this operation`
+        throw new BadRequestError(errMsg)
+    }
+    try{
+        const refundPaymentRequest = {
+            orderId: id
+        }
+        await refundPayment(refundPaymentRequest, transaction)
+    }
+    catch(ex){
+        throw new Error(ex.message)
+    }
+    await Order.update({ status }, { where: { id } }, {transaction})
 }
