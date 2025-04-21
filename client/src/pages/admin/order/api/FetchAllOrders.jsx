@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useEffect } from "react";
-import { useFetchAllData } from "../../../../hooks/useFetchAllData";
+import { useFetchAllData } from "../../../../hooks/api/useFetchAllData";
 import MerchantEmptyState from "../../../../components/MerchantEmptyState";
 import Spinner from "../../../../components/Spinner";
 

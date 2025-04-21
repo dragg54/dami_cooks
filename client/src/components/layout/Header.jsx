@@ -4,13 +4,13 @@ import { IoMenu } from "react-icons/io5";
 import { IoCartOutline } from "react-icons/io5";
 import { FiUser } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
-import { useFetchAllData } from "../../hooks/useFetchAllData";
+import { useFetchAllData } from "../../hooks/api/useFetchAllData";
 import { fetchToCart } from "../../redux/CartSlice";
 import { useEffect, useState } from "react";
 import { useIgnoreMatchedPath } from "../../hooks/useIgnoreMatchedRoute";
 import { useNavigate } from "react-router-dom";
 import { getScreenSize } from "../../utils/getScreenSize";
-import { usePostData } from "../../hooks/usePostData";
+import { usePostData } from "../../hooks/api/usePostData";
 
 export const Header = ({ setNavIsOpen, setCartOpen, setUserAccountOpen}) => {
   const dispatch = useDispatch()

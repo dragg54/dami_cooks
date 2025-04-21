@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import Spinner from "../../../../components/Spinner";
-import { useFetchAllData } from "../../../../hooks/useFetchAllData";
+import { useFetchAllData } from "../../../../hooks/api/useFetchAllData";
 
 export const FetchItemCategories = ({filters}, name="itemCategories") =>{
   const { data, isLoading, isError, refetch, error } = useFetchAllData("/itemCategories", filters, name);

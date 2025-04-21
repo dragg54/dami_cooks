@@ -1,17 +1,16 @@
 /* eslint-disable react/prop-types */
 import { CardCvcElement, CardExpiryElement, CardNumberElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import { useEffect } from "react";
 import { useNavigate } from 'react-router-dom'
 import { FaCreditCard } from "react-icons/fa";
 import { Button } from "../../../components/button/Button";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { clearCart } from "../../../redux/CartSlice";
 
 function PaymentForm({clientSecret, deliveryDetails}) {
   const stripe = useStripe();
   const elements = useElements(); 
   const navigate = useNavigate()
-  const user = useSelector(state => state.user)
-  const cartItems = useSelector(state => state.cart)?.cartItems
+  const dispatch = useDispatch()
   const handleSubmit = async (e) => {
     e.preventDefault()
     const cardElement = elements.getElement(CardNumberElement);
@@ -52,6 +51,7 @@ function PaymentForm({clientSecret, deliveryDetails}) {
 
       if(paymentIntent && paymentIntent.status == "succeeded"){
         navigate("/success")
+        dispatch(clearCart())
       }
     }
     catch (err) {

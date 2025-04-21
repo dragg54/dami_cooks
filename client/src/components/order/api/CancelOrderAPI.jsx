@@ -1,10 +1,9 @@
-import React from 'react'
 import { useQueryClient } from 'react-query'
 import { useDispatch } from 'react-redux'
-import { usePatchData } from '../../../hooks/usePatchData'
+import { usePatchData } from '../../../hooks/api/usePatchData'
 import { clearUserOrderItem } from '../../../redux/UserOrderItem'
 
-export const CancelOrderAPI = ({setUserOrderView}) => {
+export const CancelOrderAPI = (setUserOrderView) => {
     const dispatch = useDispatch()
     const queryClient = useQueryClient()
      const onSuccess = () => {
@@ -15,7 +14,8 @@ export const CancelOrderAPI = ({setUserOrderView}) => {
         }
     
         const onError = (error) => {
-          console.log(error.message)           
+            console.log(error)
+          setUserOrderView("CANCELFAILED")           
         }
 
         return usePatchData({

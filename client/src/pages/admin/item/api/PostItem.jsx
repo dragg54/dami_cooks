@@ -1,4 +1,4 @@
-import { usePostData } from "../../../../hooks/usePostData"
+import { usePostData } from "../../../../hooks/api/usePostData"
 
 export const PostItem = ({setResponseStatus}) => {
     const onSuccess = (res) => {

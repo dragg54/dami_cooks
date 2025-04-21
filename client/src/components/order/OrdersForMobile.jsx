@@ -15,18 +15,19 @@ import { MdArrowBack } from "react-icons/md";
 import CancelOrder from "./CancelOrder";
 import Spinner from "../Spinner";
 import OrderCancelled from "./OrderCancelled";
+import OrderCancelledFailed from "./CancelOrderFailed";
 
 const OrdersForMobile = ({ userOrdersOpened, setUserOrdersOpened }) => {
     const navigate = useNavigate()
     const [size, setSize] = useState(5)
     const dispatch = useDispatch()
-    const [userOrderView, setUserOrderView] = useState("CANCELLED")
+    const [userOrderView, setUserOrderView] = useState("ORDERS")
     const user = useSelector(state => state.user)?.user
     const { data: orders, refetch, isLoading } = FetchUserOrder({ filters: { customerId: user.id, size } })
     const queryClient = useQueryClient()
     useEffect(() => {
         setSize(5)
-        setUserOrderView("CANCELLED")
+        setUserOrderView("ORDERS")
     }, [])
     return (
         <div className="relative w-full  p-2">
@@ -89,6 +90,7 @@ const OrdersForMobile = ({ userOrdersOpened, setUserOrdersOpened }) => {
                             </div>
                             :  userOrderView == "CANCEL"?<CancelOrder  {...{setUserOrderView}}/> 
                             : userOrderView == "CANCELLED" ? <OrderCancelled {...{setUserOrderView}}/> 
+                            : userOrderView == "CANCELFAILED" ? <OrderCancelledFailed {...{setUserOrderView}}/> 
                             : <OrderItem {...{setUserOrderView}}/>
                         }
                     </div>

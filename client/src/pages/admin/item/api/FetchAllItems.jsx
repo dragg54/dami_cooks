@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useEffect } from "react";
-import { useFetchAllData } from "../../../../hooks/useFetchAllData";
+import { useFetchAllData } from "../../../../hooks/api/useFetchAllData";
 
 export const FetchAllItems = ({filters}) =>{
   const { data, isLoading, refetch, isError, error } = useFetchAllData("/items", filters, "items");

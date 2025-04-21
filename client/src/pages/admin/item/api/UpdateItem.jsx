@@ -1,5 +1,5 @@
 import { useQueryClient } from "react-query"
-import { useUpdateData } from "../../../../hooks/useUpdateData"
+import { useUpdateData } from "../../../../hooks/api/useUpdateData"
 
 export const UpdateItem = ({setResponseStatus, id}) => {
 

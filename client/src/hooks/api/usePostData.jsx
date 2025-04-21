@@ -1,5 +1,5 @@
 import { useMutation } from "react-query"
-import Axios from "../services/apiClient";
+import Axios from "../../services/apiClient";
 
 const postData =  async ({ payload, url, headers }) => {
     const response = await Axios.post(url, payload, {headers});

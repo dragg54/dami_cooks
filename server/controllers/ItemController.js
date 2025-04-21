@@ -19,6 +19,7 @@ export const updateItem = async (req, res) => {
         res.json("Item updated")
     }
     catch (error) {
+        console.log(error)
         res.status(error.statusCode || 500).json(error.message
             || "Internal server error"
         );
@@ -31,6 +32,7 @@ export const deleteItem = async (req, res) => {
         res.json("Item deleted")
     }
     catch (error) {
+        console.log(error)
         res.status(error.statusCode || 500).json(error.message
             || "Internal server error"
         );

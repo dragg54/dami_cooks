@@ -3,7 +3,7 @@ import BillingDetails from "./BillingDetails"
 import OrderSummary from "./OrderSummary"
 import Payment from "./Payment"
 import { useSelector } from "react-redux"
-import { usePostData } from "../../../hooks/usePostData"
+import { usePostData } from "../../../hooks/api/usePostData"
 import Spinner from "../../../components/Spinner"
 import UnauthenticatedCheckout from "./UnauthenticatedCheckout"
 

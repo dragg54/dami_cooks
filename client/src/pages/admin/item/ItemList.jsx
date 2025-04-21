@@ -3,6 +3,7 @@ import { useMemo, useState } from "react"
 import CustomTable from "../../../components/table/Table"
 import { FetchAllItems } from "./api/FetchAllItems"
 import UpdateItemUI from "./UpdateItemUI"
+import { format } from "date-fns"
 
 const ItemList = () => {
   const [debouncedQuery, setDebouncedQuery] = useState("")
@@ -26,9 +27,21 @@ const ItemList = () => {
   }), [size, page, debouncedQuery, fetchEnabled]);
   const {data:items, refetch, isLoading} = FetchAllItems({filters})
 
-  const processedData = items?.rows || [{}]
+  // const processedData = items?.rows || [{}]
 
 
+  let processedData = items?.rows?.map((dta)=>(
+    {
+      itemId: dta.id,
+      "Item Name": dta.name,
+      "Description": dta.description,
+      status: dta.status,
+      "Category": dta.itemCategory?.name,
+      price: dta.price,
+      "Created At": format(new Date(dta.createdAt), 'dd-MM-yyy HH:mm'),
+      "Updated At": format(new Date(dta.updatedAt), 'dd-MM-yyy HH:mm')
+    }
+  ))
     const handleEnterKey = (e) =>{
       if(e.key == "Enter"){
         e.preventDefault()

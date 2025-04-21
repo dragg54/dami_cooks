@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useFetchAllData } from '../../../hooks/useFetchAllData';
+import { useFetchAllData } from '../../../hooks/api/useFetchAllData';
 
 const FetchOrderDetails = (id) => {
     const { data, isLoading, refetch, isError, error } = useFetchAllData(`/orders/${id}`,{}, "orderItem");

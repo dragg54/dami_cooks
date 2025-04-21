@@ -18,11 +18,12 @@ import { BadRequestError } from '../exceptions/BadRequestError.js'
 dotenv.config()
 
 export const initializePayment = async (req) => {
-    const environment = process.env.NODE_ENV
-    let clientUri = environment == "Production" ? process.env.PROD_CLIENT_URL : process.env.LOCAL_CLIENT_URL
     try {
         const { items } = req.body;
-
+        const userCart = await Cart.findOne({where:{userId : req.user.id}})
+        if(!userCart){
+            throw new BadRequestError("Cart does not exist for this user")
+        }
         if (items && items.length > 0) {
             const totalCartItemAmount = items.length > 1 ? items.reduce((prevItem, nextItem) => ((Number(prevItem.price || 0) * Number(prevItem.quantity || 0))
                 + (Number(nextItem.price || 0) * Number(nextItem.quantity || 0)))) : (items?.length > 0 && (Number(items[0]?.price) && Number(items[0].quantity)))
@@ -39,6 +40,7 @@ export const initializePayment = async (req) => {
                 currency: "usd",
                 metadata: {
                     orderedBy: req.user.id,
+                    cartId: userCart.dataValues.id,
                     cartItems: JSON.stringify(paymentItem)
                 }
             });
@@ -78,7 +80,7 @@ export const paymentWebhook = async (req, res) => {
         const event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
         const paymentIntent = event.data.object;
         if (event.type === "payment_intent.succeeded") {
-            const { orderedBy, cartItems } = paymentIntent.metadata
+            const { orderedBy, cartItems, cartId } = paymentIntent.metadata
             const order = await Order.create({ orderedBy, amount: paymentIntent.amount, userId: orderedBy }, { transaction });
             const orderItems = JSON.parse(cartItems).map(cartItem => ({
                 itemId: cartItem.id,
@@ -102,7 +104,11 @@ export const paymentWebhook = async (req, res) => {
                 postalCode: paymentIntent.shipping.address.postal_code,
                 state: paymentIntent.shipping.state
             }, { transaction })
-
+            await CartItem.destroy({
+                where:{
+                    cartId
+                }
+            },{transaction})
             await Notification.create({
                 read: false,
                 message: `You have a new order`,

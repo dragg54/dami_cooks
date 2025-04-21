@@ -15,6 +15,7 @@ import { MdArrowBack } from "react-icons/md";
 import CancelOrder from "./CancelOrder";
 import Spinner from "../Spinner";
 import OrderCancelled from "./OrderCancelled";
+import OrderCancelledFailed from "./CancelOrderFailed";
 
 const Orders = ({ userOrdersOpened, setUserOrdersOpened }) => {
     const navigate = useNavigate()
@@ -103,6 +104,7 @@ const Orders = ({ userOrdersOpened, setUserOrdersOpened }) => {
                             </div> 
                             : userOrderView == "CANCEL" ? <CancelOrder {...{setUserOrderView}}/> 
                             : userOrderView == "CANCELLED" ? <OrderCancelled {...{setUserOrderView}}/> 
+                            : userOrderView == "CANCELFAILED" ? <OrderCancelledFailed {...{setUserOrderView}}/> 
                             : <OrderItem {...{ setUserOrderView }} />
                         }
                     </div>

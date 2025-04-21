@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-import Axios from "../services/apiClient";
+import Axios from "../../services/apiClient";
 
 const fetchData = async ({ queryKey }) => {
   const [_key, url, params] = queryKey;

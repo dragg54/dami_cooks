@@ -20,6 +20,6 @@ export const updateItemSchema = Joi.object({
   price: Joi.number().precision(2).positive().required().label("Price"),
   itemType: Joi.string().valid("MAIN_ITEM", "SUB_ITEM").default("MAIN_ITEM").label("Item Type"),
   uom: Joi.string().required().label("Unit of Measure (UOM)"),
-  status: Joi.string().valid("OFFLINE", "ONLINE", "OUTOFSTOCK").allow(null).default("OFFLINE").label("Status"),
+  status: Joi.string().allow(null).label("Status"),
   imageUrl: Joi.string().allow(null, "")
 })

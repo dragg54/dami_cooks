@@ -66,3 +66,11 @@ export const deleteCartItem = async(req) =>{
     }
     await CartItem.destroy({where:{itemId: id}})
 }
+
+export const emptyCartItem = async(req) =>{
+    const existingCart = await getUserCart(req)
+    if(!existingCart){
+        throw new BadRequestError(`Cart does not exist for user`)
+    }
+    await CartItem.destroy({where:{cartId: existingCart.dataValues.id}})
+}

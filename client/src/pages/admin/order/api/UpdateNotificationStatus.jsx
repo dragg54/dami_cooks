@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux"
-import { usePatchData } from "../../../../hooks/usePatchData"
+import { usePatchData } from "../../../../hooks/api/usePatchData"
 import { useQueryClient } from "react-query"
-import { useUpdateData } from "../../../../hooks/useUpdateData"
+import { useUpdateData } from "../../../../hooks/api/useUpdateData"
 
 export const UpdateNotificationStatus = () =>{
     const queryClient = useQueryClient()

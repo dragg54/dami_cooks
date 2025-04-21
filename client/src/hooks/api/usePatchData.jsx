@@ -1,5 +1,5 @@
 import { useMutation } from "react-query"
-import Axios from "../services/apiClient";
+import Axios from "../../services/apiClient";
 
 const patchData =  async ({ payload, url, headers }) => {
     const response = await Axios.patch(url, payload, {headers});
@@ -17,6 +17,5 @@ function getUrl(url, payload){
   const newUrl = url.split("/")
   const idIndex =newUrl.findIndex(x => x == 'id')
   newUrl[idIndex] = payload.id
-  console.log(newUrl.join(","))
   return newUrl.join("/")
 }

@@ -14,11 +14,14 @@ export const createOrder = async (req, res) => {
 }
 
 export const updateOrderStatus = async (req, res) => {
+    const transaction = await db.transaction()
     try {
         await orderService.updateOrderStatus(req)
+        await transaction.commit()
         res.json("order status updated")
     }
     catch (error) {
+        await transaction.rollback()
         res.status(error.statusCode || 500).json(error.message
             || "Internal server error"
         );

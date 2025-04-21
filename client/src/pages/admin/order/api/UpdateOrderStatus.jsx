@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux"
-import { usePatchData } from "../../../../hooks/usePatchData"
+import { usePatchData } from "../../../../hooks/api/usePatchData"
 import { openModal } from "../../../../redux/GlobalModalSlice"
 import { useQueryClient } from "react-query"
 import UpdateOrderStatusResponse from "../UpdateOrderStatusResponse"

@@ -175,7 +175,7 @@ export const getOrderById = async (req) => {
     return order
 };
 
-export const updateOrderStatus = async (req) => {
+export const updateOrderStatus = async (req, transaction) => {
     const user = req.user
     // if (!req.user.isAdmin) {
     //     throw new UnauthorizedError('Only admin is allowed to complete operation')
@@ -200,7 +200,13 @@ export const updateOrderStatus = async (req) => {
         const errMsg = `Order status is invalid for this operation`
         throw new BadRequestError(errMsg)
     }
-    await Order.update({ status }, { where: { id } })
+    await Order.update({ status }, { where: { id } }, {transaction})
+    if(status == orderStatus.REJECTED){
+        const refundPaymentRequest = {
+            orderId: id
+        }
+        await refundPayment(refundPaymentRequest, transaction)
+    }
 }
 
 export const cancelOrder = async(req, transaction) =>{

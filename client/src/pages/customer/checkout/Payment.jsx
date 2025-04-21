@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from 'react-redux'
 import { CardElement, useStripe, useElements, PaymentElement, Elements, CardNumberElement } from "@stripe/react-stripe-js";
-import { usePostData } from "../../../hooks/usePostData";
+import { usePostData } from "../../../hooks/api/usePostData";
 import { loadStripe } from "@stripe/stripe-js";
 import PaymentForm from "./PaymentForm";
 import { Button } from "../../../components/button/Button";

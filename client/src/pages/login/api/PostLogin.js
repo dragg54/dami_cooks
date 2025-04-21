@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { usePostData } from "../../../hooks/usePostData";
+import { usePostData } from "../../../hooks/api/usePostData";
 import { useDispatch } from "react-redux";
 import { clearUser, fetchUser } from "../../../redux/UserSlice";
 

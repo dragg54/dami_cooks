@@ -2,7 +2,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { addToCart } from '../../redux/CartSlice'
 import { Button } from './Button'
-import { usePostData } from '../../hooks/usePostData'
+import { usePostData } from '../../hooks/api/usePostData'
 import Spinner from '../Spinner'
 import { openPopup } from '../../redux/PopupSlice'
 import { useEffect } from 'react'

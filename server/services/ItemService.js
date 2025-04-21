@@ -72,7 +72,7 @@ export const getAllItems = async (req) => {
       distinct: true,
       include:[{
         model: ItemCategory,
-        attributes: ["id"],
+        attributes: ["id", "name"],
         ...itemCategoryOpts
       }],
       order: [["createdAt", "DESC"]],
@@ -130,7 +130,9 @@ export const updateItem = async (req) => {
         const path = req.file.path
         cloudinaryImageUrl = await uploadImage(path)
     }
-   
+    if(req.body.status == 'null'){
+        req.body.status = null
+    }
     return await item.update({...req.body, imageUrl: cloudinaryImageUrl || req.body.imageUrl}, { where: { id } });
 };
 
