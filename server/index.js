@@ -20,6 +20,7 @@ import { registerUser, removeUser } from './socket/registerUser.js'
 import { sendNotification } from './socket/createNotification.js'
 import { init } from './socket/socket.js'
 import { notificationRoute } from './routes/NotificationRoute.js'
+import { sendEmail } from './services/EmailService.js'
 
 
 const __filename = fileURLToPath(import.meta.url);

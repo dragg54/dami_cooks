@@ -8,7 +8,7 @@ import { openPopup } from '../../redux/PopupSlice'
 import { useEffect } from 'react'
 
 const AddToCartButton = ({ item, style }) => {
-    const user = useSelector(state => state.user)?.user
+    const user = useSelector(state => state.user)
     const cartItems = useSelector(state => state.cart)?.cartItems
     const onSuccess = () => {
         dispatch(addToCart(item))
@@ -34,8 +34,10 @@ const AddToCartButton = ({ item, style }) => {
     const dispatch = useDispatch()
 
     useEffect(()=>{
-        localStorage.setItem("cartItems", JSON.stringify(cartItems))
-    }, [cartItems])
+        if(!user || !user.isLoggedIn){
+            localStorage.setItem("cartItems", JSON.stringify(cartItems))
+        }
+    }, [cartItems, user])
     
     return (
         <Button

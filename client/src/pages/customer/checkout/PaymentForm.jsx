@@ -5,14 +5,17 @@ import { FaCreditCard } from "react-icons/fa";
 import { Button } from "../../../components/button/Button";
 import { useDispatch } from "react-redux";
 import { clearCart } from "../../../redux/CartSlice";
+import { useState } from "react";
 
 function PaymentForm({clientSecret, deliveryDetails}) {
   const stripe = useStripe();
   const elements = useElements(); 
   const navigate = useNavigate()
+  const [paymentIntentLoading, setPaymentIntentLoading ] = useState(false)
   const dispatch = useDispatch()
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setPaymentIntentLoading(true)
     const cardElement = elements.getElement(CardNumberElement);
   if (!cardElement) {
     console.error("CardNumberElement not found!");
@@ -50,6 +53,7 @@ function PaymentForm({clientSecret, deliveryDetails}) {
       });
 
       if(paymentIntent && paymentIntent.status == "succeeded"){
+        setPaymentIntentLoading(false)
         navigate("/success")
         dispatch(clearCart())
       }
@@ -126,7 +130,7 @@ function PaymentForm({clientSecret, deliveryDetails}) {
     Your personal data will be used to process your order, support your experience throughout this website,
       and for other purposes described in our privacy policy.
     </p>
-     <Button className={'!rounded-full'}>Place Order</Button>
+     <Button className={'!rounded-full'} isLoading={paymentIntentLoading}>Place Order</Button>
     </form>
   );
 }

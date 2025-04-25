@@ -28,8 +28,8 @@ const Layout = () => {
       <div className='w-full overflow-hidden  md:w-2/3 mx-auto md:p-3  md:mt-6 mb-16'>
       <Outlet />
       </div>
-      <Footer />
       <PopUp />
+      <Footer />
     </div>
   )
 }

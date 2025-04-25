@@ -14,6 +14,14 @@ import { Op } from 'sequelize'
 import { sendNotification } from '../socket/createNotification.js'
 import { Notification } from '../models/Notification.js'
 import { BadRequestError } from '../exceptions/BadRequestError.js'
+import { sendEmail } from './EmailService.js'
+import fs from 'fs'
+import path from 'path'
+import { sendCustomerOrderPlacedMail } from '../emails/sendMessages/SendCustomerOrderPlacedEmail.js'
+import { sendMerchantOrderPlacedMail } from '../emails/sendMessages/SendMerchantOrderPlacedEmail.js'
+import { sendCustomerPaymentRefundedMail } from '../emails/sendMessages/SendCustomerPaymentRefundedMail.js'
+import User from '../models/User.js'
+import { sendCustomerPaymentRefundProcessingMail } from '../emails/sendMessages/SendCustomerPaymentRefundedProcessingMail.js'
 
 dotenv.config()
 
@@ -54,7 +62,7 @@ export const initializePayment = async (req) => {
 }
 
 export const refundPayment = async (req, transaction) => {
-    const { orderId } = req
+    const { orderId, customer } = req
     const payment = await Payment.findOne({
         where: {
             orderId,
@@ -70,6 +78,7 @@ export const refundPayment = async (req, transaction) => {
     await stripe.refunds.create({
         payment_intent: payment.gatewayPaymentId,
     });
+    sendCustomerPaymentRefundProcessingMail(`${Number(orderId > 999 ? orderId : "0"+orderId)}`, customer.name, customer.email)
 }
 
 export const paymentWebhook = async (req, res) => {
@@ -81,6 +90,7 @@ export const paymentWebhook = async (req, res) => {
         const paymentIntent = event.data.object;
         if (event.type === "payment_intent.succeeded") {
             const { orderedBy, cartItems, cartId } = paymentIntent.metadata
+            const customer = await User.findOne({where: {id: orderedBy}, attributes: ["email"]})
             const order = await Order.create({ orderedBy, amount: paymentIntent.amount, userId: orderedBy }, { transaction });
             const orderItems = JSON.parse(cartItems).map(cartItem => ({
                 itemId: cartItem.id,
@@ -100,7 +110,7 @@ export const paymentWebhook = async (req, res) => {
                 address: paymentIntent.shipping.address.line1,
                 city: paymentIntent.shipping.address.city,
                 phone: paymentIntent.shipping.phone,
-                email: paymentIntent.shipping.email,
+                email: customer.dataValues.email,
                 postalCode: paymentIntent.shipping.address.postal_code,
                 state: paymentIntent.shipping.state
             }, { transaction })
@@ -119,10 +129,15 @@ export const paymentWebhook = async (req, res) => {
             //     cartId: userCart.id
             // }})
             sendNotification()
+            sendCustomerOrderPlacedMail(customer?.dataValues?.firstName, `ORD${Number(order.dataValues.id) > 999 ? order.dataValues.id 
+                : 1000 + Number(order.dataValues.id)}`, customer?.dataValues?.email)
+            sendMerchantOrderPlacedMail(`ORD${Number(order.dataValues.id) > 999 ? order.dataValues.id 
+                : 1000 + Number(order.dataValues.id)}`, customer?.dataValues?.firstName, process.env.MERCHANT_GMAIL)
             await transaction.commit()
 
         }
         if (event.type == "charge.refunded") {
+            sendCustomerPaymentRefundedMail(paymentIntent.billing_details.name, paymentIntent.payment_intent, paymentIntent.amount,  `XXXXXXXXXXXXX${paymentIntent.payment_method_details?.card?.last4, paymentIntent}`)
             await Payment.update({
                 status: "refunded"
             }, { where: { gatewayPaymentId: paymentIntent.payment_intent } }, { transaction });

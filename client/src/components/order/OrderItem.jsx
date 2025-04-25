@@ -13,12 +13,12 @@ const OrderItem = ({setUserOrderView}) => {
                 orderItem?.orderItems?.map((item) => (
                     <div key={item.id} className="flex items-center gap-2 mb-3">
                         <div className="w-12 h-12 rounded-full overflow-hidden  border object-cover">
-                            <Image src={item.item.imageUrl} style={'!object-cover'} />
+                            <Image src={item?.item?.imageUrl} style={'!object-cover'} />
                         </div>
-                        <span className="text-gray-600">{item.item.name}</span>
-                        <span className="font-bold">{euro}{item.item.price}</span>
+                        <span className="text-gray-600">{item?.item?.name}</span>
+                        <span className="font-bold">{euro}{item?.item?.price}</span>
                         <span className="text-orange-500">
-                            x{item.quantity}
+                            x{item?.quantity}
                         </span>
                     </div>
 

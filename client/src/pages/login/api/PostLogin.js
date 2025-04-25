@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { usePostData } from "../../../hooks/api/usePostData";
 import { useDispatch } from "react-redux";
 import { clearUser, fetchUser } from "../../../redux/UserSlice";
+import { openPopup } from "../../../redux/PopupSlice";
 
 export const PostLogin = () =>{
     const navigate = useNavigate()
@@ -19,6 +20,7 @@ export const PostLogin = () =>{
         else{
             return
         }
+        dispatch(openPopup({message: "Login successful"}))
     }
 
     const onError = (error) =>{

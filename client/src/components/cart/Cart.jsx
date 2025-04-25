@@ -79,7 +79,9 @@ const Cart = ({ cartOpen, setCartOpen }) => {
               cart?.cartItems?.length && (Number(cart?.cartItems[0].item.price) * Number(cart?.cartItems[0].quantity))}
             </span>
           </div>
-          <CheckoutButton setCartOpen={setCartOpen} items={cart.cartItems} />
+          <CheckoutButton 
+             setCartOpen={setCartOpen}
+              items={cart.cartItems} />
           </div>
 }
           </div>

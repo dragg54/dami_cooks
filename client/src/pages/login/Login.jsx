@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import { Form, Formik } from "formik"
 import TextInput from '../../components/input/TextInput'
 import { Button } from '../../components/button/Button'
@@ -5,6 +6,7 @@ import CheckBoxInput from "../../components/input/CheckBoxInput"
 import Image from "../../components/image/Image"
 import { PostLogin } from "./api/PostLogin"
 import Spinner from "../../components/Spinner"
+import { useNavigate } from "react-router-dom"
 
 
 const Login = () => {
@@ -14,6 +16,8 @@ const Login = () => {
         email: "",
         password: ""
     }
+
+    const navigate = useNavigate()
 
     const handleSubmit = (values) =>{
         mutate(values)
@@ -41,7 +45,7 @@ const Login = () => {
                         <div className="w-full">
                             <CheckBoxInput {...{ name: "termsAndCondition", label: "Remember Me", className: "items-center" }} />
                         </div>
-                        <p className="mt-3">Not a member yet? <span className="text-yellow-600 ">Sign up</span></p>
+                        <p className="mt-3 cursor-pointer" onClick={()=> navigate("/register")}>Don't have an account yet? <span className="text-yellow-600 ">Sign up</span></p>
                         <Button className={'w-full md:py-3 !rounded-full mt-1 !bg-[#d01110]'}>
                             {isLoading ? <Spinner style={'!border-t-white !border-gray-200 !mx-auto !h-5 !w-5'} isLoading={isLoading}/> : "Log in"}
                         </Button>
