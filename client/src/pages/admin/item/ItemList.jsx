@@ -66,7 +66,7 @@ const ItemList = () => {
       setDebouncedQuery, canAdd: true,
       totalItems: items?.totalItems,
       debouncedQuery, isLoading,
-      updateLink: "/updateItem",setSize,
+      updateLink: "/updateItem",setSize, showTotal: true,
          totalPages: items?.totalPages,setFilterValues,setFetchEnabled,
          onPageChange:setPage,filterValues,handleEnterKey, fetchEnabled,
          canEdit: true, updateComponent: <UpdateItemUI />,

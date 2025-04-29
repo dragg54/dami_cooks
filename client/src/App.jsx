@@ -85,6 +85,7 @@ function App() {
           <Route path='/checkout' element={<Checkout/>} />
           <Route path="*" element={<NotFoundPage/>} />
           <Route  path="/" element={<HomeRedirect />} />
+          <Route  path="/home" element={<Home />} />
           <Route path="/checkout/payment-intent-failed" element={<PaymentIntentFailed />} />
           <Route path="/checkout/payment-failed" element={<PaymentFailed />} />
         </Route>

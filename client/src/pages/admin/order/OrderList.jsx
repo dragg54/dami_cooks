@@ -74,7 +74,7 @@ const OrderList = () => {
          placeholder: "Search orders",canEdit: true, isLoading, updateLink: "/update-order-status",
          currentPage: page, debouncedQuery, setDebouncedQuery,
          totalPages: orderData?.totalPages, filterValues,handleEnterKey, fetchEnabled,
-         onPageChange:setPage,setFilterValues,
+         onPageChange:setPage,setFilterValues, showTotal:true,
           modalComponent: <OrderView />}}/>
     </div>  )
 }

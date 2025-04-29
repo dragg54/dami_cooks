@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { MdOutlineNavigateNext, MdOutlineNavigateBefore } from "react-icons/md";
 
-const Pagination = ({ currentPage, totalPages, onPageChange, showLabel, totalItems }) => {
+const Pagination = ({ currentPage,showTotal, totalPages, onPageChange, showLabel, totalItems }) => {
     if(showLabel == null || showLabel == undefined){
         showLabel = true
     }
@@ -27,7 +27,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, showLabel, totalIte
       <button className="rounded-full border-red-500 text-sm p-1 border text-red-600" onClick={handleNextPage} disabled={currentPage === totalPages}>
         <MdOutlineNavigateNext className="text-red-600"/>
       </button>
-      <p className="inline-flex whitespace-nowrap">Total: {totalItems || 0}</p>
+      {showTotal && <p className="inline-flex whitespace-nowrap">Total: {totalItems || 0}</p>}
       </div>
     </div>
   );

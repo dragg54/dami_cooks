@@ -63,7 +63,7 @@ const PaymentList = () => {
                     placeholder: "Search payments", canEdit: false, isLoading, totalItems: paymentData?.totalItems,
                     currentPage: page, debouncedQuery, setDebouncedQuery,
                     totalPages: paymentData?.totalPages, filterValues, handleEnterKey, fetchEnabled,
-                    onPageChange: setPage, setFilterValues, setSize
+                    onPageChange: setPage, setFilterValues, setSize, showTotal: true
                 }} />
         </div>)
 }

@@ -27,6 +27,7 @@ const CustomTable = ({
   currentPage,
   modalComponent,
   totalPages,
+  showTotal,
   rawData,
   onPageChange,
   isLoading,
@@ -182,6 +183,7 @@ const CustomTable = ({
           totalPages={totalPages}
           onPageChange={onPageChange}
           totalItems={totalItems}
+          showTotal={showTotal}
         />
     </div>
   );
