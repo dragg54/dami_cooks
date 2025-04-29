@@ -27,7 +27,6 @@ dotenv.config()
 const app = express()
 app.use((req, res, next) => {
   if (req.originalUrl == "/api/v1/payments/webhook") {
-    console.log(req.originalUrl)
     next();
   } else {
     express.json()(req, res, next);

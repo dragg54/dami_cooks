@@ -7,16 +7,19 @@ import SideBar from './SideBar';
 import GlobalModal from '../GlobalModal';
 import { useSelector } from 'react-redux';
 import PopUp from '../PopUp';
+import Logout from './Logout';
 
 const AdminLayout = () => {
     const [navIsOpen, setNavIsOpen] = useState(false);
+    const [openLogout, setOpenLogout ] =useState(false)
     const globalModal = useSelector(state => state.globalModal)
     return (
         <div className={`admin w-full overflow-y-hidden  h-screen ${globalModal.opened && 'overflow-y-hidden'}`}>
          <GlobalModal />
          <PopUp />
             <NavigationMenu {...{ navIsOpen, setNavIsOpen }} />
-            <Header {...{ navIsOpen, setNavIsOpen }} />
+            <Header {...{ navIsOpen, setNavIsOpen, setOpenLogout}} />
+            <Logout {...{openLogout, setOpenLogout}}/>
             <div className='w-full flex h-full'>
                 <SideBar />
                 <div className='w-full p-1 md:pl-24 md:p-12 pb-0 h-full bg-[#efefef] overflow-hidden flex justify-center'>
