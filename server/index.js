@@ -1,5 +1,4 @@
 import express from 'express'
-import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
 import { userRouter } from './routes/UserRoute.js'
@@ -14,14 +13,11 @@ import { cartRoute } from './routes/CartRoute.js'
 import { cartItemRoute } from './routes/CartItemRoute.js'
 import { paymentRoute } from './routes/PaymentRoute.js'
 import http from 'http'
-import { Server } from 'socket.io';
-import { SocketAddress } from 'net'
 import { registerUser, removeUser } from './socket/registerUser.js'
 import { sendNotification } from './socket/createNotification.js'
 import { init } from './socket/socket.js'
 import { notificationRoute } from './routes/NotificationRoute.js'
 import { adminSettingRoute } from './routes/AdminSettingRoute.js'
-import { sendEmail } from './services/EmailService.js'
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -30,8 +26,8 @@ const __dirname = path.dirname(__filename);
 dotenv.config()
 const app = express()
 app.use((req, res, next) => {
-  console.log(req.originalUrl)
-  if (req.originalUrl === "/api/v1/payments/webhook") {
+  if (req.originalUrl == "/api/v1/payments/webhook") {
+    console.log(req.originalUrl)
     next();
   } else {
     express.json()(req, res, next);
