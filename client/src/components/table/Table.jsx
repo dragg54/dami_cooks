@@ -31,6 +31,7 @@ const CustomTable = ({
   onPageChange,
   isLoading,
   setFetchEnabled,
+  totalItems,
   handleEnterKey,
   updateLink,
   filterValues,
@@ -117,7 +118,7 @@ const CustomTable = ({
         </div>
       </div>
       <div className="max-h-[350px] min-h-[300px] mt-4 overflow-y-scroll w-full overflow-x-scroll ">
-        {isLoading ? <Spinner style={'!h-12 !w-12 mx-auto mt-20'} isLoading={true}/> :!tableData || tableData.length < 1 ? <MerchantEmptyState /> :
+        {isLoading ? <Spinner style={'!h-12 !w-12 mx-auto mt-20'} isLoading={isLoading}/> :!tableData || tableData.length < 1 ? <MerchantEmptyState /> :
         <Table>
         <TableHeader> {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>
@@ -180,6 +181,7 @@ const CustomTable = ({
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={onPageChange}
+          totalItems={totalItems}
         />
     </div>
   );

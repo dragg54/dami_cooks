@@ -64,6 +64,7 @@ const ItemList = () => {
       // rawData: items?.rows,
       currentPage: page,
       setDebouncedQuery, canAdd: true,
+      totalItems: items?.totalItems,
       debouncedQuery, isLoading,
       updateLink: "/updateItem",setSize,
          totalPages: items?.totalPages,setFilterValues,setFetchEnabled,

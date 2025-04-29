@@ -70,7 +70,7 @@ const OrderList = () => {
 <div className="w-full">
      <CustomTable
        {...{caption: "Orders", tableData: processedData ,setFetchEnabled,
-        openModal:true,
+        openModal:true, totalItems: orderData?.totalItems, 
          placeholder: "Search orders",canEdit: true, isLoading, updateLink: "/update-order-status",
          currentPage: page, debouncedQuery, setDebouncedQuery,
          totalPages: orderData?.totalPages, filterValues,handleEnterKey, fetchEnabled,
