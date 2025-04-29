@@ -8,9 +8,10 @@ import { uploadImage } from "../utils/uploadImage.js";
 import { getPagination, getPagingData } from "../utils/pagination.js";
 import { literal, Op } from "sequelize";
 import { ItemCategory } from "../models/ItemCategory.js";
+import { generateCd } from "../utils/generateCd.js";
 
 export const getAllItems = async (req) => {
-    const { page, size, status, searchText, name, itemCategory, price, itemType } = req.query; 
+    const { page, size, status, searchText, name, itemCd, itemCategory, price, itemType } = req.query; 
     const { limit, offset } = getPagination(page, size);
 
     const queryOpts = {where:{}}
@@ -21,6 +22,10 @@ export const getAllItems = async (req) => {
 
     if(itemCategory){
         itemCategoryOpts['where'] = {"name": itemCategory}
+    }
+
+    if(itemCd){
+        itemCategoryOpts['where'] = {"itemCd": itemCd}
     }
 
     if (searchText) {
@@ -109,7 +114,7 @@ export const createItem = async (req) => {
         throw new DuplicateError(errMsg)
     }
     const cloudinaryImageUrl = await uploadImage(path)
-    return await Item.create({...req.body, imageUrl: cloudinaryImageUrl});
+    return await Item.create({...req.body, imageUrl: cloudinaryImageUrl, itemCd: generateCd("ITM")});
 };
 
 export const updateItem = async (req) => {
@@ -146,3 +151,10 @@ export const deleteItem = async (req) => {
     await item.destroy({where: {id}});
     return true;
 };
+
+function generateItemCd() {
+    const now = Date.now().toString(); 
+    const shortTimestamp = now.slice(-5); 
+    const randomPart = Math.floor(Math.random() * 10); 
+    return `ORD${shortTimestamp}${randomPart}`;
+} 

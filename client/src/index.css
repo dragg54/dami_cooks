@@ -26,7 +26,7 @@ body {
 
 
 h1,h2, h3, h4, h5 {
-  font-family: "Cormorant Upright", serif;
+  /* font-family: "Cormorant Upright", serif; */
   font-weight: 600;
   font-style: normal;
 }

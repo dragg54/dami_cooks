@@ -16,11 +16,24 @@ const UpdateItemUI = () => {
         itemType: { label: "", value: "" },
         itemCategory: { label: "", value: "" }
     })
+
     const [responseStatus, setResponseStatus] = useState()
     const state = useLocation().state
+    const initialValues = {
+        id: state.id,
+        name: state?.row["name"],
+        uom: state?.row["uom"],
+        description: state?.row.description,
+        price: state?.row.price,
+        imageUrl: state?.row.imageUrl,
+        status: state?.row.status,
+        itemType: state?.row.itemType
+
+        // itemCategoryId: state?.row["name"]
+    }
     const [file, setFile] = useState()
     const { mutate, isError, isLoading } = UpdateItem({ setResponseStatus,  id:state?.row?.id})
-    const [status, setStatus] = useState(null);
+    const [status, setStatus] = useState(initialValues.status);
 
     
     const handleSubmit = (values, resetForm) => {
@@ -60,8 +73,8 @@ const UpdateItemUI = () => {
             value: 3
         }
     ]
-
     const itemTypes = [{ label: "Main Item", value: "MAIN_ITEM" }, { label: "Sub Item", value: "SUB_ITEM" }]
+    
     return (
         <div className="w-[100%] md:w-4/5 md:h-[550px] overflow-y-hidden p-4 md:p-8 bg-white">
             <FormContainer
@@ -69,7 +82,7 @@ const UpdateItemUI = () => {
                 formStyle={'grid md:grid-cols-3 grid-cols-2 gap-x-3 gap-y-3'}
                 {...{
                     title: "Update Item", handleSubmit, isLoading,
-                    initialValues: state?.row, responseStatus, validationSchema, isError, setFile
+                    initialValues, responseStatus, validationSchema, isError, setFile
                 }}>
                 <div className="w-full ">
                     <TextInput name='name' label='Item Name' />

@@ -22,6 +22,7 @@ import { sendMerchantOrderPlacedMail } from '../emails/sendMessages/SendMerchant
 import { sendCustomerPaymentRefundedMail } from '../emails/sendMessages/SendCustomerPaymentRefundedMail.js'
 import User from '../models/User.js'
 import { sendCustomerPaymentRefundProcessingMail } from '../emails/sendMessages/SendCustomerPaymentRefundedProcessingMail.js'
+import { generateCd } from '../utils/generateCd.js'
 
 dotenv.config()
 
@@ -34,7 +35,7 @@ export const initializePayment = async (req) => {
         }
         if (items && items.length > 0) {
             const totalCartItemAmount = items.length > 1 ? items.reduce((prevItem, nextItem) => ((Number(prevItem.price || 0) * Number(prevItem.quantity || 0))
-                + (Number(nextItem.price || 0) * Number(nextItem.quantity || 0)))) : (items?.length > 0 && (Number(items[0]?.price) && Number(items[0].quantity)))
+                + (Number(nextItem.price || 0) * Number(nextItem.quantity || 0)))) :  Number(items[0]?.price) * Number(items[0].quantity)
             const paymentItem = items.map((item) => (
                 {
                     id: item.id,
@@ -45,7 +46,7 @@ export const initializePayment = async (req) => {
             ))
             const paymentIntent = await stripe.paymentIntents.create({
                 amount: totalCartItemAmount * 100,
-                currency: "usd",
+                currency: "eur",
                 metadata: {
                     orderedBy: req.user.id,
                     cartId: userCart.dataValues.id,
@@ -62,7 +63,7 @@ export const initializePayment = async (req) => {
 }
 
 export const refundPayment = async (req, transaction) => {
-    const { orderId, customer } = req
+    const { orderId, customer , orderCd} = req
     const payment = await Payment.findOne({
         where: {
             orderId,
@@ -78,7 +79,7 @@ export const refundPayment = async (req, transaction) => {
     await stripe.refunds.create({
         payment_intent: payment.gatewayPaymentId,
     });
-    sendCustomerPaymentRefundProcessingMail(`${Number(orderId > 999 ? orderId : "0"+orderId)}`, customer.name, customer.email)
+    sendCustomerPaymentRefundProcessingMail(orderCd, customer.name, customer.email)
 }
 
 export const paymentWebhook = async (req, res) => {
@@ -89,18 +90,19 @@ export const paymentWebhook = async (req, res) => {
         const event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
         const paymentIntent = event.data.object;
         if (event.type === "payment_intent.succeeded") {
+            const orderCd = generateCd("ORD")
             const { orderedBy, cartItems, cartId } = paymentIntent.metadata
-            const customer = await User.findOne({where: {id: orderedBy}, attributes: ["email"]})
-            const order = await Order.create({ orderedBy, amount: paymentIntent.amount, userId: orderedBy }, { transaction });
+            const customer = await User.findOne({where: {id: orderedBy}, attributes: ['firstName', "email"]})
+            const order = await Order.create({orderCd, orderedBy, amount: paymentIntent.amount/100, userId: orderedBy }, { transaction });
             const orderItems = JSON.parse(cartItems).map(cartItem => ({
                 itemId: cartItem.id,
                 orderId: order.dataValues.id,
-                quantity: cartItem.quantity
+                quantity: cartItem.quantity,
             }))
             await OrderItem.bulkCreate(orderItems, { transaction })
             await Payment.create({
                 gatewayPaymentId: paymentIntent.id,
-                amount: paymentIntent.amount,
+                amount: paymentIntent.amount/100,
                 status: paymentIntent.status,
                 orderId: order.dataValues.id
             }, { transaction })
@@ -115,7 +117,7 @@ export const paymentWebhook = async (req, res) => {
                 state: paymentIntent.shipping.state
             }, { transaction })
             await CartItem.destroy({
-                where:{
+                where:{ 
                     cartId
                 }
             },{transaction})
@@ -129,10 +131,8 @@ export const paymentWebhook = async (req, res) => {
             //     cartId: userCart.id
             // }})
             sendNotification()
-            sendCustomerOrderPlacedMail(customer?.dataValues?.firstName, `ORD${Number(order.dataValues.id) > 999 ? order.dataValues.id 
-                : 1000 + Number(order.dataValues.id)}`, customer?.dataValues?.email)
-            sendMerchantOrderPlacedMail(`ORD${Number(order.dataValues.id) > 999 ? order.dataValues.id 
-                : 1000 + Number(order.dataValues.id)}`, customer?.dataValues?.firstName, process.env.MERCHANT_GMAIL)
+            sendCustomerOrderPlacedMail(customer?.dataValues?.firstName, orderCd, customer?.dataValues?.email)
+            sendMerchantOrderPlacedMail(orderCd, customer?.dataValues?.firstName, process.env.MERCHANT_GMAIL)
             await transaction.commit()
 
         }
@@ -263,4 +263,17 @@ export const getPayments = async (req) => {
         ...queryOpts
     });
     return getPagingData(data, page, limit)
+}
+
+export const getTotalRevenue = async (req) => {
+    const isAdmin = req.user.isAdmin
+    if (!isAdmin) {
+        throw new UnauthorizedError("User cannot perform operation")
+    }
+    const revenue = await Payment.sum(
+        "amount", {where: {
+            status: "succeeded"
+        }
+    })
+    return revenue
 }

@@ -13,7 +13,7 @@ const globalModalSlice = createSlice({
         openModal:(state, action) => {
             state.opened = true
             state.component = action.payload?.component
-            state.props = JSON.stringify(action.payload?.props)
+            state.props = action.payload?.props
         },
         closeModal: (state) => {
             state.opened = false

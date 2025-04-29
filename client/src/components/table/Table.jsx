@@ -18,19 +18,23 @@ import Filter from "./Filter.jsx";
 import MerchantEmptyState from "../MerchantEmptyState.jsx";
 import Spinner from "../Spinner.jsx";
 import { ExportToExcel } from "./ExportToExcel.jsx";
+import { openModal as openGlobalModal } from "../../redux/GlobalModalSlice.js";
 
 
 // eslint-disable-next-line react/prop-types
 const CustomTable = ({
   tableData, placeholder, caption,
   currentPage,
+  modalComponent,
   totalPages,
+  rawData,
   onPageChange,
   isLoading,
   setFetchEnabled,
   handleEnterKey,
   updateLink,
   filterValues,
+  openModal,
   setFilterValues,
   canAdd,
   debouncedQuery,
@@ -44,6 +48,7 @@ const CustomTable = ({
   }))
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const filterRef = useRef(null);
+  const dispatch = useDispatch()
   // Function to close the filter when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
@@ -139,13 +144,14 @@ const CustomTable = ({
               <TableRow key={row.id}>
                 {canEdit && 
                 <TableCell >
-                  <FaEdit onClick={() => navigate(updateLink, {state: {row:row._valuesCache}})}
+                  <FaEdit onClick={() => openModal ? dispatch(openGlobalModal({component: modalComponent, props: row._valuesCache})):navigate(updateLink, {state: {row:rawData || row._valuesCache}})}
                     className=" text-gray-500 text-lg cursor-pointer" />
                 </TableCell>
 }
                 {row.getVisibleCells().map((cell, index) => (
                   // cell.column.id == "id" ? '':
                     <TableCell hidden={cell.column.id == "id"} key={index}>
+                      {console.log(cell.column.columnDef.cell)}
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}      
                   </TableCell>
                 ))}

@@ -6,7 +6,7 @@ import FileInput from "../../../components/input/FileInput"
 import NumberInput from "../../../components/input/NumberInput"
 import { PostItem } from "./api/PostItem"
 import * as Yup from 'yup'
-import OrderSwitch from "../../../components/input/Switch"
+import Switch from "../../../components/input/Switch"
 import { FetchItemCategories } from "./api/FetchItemCategories"
 
 
@@ -91,7 +91,7 @@ const AddItem = () => {
                 </div>
                 <div className="flex flex-col items-center md:mb-5 md:-ml-40 ">
                     Active
-                    <OrderSwitch {...{leftLabel:'OFFLINE', rightLabel: "ONLINE", status, setStatus}}/>
+                    <Switch {...{leftLabel:'OFFLINE', rightLabel: "ONLINE", status, setStatus}}/>
                 </div>
             </FormContainer>
         </div >

@@ -72,6 +72,19 @@ export const getOrderById = async (req, res) => {
         );
     }
 }
+export const getOrderAggregates = async(req, res) =>{
+    try {
+        const order = await orderService.getOrderAggregates(req)
+        res.json(order)
+    }
+    catch (error) {
+        console.log(error.message)
+        res.status(error.statusCode || 500).json(error.message
+            || "Internal server error"
+        );
+    }
+}
+
 
 
 

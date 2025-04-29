@@ -6,9 +6,12 @@ import { useSelector } from "react-redux"
 import { usePostData } from "../../../hooks/api/usePostData"
 import Spinner from "../../../components/Spinner"
 import UnauthenticatedCheckout from "./UnauthenticatedCheckout"
+import PaymentIntentFailed from "./PaymentIntentFailed"
+import { useNavigate } from "react-router-dom"
 
 const Checkout = () => {
   const user = useSelector(state => state.user)
+  const navigate = useNavigate()
   const initialValues = {
     firstName: user?.user?.firstName,
     lastName: user?.user?.lastName,
@@ -22,8 +25,8 @@ const Checkout = () => {
     setClientSecret(data.data.clientSecret)
   }
 
-  const onError = (err) => {
-    console.log(err.message)
+  const onError =()=> {
+     navigate("payment-intent-failed")
   }
 
   const { mutate, isLoading } = usePostData({ onSuccess, onError, url: '/payments' })
@@ -54,6 +57,7 @@ const Checkout = () => {
     </div>
   }
   
+
   return (
     <div className="w-full flex flex-col md:flex-row px-4 md:px-0">
       <BillingDetails {...{ deliveryDetails, setDeliveryDetails }} />

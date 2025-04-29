@@ -11,6 +11,7 @@ const ItemList = () => {
   const [page, setPage] = useState(1)
   const [fetchEnabled, setFetchEnabled] = useState(true)
   const [filterValues, setFilterValues] = useState({
+    'ITEM NUMBER': {id: "itemCd", value: null},
     'NAME': {id: "name", value: null},
     'ITEM TYPE':  {id:"itemType", value: null},
     'PRICE': {id: "price", value: null},
@@ -24,6 +25,7 @@ const ItemList = () => {
     itemType: filterValues["ITEM TYPE"].value,
     price: filterValues["PRICE"].value,
     status: filterValues["STATUS"].value,
+    itemCd: filterValues["ITEM NUMBER"].value
   }), [size, page, debouncedQuery, fetchEnabled]);
   const {data:items, refetch, isLoading} = FetchAllItems({filters})
 
@@ -33,10 +35,14 @@ const ItemList = () => {
   let processedData = items?.rows?.map((dta)=>(
     {
       itemId: dta.id,
-      "Item Name": dta.name,
-      "Description": dta.description,
+      "Item Number": dta.itemCd,
+      name: dta.name,
+      description: dta.description,
+      itemType: dta.itemType,
+      imageUrl: dta.imageUrl,
+      uom:dta?.uom,
       status: dta.status,
-      "Category": dta.itemCategory?.name,
+      "Item Category": dta.itemCategory?.name,
       price: dta.price,
       "Created At": format(new Date(dta.createdAt), 'dd-MM-yyy HH:mm'),
       "Updated At": format(new Date(dta.updatedAt), 'dd-MM-yyy HH:mm')
@@ -55,6 +61,7 @@ const ItemList = () => {
     <div className="w-full">
      <CustomTable {...{caption: "Items", 
       tableData: processedData, 
+      // rawData: items?.rows,
       currentPage: page,
       setDebouncedQuery, canAdd: true,
       debouncedQuery, isLoading,

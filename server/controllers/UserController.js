@@ -31,3 +31,25 @@ export const loginUser = async (req, res) => {
       res.status(error.statusCode || 500).json(error.message || "Internal server error")
     }
   }
+
+  export const getAdmin = async(req, res) =>{
+    try {
+      const admin = await userService.getAdmin(req)
+       res.json(admin)
+    }
+    catch (error) {
+      console.log(error.message)
+      res.status(error.statusCode || 500).json(error.message || "Internal server error")
+    }
+  }
+
+  export const updateUser = async(req, res) =>{
+    try {
+       await userService.updateUser(req)
+       res.json("User updated")
+    }
+    catch (error) {
+      console.log(error.message)
+      res.status(error.statusCode || 500).json(error.message || "Internal server error")
+    }
+  }

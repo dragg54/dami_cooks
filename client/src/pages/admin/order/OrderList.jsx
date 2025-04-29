@@ -17,6 +17,7 @@ const OrderList = () => {
   const [fetchEnabled, setFetchEnabled] = useState(true)
   const mutateNotificationStatus = UpdateNotificationStatus()
   const [filterValues, setFilterValues] = useState({
+    'ORDER NUMBER': {id:"orderCd", value: null},
     'CUSTOMER NAME': {id: "customerName", value: null},
     'CITY':  {id:"city", value: null},
     'STATUS': {id: "status", value: null},
@@ -32,6 +33,7 @@ const OrderList = () => {
     status: filterValues["STATUS"].value,
     fromDate: filterValues["FROM DATE"].value,
     toDate: filterValues["TO DATE"].value,
+    orderCd: filterValues['ORDER NUMBER'].value
   }), [size, page, debouncedQuery, fetchEnabled]);
 
 
@@ -41,6 +43,7 @@ const OrderList = () => {
   let processedData = orderData?.rows?.map((dta)=>(
     {
       orderId: dta.id,
+      "Order Number": dta.orderCd,
       "Customer Name": dta.user?.firstName + " " + dta.user?.lastName,
       status: dta.status,
       "Payment Method": 'CARD',
@@ -67,11 +70,12 @@ const OrderList = () => {
 <div className="w-full">
      <CustomTable
        {...{caption: "Orders", tableData: processedData ,setFetchEnabled,
+        openModal:true,
          placeholder: "Search orders",canEdit: true, isLoading, updateLink: "/update-order-status",
          currentPage: page, debouncedQuery, setDebouncedQuery,
          totalPages: orderData?.totalPages, filterValues,handleEnterKey, fetchEnabled,
          onPageChange:setPage,setFilterValues,
-          updateComponent: <OrderView />}}/>
+          modalComponent: <OrderView />}}/>
     </div>  )
 }
 

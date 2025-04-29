@@ -6,6 +6,7 @@ import { Button } from "../../../components/button/Button";
 import { useDispatch } from "react-redux";
 import { clearCart } from "../../../redux/CartSlice";
 import { useState } from "react";
+import PaymentFailed from "./PaymentFailed";
 
 function PaymentForm({clientSecret, deliveryDetails}) {
   const stripe = useStripe();
@@ -31,7 +32,7 @@ function PaymentForm({clientSecret, deliveryDetails}) {
             address: {
               line1: deliveryDetails?.address || "",
               line2: "",
-              city: "",
+              city: deliveryDetails?.city || "",
               state: "",
               postal_code: deliveryDetails?.postalCode || "",
               country: "GB",
@@ -44,7 +45,7 @@ function PaymentForm({clientSecret, deliveryDetails}) {
         address: {
           line1: deliveryDetails?.address || "",
           line2: "",
-          city: "",
+          city: deliveryDetails?.city || "",
           state: "",
           postal_code: deliveryDetails?.postalCode || "",
           country: "GB",
@@ -56,6 +57,13 @@ function PaymentForm({clientSecret, deliveryDetails}) {
         setPaymentIntentLoading(false)
         navigate("/success")
         dispatch(clearCart())
+      }
+      else{
+        setPaymentIntentLoading(false)
+        console.log(paymentIntent)
+        return(
+          navigate("payment-failed")
+        )
       }
     }
     catch (err) {

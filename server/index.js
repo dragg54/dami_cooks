@@ -20,6 +20,7 @@ import { registerUser, removeUser } from './socket/registerUser.js'
 import { sendNotification } from './socket/createNotification.js'
 import { init } from './socket/socket.js'
 import { notificationRoute } from './routes/NotificationRoute.js'
+import { adminSettingRoute } from './routes/AdminSettingRoute.js'
 import { sendEmail } from './services/EmailService.js'
 
 
@@ -75,6 +76,7 @@ app.use("/api/v1/carts", cartRoute)
 app.use("/api/v1/cartItems", cartItemRoute)
 app.use("/api/v1/payments", paymentRoute)
 app.use("/api/v1/notifications", notificationRoute)
+app.use("/api/v1/adminSettings", adminSettingRoute)
 
 const port = 8080
 const io = init(server, corsOptions)

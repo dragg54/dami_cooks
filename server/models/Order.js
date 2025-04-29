@@ -5,6 +5,9 @@ import User from "./User.js";
 import { Cart } from "./Cart.js";
 
 export const Order = db.define("order", {
+  orderCd:{
+    type: DataTypes.STRING
+  },
     status: {
         type: DataTypes.ENUM('PENDING', 'ACCEPTED', 'REJECTED', 'CANCELLED', 'DELIVERED'),
         defaultValue: 'PENDING'

@@ -1,19 +1,20 @@
 /* eslint-disable react/prop-types */
-import { Form, Formik } from 'formik'
+import { Field, Form, Formik } from 'formik'
 import Response from '../Response'
 import BackButton from '../button/BackButton'
 import { Button } from '../button/Button'
 import AddButton from '../button/AddButton'
 import { useNavigate } from 'react-router-dom'
 
-const MainFormContainer = ({ children, title, handleSubmit, initialValues, validationSchema, style, formStyle, isUpdate, isLoading, responseStatus }) => {
+const MainFormContainer = ({ children, title, handleSubmit, subTitle, initialValues, validationSchema, style, formStyle, isUpdate, isLoading, responseStatus }) => {
   const navigate = useNavigate()
   return (
     <div className={`${style} w-full bg-white rounded-md h-auto`}>
       <p className='font-semibold text-xl'>{title}</p>
+      <small className='text-gray-500'>{subTitle || ""}</small>
       <div className='my-3 border w-full border-gray-200'></div>
       <Formik initialValues={initialValues}
-        // validationSchema={validationSchema}
+        validationSchema={validationSchema ? validationSchema : null}
         onSubmit={(values, { resetForm }) => {
           handleSubmit(values, resetForm)
         }}>

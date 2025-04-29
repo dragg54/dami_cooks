@@ -3,6 +3,9 @@ import db from '../configs/db.js'
 import { ItemCategory } from './ItemCategory.js';
 
 export const Item = db.define("item", {
+  itemCd:{
+    type: DataTypes.STRING
+  },
   name: {
     type: DataTypes.STRING,
     allowNull: false,

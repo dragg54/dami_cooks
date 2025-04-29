@@ -1,4 +1,4 @@
-import { HostNotFoundError, literal, Op } from "sequelize"
+import { HostNotFoundError, literal, Op, Sequelize } from "sequelize"
 import { orderStatus } from "../constants/OrderStatus.js"
 import { BadRequestError } from "../exceptions/BadRequestError.js"
 import { UnauthorizedError } from "../exceptions/UnauthorizedError.js"
@@ -14,6 +14,7 @@ import { refundPayment } from "./PaymentService.js"
 import { sendMerchantOrderCancelledMail } from "../emails/sendMessages/SendMerchantOrderCancelledMail.js"
 import dotenv from 'dotenv'
 import { sendCustomerOrderCancelledMail } from "../emails/sendMessages/SendCustomerOrderRejectedMail.js"
+import { generateCd } from "../utils/generateCd.js"
 
 dotenv.config()
 
@@ -25,13 +26,13 @@ export const createOrder = async (req) => {
         const errMsg = `Failed to create order: Cart must exist before order creation`
         throw BadRequestError(errMsg)
     }
-    await Order.create({ ...req.body, userId })
+    await Order.create({ ...req.body, amount: req.body.amount/100, userId, orderCd: generateCd("ORD") })
 }
 
 
 export const getAllOrders = async (req) => {
     const { page, size, status,
-        searchText, customerName, city, address, toDate, fromDate, customerId } = req.query;
+        searchText, customerName, orderCd, city, address, toDate, fromDate, customerId } = req.query;
     const user = req.user;
 
     // if (!user.isAdmin) {
@@ -89,6 +90,10 @@ export const getAllOrders = async (req) => {
     // Apply status filter without overwriting `where`
     if (status) {
         queryOpts.where.status = status.toUpperCase();
+    }
+
+    if (orderCd) {
+        queryOpts.where.orderCd = orderCd;
     }
 
     if (fromDate && !toDate) {
@@ -213,13 +218,14 @@ export const updateOrderStatus = async (req, transaction) => {
         }
         const refundPaymentRequest = {
             orderId: id,
+            orderCd: existingOrder.orderCd,
              customer: {
                 name: customer.dataValues.firstName,
                 email: customer.dataValues.email
              }
         }
         await refundPayment(refundPaymentRequest,customer.dataValues.firstName, transaction)
-        sendCustomerOrderCancelledMail(id, customer.dataValues.firstName, customer.dataValues.email)
+        sendCustomerOrderCancelledMail(existingOrder.orderCd, customer.dataValues.firstName, customer.dataValues.email)
     }
 }
 
@@ -257,9 +263,8 @@ export const cancelOrder = async (req, transaction) => {
              }
         }
         await refundPayment(refundPaymentRequest, transaction)
-       
         await Order.update({ status }, { where: { id } }, { transaction })
-        sendMerchantOrderCancelledMail(id, customer.dataValues?.firstName, process.env.MERCHANT_GMAIL)
+        sendMerchantOrderCancelledMail(existingOrder.dataValues.orderCd, customer.dataValues?.firstName, process.env.MERCHANT_GMAIL)
     }
     catch (ex) {
         console.log(ex)
@@ -267,3 +272,26 @@ export const cancelOrder = async (req, transaction) => {
     }
 
 }
+
+export const getOrderAggregates = async(req) =>{
+    const result = await Order.findAll({
+        attributes: [
+          'status', 
+          [Sequelize.fn('COUNT', Sequelize.col('status')), 'count']
+        ],
+        group: ['status'],
+        raw: true 
+      });
+      const successfulOrders = result.filter(order => order.status !== "CANCELLED");
+
+      const totalSuccessfulOrders = successfulOrders.reduce((sum, order) => sum + parseInt(order.count), 0);
+    
+      const totalCancelled = result.find(order => order.status === "CANCELLED")?.count || 0;
+    
+      return {
+        totalOrders: totalSuccessfulOrders,
+        totalCancelled: parseInt(totalCancelled)
+      };
+}
+
+  
