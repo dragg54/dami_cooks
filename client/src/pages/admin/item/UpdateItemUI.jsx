@@ -89,7 +89,7 @@ const UpdateItemUI = () => {
                 </div>
                 <div className="w-full  md:mb-0">
                     <Select name="itemCategory" label={'Select Category'} options={[{ label: "Meal", value: "1" }, { label: "Pastry", value: "2" }]}
-                     selectedValue={{itemCategory:itemCategory?.find(x => x.value == state?.row?.itemCategoryId) || selectValues}}
+                     selectedValue={{itemCategory:itemCategory?.find(x => x.value == state?.row?.itemCategory?.id) || selectValues}}
                        onChange={setSelectValues} />
                 </div>
                 <div className="w-full  md:mb-0">

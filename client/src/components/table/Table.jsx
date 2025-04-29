@@ -44,7 +44,16 @@ const CustomTable = ({
 
   const [sorting, setSorting] = useState([]);
   const columns =tableData && tableData.length && Object.keys(tableData[0]).map((dataKey) => ({
-    accessorKey: dataKey, header: capitalizeString(removeSpecialChars(dataKey)), sortingKeyFn: 'auto'
+     accessorKey: dataKey,
+     header: capitalizeString(removeSpecialChars(dataKey)),
+     sortingKeyFn: 'auto',
+     cell: info => {
+      const value = info.getValue();
+      if (value && typeof value === 'object' && !Array.isArray(value)) {
+        return value.name;
+      }
+      return value;
+    }
   }))
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const filterRef = useRef(null);
@@ -144,14 +153,13 @@ const CustomTable = ({
               <TableRow key={row.id}>
                 {canEdit && 
                 <TableCell >
-                  <FaEdit onClick={() => openModal ? dispatch(openGlobalModal({component: modalComponent, props: row._valuesCache})):navigate(updateLink, {state: {row:rawData || row._valuesCache}})}
+                  <FaEdit onClick={() => openModal ? dispatch(openGlobalModal({component: modalComponent, props: row.original})):navigate(updateLink, {state: {row:rawData || row.original}})}
                     className=" text-gray-500 text-lg cursor-pointer" />
                 </TableCell>
 }
                 {row.getVisibleCells().map((cell, index) => (
                   // cell.column.id == "id" ? '':
                     <TableCell hidden={cell.column.id == "id"} key={index}>
-                      {console.log(cell.column.columnDef.cell)}
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}      
                   </TableCell>
                 ))}

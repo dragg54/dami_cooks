@@ -42,7 +42,7 @@ const ItemList = () => {
       imageUrl: dta.imageUrl,
       uom:dta?.uom,
       status: dta.status,
-      "Item Category": dta.itemCategory?.name,
+      "itemCategory": {id:dta.itemCategory.id,name:dta.itemCategory?.name},
       price: dta.price,
       "Created At": format(new Date(dta.createdAt), 'dd-MM-yyy HH:mm'),
       "Updated At": format(new Date(dta.updatedAt), 'dd-MM-yyy HH:mm')

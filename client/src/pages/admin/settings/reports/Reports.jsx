@@ -40,7 +40,7 @@ const Reports = () => {
             </div>
             <div className=" flex justify-center w-[460px]">
                 <Button onClick={() => dispatch(openModal({ component: <ConfirmChanges updateChanges={() => handleUpdateAdminSettings()} /> }))
-                } className={"!rounded-full w-[100px] mt-12 ml-auto"}>Save</Button>
+                } className={"!rounded-full !w-[100px] mt-12 ml-auto"}>Save</Button>
             </div>
         </div>
     )

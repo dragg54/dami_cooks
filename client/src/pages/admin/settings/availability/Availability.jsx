@@ -46,7 +46,7 @@ const Availability = () => {
             </div>
             <div className=" flex justify-end w-[700px]">
             <Button onClick={() => dispatch(openModal({ component: <ConfirmChanges updateChanges={() => handleUpdateAdminSettings()} /> }))
-                } className={"!rounded-full w-[100px] mt-12 ml-auto"}>Save</Button>           
+                } className={"!rounded-full !w-[100px] mt-12 ml-auto"}>Save</Button>           
             </div>
         </div>
     )

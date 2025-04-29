@@ -22,7 +22,7 @@ const MainFormContainer = ({ children, title, handleSubmit, subTitle, initialVal
           {children}
           <Response {...{ responseStatus, isLoading }} style={'md:col-span-3 mt-5'} />
             <div className='mt-6 border-t w-full pt-4 flex justify-end md:col-span-3  gap-3'>
-                <BackButton onClick={()=> navigate(-1)}/>
+                <BackButton type="button" onClick={()=> navigate(-1)}/>
                 {isUpdate ? <Button type='submit' className={'!w-[100px] !rounded-full'}>Update</Button>:<AddButton type='submit' />}
             </div>
         </Form>

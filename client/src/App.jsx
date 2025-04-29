@@ -35,6 +35,7 @@ import UserManagement from "./pages/admin/settings/user-management/UserManagemen
 import Reports from "./pages/admin/settings/reports/Reports"
 import Notification from "./pages/admin/settings/notification/Notification"
 import Availability from "./pages/admin/settings/availability/Availability"
+import HomeRedirect from "./pages/HomeRedirect"
 
 function App() {
   const user = useSelector(state => state.user).user
@@ -83,7 +84,7 @@ function App() {
           <Route path="/contact-us" element={<ContactUs />} /> 
           <Route path='/checkout' element={<Checkout/>} />
           <Route path="*" element={<NotFoundPage/>} />
-          <Route  path="/" element={<Home />} />
+          <Route  path="/" element={<HomeRedirect />} />
           <Route path="/checkout/payment-intent-failed" element={<PaymentIntentFailed />} />
           <Route path="/checkout/payment-failed" element={<PaymentFailed />} />
         </Route>
