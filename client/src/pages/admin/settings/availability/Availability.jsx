@@ -30,7 +30,7 @@ const Availability = () => {
         return <>Loading...</>
     }
      return (
-        <div className='w-full p-6'>
+        <div className='w-full p-10'>
             <h1 className='text-xl font-semibold'>Availability</h1>
             <small className='text-gray-400'>Manage your availabilty</small>
             <div className='mt-6'>

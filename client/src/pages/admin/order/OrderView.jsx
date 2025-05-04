@@ -6,6 +6,7 @@ import { FetchOrder } from "./api/FetchOrder"
 import { openModal } from "../../../redux/GlobalModalSlice"
 import AcceptOrRejectOrder from "./AcceptOrRejectOrder"
 import { useLocation } from "react-router-dom"
+import { CiDeliveryTruck } from "react-icons/ci";
 
 const OrderView = () => {
   const dispatch = useDispatch()
@@ -28,6 +29,8 @@ const OrderView = () => {
       <div className="w-full  border border-gray-300 my-5"></div>
       <p className=' text-base font-bold  text-gray-900'>Order Items</p>
       <OrderItemTable {...{ orderItems: orderItemData?.orderItems }} />
+    {
+      orderItemData?.status == "PENDING" ? 
       <div className="mt-6 ml-auto gap-2 flex">
         <Button onClick={() => {
           dispatch(openModal({ component: <AcceptOrRejectOrder {...{ status: 'REJECT',  id: orderItemData.id }} /> }))
@@ -36,6 +39,12 @@ const OrderView = () => {
           dispatch(openModal({ component: <AcceptOrRejectOrder {...{ status: 'ACCEPT', id: orderItemData.id }} /> }))
         }} className={'!bg-green-600 !rounded-full !w-[100px]'}>Accept</Button>
       </div>
+      : <Button
+        className={'flex !w-[120px] !rounded-full !ml-auto justify-center items-center gap-2'}
+         onClick={() => {
+        dispatch(openModal({ component: <AcceptOrRejectOrder {...{ status: 'SHIP', id: orderItemData.id }} /> }))
+      }}><CiDeliveryTruck className="text-2xl"/> Ship</Button>
+    }
     </div>
   )
 }

@@ -8,6 +8,7 @@ import GlobalModal from '../GlobalModal';
 import { useSelector } from 'react-redux';
 import PopUp from '../PopUp';
 import Logout from './Logout';
+import { ToastContainer } from 'react-toastify';
 
 const AdminLayout = () => {
     const [navIsOpen, setNavIsOpen] = useState(false);
@@ -16,6 +17,7 @@ const AdminLayout = () => {
     return (
         <div className={`admin w-full overflow-y-hidden  h-screen ${globalModal.opened && 'overflow-y-hidden'}`}>
          <GlobalModal />
+         <ToastContainer className={"border-red-700"} position="top-right" autoClose={5000} />
          <PopUp />
             <NavigationMenu {...{ navIsOpen, setNavIsOpen }} />
             <Header {...{ navIsOpen, setNavIsOpen, setOpenLogout}} />

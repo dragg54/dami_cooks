@@ -8,6 +8,7 @@ const TextInput = ({ label, isReadonly, name, type = "text", ...props }) => {
       <Field
         type={type}
         name={name}
+        autoComplete={props.autoComplete}
         readOnly={isReadonly || false}
         className="w-full border  border-gray-400 rounded-md p-2 text-gray-500 text-sm md:text-base"
         {...props}

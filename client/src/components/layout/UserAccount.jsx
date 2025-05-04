@@ -2,10 +2,19 @@
 import { IoLogOutOutline } from "react-icons/io5";
 import { FaList } from "react-icons/fa6";
 import { useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
+import { clearUser } from "../../redux/UserSlice";
+import { useNavigate } from "react-router-dom";
 
 
 const UserAccount = ({userAccountOpen, setUserAccountOpen, setUserOrdersOpened}) => {
     const modalRef = useRef();
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const handleLogout = () =>{
+      dispatch(clearUser())
+      navigate("/login")
+   }
     useEffect(() => {
         const handleClickOutside = (event) => {
           if (modalRef.current && !modalRef.current.contains(event.target)) {
@@ -34,7 +43,7 @@ const UserAccount = ({userAccountOpen, setUserAccountOpen, setUserOrdersOpened})
      <ul className="text-xl mt-3 flex flex-col gap-3">
         <li className="w-full hover:bg-orange-200 text-gray-500" onClick={()=> setUserOrdersOpened(true)}>
             <span className="px-2 absolute pl-4 py-2 hover:bg-orange-200 hover:cursor-pointer w-full left-0 flex items-center gap-2 "><FaList className="text-sm"/> My Orders</span></li>
-        <li className="text-orange-500 mt-2"><span className="absolute py-2 pb-3  cursor-pointer hover:bg-orange-200 pl-4 w-full left-0  flex px-2 mt-6 items-center  gap-2"><IoLogOutOutline /> Logout</span></li>
+        <li onClick={()=>handleLogout()} className="text-orange-500 mt-2"><span className="absolute py-2 pb-3  cursor-pointer hover:bg-orange-200 pl-4 w-full left-0  flex px-2 mt-6 items-center  gap-2"><IoLogOutOutline /> Logout</span></li>
      </ul>
     </div>
   )

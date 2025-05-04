@@ -38,7 +38,7 @@ const UserManagement = () => {
 
   
   return (
-    <div className='p-8'>
+    <div className='p-10'>
       {!isLoading && data &&
         <FormContainer
         isUpdate={true}

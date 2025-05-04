@@ -8,7 +8,7 @@ const Button = ({ className, children, ...props }) => {
     <button
      disabled = {props.isLoading}
       className={cn(
-        "px-4 py-2 bg-primary z-10 !cursor-pointer w-full text-xs md:text-sm text-white rounded-md hover:shadow-lg shadow-gray-600",
+        `${props.disabled && 'bg-red-300'} px-4 py-2 bg-primary z-10 !cursor-pointer w-full text-xs md:text-sm text-white rounded-md hover:shadow-lg shadow-gray-600`,
         className
       )}
       {...props}

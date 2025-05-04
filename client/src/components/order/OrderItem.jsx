@@ -29,7 +29,7 @@ const OrderItem = ({setUserOrderView}) => {
             <div className="flex justify-between">
             <div>
                 <p className=" font-semibold ">Total Amount: <span className="">{euro}{orderItem?.amount}</span></p>
-                <p className=" font-semibold mt-2">Status: <span className={`text-sm ${orderItem?.status == "PENDING" ? 'text-orange-500' : orderItem?.status == "ACCEPTED" ? "text-green-700" : "text-red-700"}`}>{orderItem?.status}</span></p>
+                <p className=" font-semibold mt-2">Status: <span className={`text-sm ${orderItem?.status == "PENDING" ? 'text-orange-500' : orderItem?.status == "ACCEPTED" || orderItem?.status == "SHIPPED" ? "text-green-700" : "text-red-700"}`}>{orderItem?.status}</span></p>
             </div>    
          <div >
             <button onClick={()=> setUserOrderView("CANCEL")}  disabled={orderItem?.status != "PENDING"} className={`px-3 border flex gap-2 items-center font-semibold border-gray-400 text-[0.6rem] p-2 ${

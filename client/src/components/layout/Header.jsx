@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { getScreenSize } from "../../utils/getScreenSize";
 import { usePostData } from "../../hooks/api/usePostData";
 import { FaUser } from "react-icons/fa";
+import { clearUser } from "../../redux/UserSlice";
 
 export const Header = ({ setNavIsOpen, setCartOpen, setUserAccountOpen, setOpenLogout}) => {
   const dispatch = useDispatch()
@@ -56,7 +57,7 @@ export const Header = ({ setNavIsOpen, setCartOpen, setUserAccountOpen, setOpenL
         : 
         <div className="flex items-center gap-3">
             <span className="text-[1.2rem] text-gray-500">Welcome Back, {user?.user?.firstName} {user?.user?.lastName}</span>
-            <span onClick={()=> setOpenLogout(true)} className="rounded-full cursor-pointer border p-3 text-red-700 text-xl">
+            <span onClick={()=> setOpenLogout(true)} className="rounded-full cursor-pointer border border-gray-500 p-3 text-red-700 text-xl">
               <FaUser />
             </span>
         </div>

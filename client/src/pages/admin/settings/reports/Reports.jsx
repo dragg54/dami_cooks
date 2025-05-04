@@ -29,7 +29,7 @@ const Reports = () => {
         })
     }, [adminSettings, isLoading])
     return (
-        <div className="w-full p-6">
+        <div className="w-full p-10">
             <h1 className="text-xl">Reports</h1>
             <p className="text-gray-500 mt-1">This allows to you to schedule the period you want your reports to be sent</p>
             <div className="mt-5">
@@ -38,7 +38,7 @@ const Reports = () => {
                     <SelectInput onChange={setSelectValues} selectedValue={selectValues} options={options} name={"paymentReportFrequency"} label={"Payment Report"} />
                 </form>
             </div>
-            <div className=" flex justify-center w-[460px]">
+            <div className=" flex justify-center w-[435px]">
                 <Button onClick={() => dispatch(openModal({ component: <ConfirmChanges updateChanges={() => handleUpdateAdminSettings()} /> }))
                 } className={"!rounded-full !w-[100px] mt-12 ml-auto"}>Save</Button>
             </div>

@@ -12,27 +12,29 @@ import OrderSwitch from "../../../components/input/Switch"
 
 
 const UpdateItemUI = () => {
-    const [selectValues, setSelectValues] = useState({
-        itemType: { label: "", value: "" },
-        itemCategory: { label: "", value: "" }
-    })
-
     const [responseStatus, setResponseStatus] = useState()
     const state = useLocation().state
+
+    const [selectValues, setSelectValues] = useState({
+        itemType: { label: "", value: "" },
+        itemCategory: { label: state?.row["Item Category"]?.name || "", value: state?.row["Item Category"]?.id || null }
+    })
+    
     const initialValues = {
-        id: state.id,
+        id: state?.row["Item Id"],
         name: state?.row["name"],
         uom: state?.row["uom"],
         description: state?.row.description,
         price: state?.row.price,
         imageUrl: state?.row.imageUrl,
         status: state?.row.status,
-        itemType: state?.row.itemType
+        itemType: state?.row.itemType,
+        itemCategory: state?.row["Item Category"]
 
         // itemCategoryId: state?.row["name"]
     }
     const [file, setFile] = useState()
-    const { mutate, isError, isLoading } = UpdateItem({ setResponseStatus,  id:state?.row?.id})
+    const { mutate, isError, isLoading } = UpdateItem({ setResponseStatus,  id: initialValues?.id})
     const [status, setStatus] = useState(initialValues.status);
 
     
@@ -89,7 +91,7 @@ const UpdateItemUI = () => {
                 </div>
                 <div className="w-full  md:mb-0">
                     <Select name="itemCategory" label={'Select Category'} options={[{ label: "Meal", value: "1" }, { label: "Pastry", value: "2" }]}
-                     selectedValue={{itemCategory:itemCategory?.find(x => x.value == state?.row?.itemCategory?.id) || selectValues}}
+                     selectedValue={{itemCategory:itemCategory?.find(x => x.value == initialValues?.itemCategory?.id) || selectValues}}
                        onChange={setSelectValues} />
                 </div>
                 <div className="w-full  md:mb-0">

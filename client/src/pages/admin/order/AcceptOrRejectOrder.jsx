@@ -11,7 +11,7 @@ const AcceptOrRejectOrder = ({status, id}) => {
     const dispatch = useDispatch()
 
     const handleUpdateStatus = () =>{
-        mutateOrderStatus.mutate({status: status == 'ACCEPT'? 'ACCEPTED': 'REJECTED', id})
+        mutateOrderStatus.mutate({status: status == 'ACCEPT'? 'ACCEPTED': status == 'SHIP'? 'SHIPPED' : 'REJECTED', id})
     }
   return (
     <div className="w-[300px] p-6 flex flex-col items-center h-[250px] bg-white rounded-md shadow-md shadow-gray-400]">

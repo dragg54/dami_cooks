@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { BACKEND_SERVER_URL } from '../AppConfig';
+import { toast } from 'react-toastify'
 
 const Axios = axios.create({
   baseURL: `${BACKEND_SERVER_URL}/api/v1`,
@@ -13,5 +14,17 @@ Axios.interceptors.request.use((config) => {
   }
   return config;
 });
+
+Axios.interceptors.response.use(
+  response => response,
+  error => {
+    console.log(error.code)
+    if (error.code === "ERR_NETWORK") {
+      console.log("A server error ocurred")
+      toast.error("A server error occurred. Please try again later.");
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default Axios;

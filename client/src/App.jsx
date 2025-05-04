@@ -36,6 +36,7 @@ import Reports from "./pages/admin/settings/reports/Reports"
 import Notification from "./pages/admin/settings/notification/Notification"
 import Availability from "./pages/admin/settings/availability/Availability"
 import HomeRedirect from "./pages/HomeRedirect"
+import ChangePassword from "./pages/admin/settings/change-password/ChangePassword"
 
 function App() {
   const user = useSelector(state => state.user).user
@@ -102,7 +103,7 @@ function App() {
             <Route path="/settings/availability" element={<Availability />}/>
             <Route path="/settings/reports" element={<Reports />}/>
             <Route path="/settings/notifications" element={<Notification />}/>
-            <Route path="/settings/analytics" />
+            <Route path="/settings/change-password" element={<ChangePassword />}/>
           </Route>
           <Route path="/update-order-status" element={<OrderView />} />
           <Route path="/paymentlist" element={<PaymentList />} />

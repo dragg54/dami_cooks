@@ -43,12 +43,12 @@ const Settings = () => {
             <li>Notifications</li>
           </NavLink>
           <NavLink
-            to="analytics"
+            to="change-password"
             className={({ isActive }) =>
               isActive ? 'font-bold text-black' : ''
             }
           >
-            <li>Analytics</li>
+            <li>Change Password</li>
           </NavLink>
         </ul>
       </div>

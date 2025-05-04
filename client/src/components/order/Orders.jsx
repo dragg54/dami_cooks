@@ -78,7 +78,7 @@ const Orders = ({ userOrdersOpened, setUserOrdersOpened }) => {
 
                                             <div className={`py-1 rounded-lg `}>
                                             <span className={`text-sm ${order?.status == "PENDING" ?
-                                                 'text-orange-500' : order?.status == "ACCEPTED" ?
+                                                 'text-orange-500' : order?.status == "ACCEPTED" || order?.status == "SHIPPED" ?
                                                   "text-green-700" : "text-red-700"}`}>{order?.status}</span>                                           
                                             </div>
                                             <div className="text-[1.2rem] font-bold">
