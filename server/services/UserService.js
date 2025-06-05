@@ -14,9 +14,7 @@ export const createUser = async (req, trans) => {
         const errMsg = "User already exist"
         throw new DuplicateError(errMsg)
     }
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-   
+    const hashedPassword =await hashPassword(password) 
     const user = await User.create({ firstName, lastName, phone, email, isAdmin, password: hashedPassword }, {transaction: trans});
     if(!isAdmin){
         const createCartRequest = {
@@ -80,4 +78,29 @@ export const updateUser = async(req)=>{
         throw BadRequestError("User not found")
     }
     await User.update({...req.body}, {where:{id}})
+}
+
+export const changePassword = async(req) =>{
+    const {id} = req.params
+    const {oldPassword, newPassword } = req.body
+    const existingUser = await User.findOne({
+        where:{id}
+    })
+    if(!existingUser){
+        throw new BadRequestError("User does not exist ")
+    }
+    const isPasswordValid = await bcrypt.compare(oldPassword, existingUser.dataValues.password);
+    if(!isPasswordValid){
+        throw new BadRequestError("Old password is incorrect ")
+    }
+   const encryptedPassword = await hashPassword(newPassword)
+    await User.update({
+        password: encryptedPassword
+    }, {where:{id}})
+}
+
+export const hashPassword = async(password) =>{
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+   return hashedPassword
 }

@@ -3,5 +3,6 @@ export const orderStatus = {
     ACCEPTED: 'accepted',
     REJECTED: 'rejected',
     CANCELLED: 'cancelled',
-    DELIVERED: 'delivered'
+    DELIVERED: 'delivered',
+    SHIPPED: 'shipped'
 }

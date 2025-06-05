@@ -202,10 +202,11 @@ export const updateOrderStatus = async (req, transaction) => {
             || existingOrder.status == orderStatus.CANCELLED
             || existingOrder.status == orderStatus.ACCEPTED
             || existingOrder.status == orderStatus.REJECTED
+            || existingOrder.status == orderStatus.SHIPPED
         ) && (
             status == orderStatus.ACCEPTED
             || status == orderStatus.REJECTED
-            || status == orderStatus.PENDING))
+            || status == orderStatus.PENDING)) || (existingOrder.status != orderStatus.ACCEPTED && status == orderStatus.SHIPPED)
     if (isInvalidOrderStatus) {
         const errMsg = `Order status is invalid for this operation`
         throw new BadRequestError(errMsg)
@@ -246,6 +247,7 @@ export const cancelOrder = async (req, transaction) => {
         || existingOrder.status == orderStatus.CANCELLED
         || existingOrder.status == orderStatus.ACCEPTED
         || existingOrder.status == orderStatus.REJECTED
+        || existingOrder.status == orderStatus.SHIPPED
     if (isInvalidOrderStatus) {
         const errMsg = `Order status is invalid for this operation`
         throw new BadRequestError(errMsg)

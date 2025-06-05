@@ -38,7 +38,7 @@ export const Header = ({ setNavIsOpen, setCartOpen, setUserAccountOpen, setOpenL
   }, [data, isLoading, user])
   return (
     <div className='h-16 bg-white flex md:px-16 justify-between items-center p-4 w-full border-b shadow-gray-300'>
-      <h1 className="font-logo font-semibold text-[1.3rem] text-red-700">Dami Cooks</h1>
+      <div className="md:w-[56px] w-[44px] h-[44px] p-1 border border-red-600 md:h-[56px] overflow-hidden flex justify-center items-center"><img src="/images/LOGO.svg"/></div>
       {
         !user.user.isAdmin ? <ul className="hidden md:flex gap-8 text-gray-500 items-center">
           <li onClick={()=>{

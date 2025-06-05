@@ -10,10 +10,13 @@ import { FaCcVisa } from "react-icons/fa";
 
 const Footer = () => {
     return (
-        <div className='w-full md:h-[270px] md:mt-0  h-[340px]  bg-primary p-8 text-white flex flex-col'>
+        <div className='w-full md:h-[350px] md:mt-0  h-[440px]  bg-primary p-8 text-white flex flex-col'>
             <div className="flex md:flex-row md:gap-20 flex-col">
-                <p className="font-logo md:text-7xl font-semibold text-[#fff] text-4xl">Dami Cooks</p>
-                <div className="flex flex-col text-gray-200 text-sm">
+               <div className="flex flex-col">
+                 <p className="font-logo md:text-7xl font-semibold text-[#fff] text-4xl">Dami Cooks</p>
+                 <img src="/images/PAPER_BAG_MOCKUP.png" className="w-40 h-40"/>
+               </div>
+                <div className="flex flex-col text-gray-200 text-base">
                     <p className="mt-6 inline-flex items-start"><FaLocationDot className="mr-2 mt-1" /> 123 Perth Road, Dundee, DD1 4LN, Scotland, UK</p>
                     <p className="mt-1 inline-flex items-center"><MdOutlinePhone className="mr-2" />+43-4584-5844</p>
                     <p className="mt-1 inline-flex items-center"><MdOutlinePhone className="mr-2" />+43-4584-5856</p>

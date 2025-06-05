@@ -53,3 +53,14 @@ export const loginUser = async (req, res) => {
       res.status(error.statusCode || 500).json(error.message || "Internal server error")
     }
   }
+
+  export const changePassword = async(req, res) =>{
+    try {
+       await userService.changePassword(req)
+       res.json("User password updated")
+    }
+    catch (error) {
+      console.log(error)
+      res.status(error.statusCode || 500).json(error.message || "Internal server error")
+    }
+  }
