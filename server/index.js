@@ -18,6 +18,7 @@ import { sendNotification } from './socket/createNotification.js'
 import { init } from './socket/socket.js'
 import { notificationRoute } from './routes/NotificationRoute.js'
 import { adminSettingRoute } from './routes/AdminSettingRoute.js'
+import { allergenRoute } from './routes/AllergenRoute.js';
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -74,6 +75,7 @@ app.use("/api/v1/cartItems", cartItemRoute)
 app.use("/api/v1/payments", paymentRoute)
 app.use("/api/v1/notifications", notificationRoute)
 app.use("/api/v1/adminSettings", adminSettingRoute)
+app.use("/api/v1/allergens", allergenRoute)
 
 const port = 8080
 const io = init(server, corsOptions)

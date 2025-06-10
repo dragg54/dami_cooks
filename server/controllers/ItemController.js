@@ -1,12 +1,16 @@
+import db from '../configs/db.js'
 import * as itemService from '../services/ItemService.js'
 
 export const createItem = async (req, res) => {
+    const transaction = await db.transaction()
     try {
-        await itemService.createItem(req)
+        await itemService.createItem(req, transaction)
+        await transaction.commit()
         res.json("Item created")
     }
     catch (error) {
         console.log(error)
+        await transaction.rollback()
         res.status(error.statusCode || 500).json(error.message
             || "Internal server error"
         );
@@ -14,12 +18,16 @@ export const createItem = async (req, res) => {
 }
 
 export const updateItem = async (req, res) => {
+    const transaction = await db.transaction()
     try {
-        await itemService.updateItem(req)
+        console.log(req.body)
+        await itemService.updateItem(req, transaction)
+        await transaction.commit()
         res.json("Item updated")
     }
     catch (error) {
         console.log(error)
+        await transaction.rollback()
         res.status(error.statusCode || 500).json(error.message
             || "Internal server error"
         );

@@ -37,6 +37,10 @@ import Notification from "./pages/admin/settings/notification/Notification"
 import Availability from "./pages/admin/settings/availability/Availability"
 import HomeRedirect from "./pages/HomeRedirect"
 import ChangePassword from "./pages/admin/settings/change-password/ChangePassword"
+import Allergens from "./pages/admin/allergens/Allergens"
+import AddAllergen from "./pages/admin/allergens/AddAllergen"
+import UpdateAllergen from "./pages/admin/allergens/UpdateAllergen"
+import UpdateAllergenUI from "./pages/admin/allergens/UpdateAllergen"
 
 function App() {
   const user = useSelector(state => state.user).user
@@ -97,6 +101,9 @@ function App() {
           <Route path="/additem" element={<AddItem />} />
           <Route path="/updateItem" element={<UpdateItemUI />} />
           <Route path="/orderlist" element={<OrderList />} />
+          <Route path="/allergens" element={<Allergens />}/>
+          <Route path="/allergen" element={<AddAllergen />}/>
+          <Route path="/updateAllergen" element={<UpdateAllergenUI />}/>
           <Route path="/settings" element={<Settings />}>
           <Route index element={<Navigate to="user-management" replace />} />
             <Route path="/settings/user-management" element={<UserManagement />}/>

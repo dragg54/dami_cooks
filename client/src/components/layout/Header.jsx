@@ -38,7 +38,7 @@ export const Header = ({ setNavIsOpen, setCartOpen, setUserAccountOpen, setOpenL
   }, [data, isLoading, user])
   return (
     <div className='h-16 bg-white flex md:px-16 justify-between items-center p-4 w-full border-b shadow-gray-300'>
-      <div className="md:w-[56px] w-[44px] h-[44px] p-1 border border-red-600 md:h-[56px] overflow-hidden flex justify-center items-center"><img src="/images/LOGO.svg"/></div>
+      <div className="md:w-[56px] w-[44px] h-[44px] object-cover border-red-600 md:h-[56px] overflow-hidden flex justify-center items-center"><img width={52} height={52} className=" " src="/images/LOGO.svg"/></div>
       {
         !user.user.isAdmin ? <ul className="hidden md:flex gap-8 text-gray-500 items-center">
           <li onClick={()=>{
@@ -55,12 +55,13 @@ export const Header = ({ setNavIsOpen, setCartOpen, setUserAccountOpen, setOpenL
           }}>Contact Us</li>
         </ul>
         : 
+        ( !useIgnoreMatchedPath() && user && user.user.isAdmin) ?
         <div className="flex items-center gap-3">
-            <span className="text-[1.2rem] text-gray-500">Welcome Back, {user?.user?.firstName} {user?.user?.lastName}</span>
-            <span onClick={()=> setOpenLogout(true)} className="rounded-full cursor-pointer border border-gray-500 p-3 text-red-700 text-xl">
+            <span className="text-[0.8rem] text-gray-500">Welcome Back, {user?.user?.firstName} {user?.user?.lastName}</span>
+            <span onClick={()=> setOpenLogout(true)} className="rounded-full cursor-pointer border border-gray-500 p-2 text-gray-500 text-2xl">
               <FaUser />
             </span>
-        </div>
+        </div>: ""
       }
       {
         useIgnoreMatchedPath() ? <div></div>: user.user && !user.user.isAdmin ? <div className="flex gap-2">

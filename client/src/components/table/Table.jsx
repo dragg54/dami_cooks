@@ -23,7 +23,8 @@ import { openModal as openGlobalModal } from "../../redux/GlobalModalSlice.js";
 
 // eslint-disable-next-line react/prop-types
 const CustomTable = ({
-  tableData, placeholder, caption,
+  tableData, 
+  placeholder, caption,
   currentPage,
   modalComponent,
   totalPages,
@@ -53,6 +54,9 @@ const CustomTable = ({
       const value = info.getValue();
       if (value && typeof value === 'object' && !Array.isArray(value)) {
         return value.name;
+      }
+      if(Array.isArray(value)){
+        return ''
       }
       return value;
     }

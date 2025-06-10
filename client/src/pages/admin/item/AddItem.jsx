@@ -1,30 +1,40 @@
 import FormContainer from "../../../components/form/FormContainer"
 import TextInput from "../../../components/input/TextInput"
 import Select from "../../../components/input/SelectInput"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import FileInput from "../../../components/input/FileInput"
 import NumberInput from "../../../components/input/NumberInput"
 import { PostItem } from "./api/PostItem"
 import * as Yup from 'yup'
 import Switch from "../../../components/input/Switch"
 import { FetchItemCategories } from "./api/FetchItemCategories"
+import { FetchAllAllergens } from "../allergens/api/FetchAllAllergens"
 
 
 const AddItem = () => {
     const [selectValues, setSelectValues] = useState({
         itemType: { label: "", value: "" },
-        itemCategory: { label: "", value: "" }
+        itemCategory: { label: "", value: "" },
+        allergens: []
     })
     const [responseStatus, setResponseStatus] = useState()
     const [file, setFile] = useState()
-    const { mutate, isError, isLoading } = PostItem({ setResponseStatus })
+      const [initialValues, setInitialValues] = useState({
+        name: "",
+        description: "",
+        uom: "",
+        price: 0
+    })
+    const { mutate, isError, isLoading } = PostItem({ setResponseStatus, setInitialValues, setSelectValues })
     const [status, setStatus] = useState(null);
     const {data: categoryData} = FetchItemCategories({})
-
+    const {data:allergens, refetch, allergenLoading} = FetchAllAllergens({})
+    const [allergenOptions, setAllergenOptions ] = useState()
+  
 
     const handleSubmit = (values, resetForm) => {
         setResponseStatus(null)
-        const updatedValues = { ...values, itemCategoryId: selectValues.itemCategory.value, itemType: selectValues.itemType.value }
+        const updatedValues = { ...values, itemCategoryId: selectValues?.itemCategory?.value, itemType: selectValues?.itemType?.value }
         const formData = new FormData()
         formData.append('image', file);
         formData.append('name', updatedValues.name);
@@ -34,8 +44,21 @@ const AddItem = () => {
         formData.append('uom', updatedValues.uom);
         formData.append('itemCategoryId', updatedValues.itemCategoryId);
         formData.append('status', status)
-        mutate(formData, { resetForm, setFile })
+        selectValues.allergens.forEach(allergen => {
+            formData.append("allergenIds", allergen)
+        })
+        mutate(formData)
     }
+
+    useEffect(()=> {
+        const options = []
+        allergens?.forEach((allergen)=>{
+            options.push({label: allergen.name, value: allergen.id})
+        })
+        setAllergenOptions(options)
+    }, [allergens])
+
+   
 
     const validationSchema = Yup.object({
         name: Yup.string().required("Item Name is required"),
@@ -44,17 +67,12 @@ const AddItem = () => {
         price: Yup.number().min(0.1, "Item price must be greater than 0")
     });
 
-    const initialValues = {
-        name: "",
-        description: "",
-        uom: "",
-        price: 0
-    }
-
     const categorySelections = categoryData?.map((cat)=>({
         label: cat.name,
         value: cat.id
     }))
+
+    
 
     return (
         <div className="w-[100%] md:w-4/5 md:h-[550px] overflow-y-hidden p-4 md:p-8 bg-white">
@@ -68,7 +86,7 @@ const AddItem = () => {
                     <TextInput name='name' label='Item Name' />
                 </div>
                 <div className="w-full  md:mb-0">
-                    <Select name="itemCategory" label={'Select Category'} options={categorySelections} selectedValue={selectValues} onChange={setSelectValues} />
+                    <Select name="itemCategory" label={'Select Category'} options={categorySelections} selectedValues={selectValues} onChange={setSelectValues} />
                 </div>
                 <div className="w-full  md:mb-0">
                     <TextInput name='uom' label='Unit of Measurement' />
@@ -77,7 +95,17 @@ const AddItem = () => {
                     <TextInput name='description' label='Description' />
                 </div>
                 <div className="w-full  md:mb-0">
-                    <Select name="itemType" label={'Select Item Type'} options={[{ label: "Main Item", value: "MAIN_ITEM" }, { label: "Sub Item", value: "SUB_ITEM" }]} selectedValue={selectValues} onChange={setSelectValues} />
+                    <Select name="itemType" label={'Select Item Type'} options={[{ label: "Main Item", value: "MAIN_ITEM" }, { label: "Sub Item", value: "SUB_ITEM" }]} selectedValues={selectValues} onChange={setSelectValues} />
+                </div>
+                 <div className="w-full  md:mb-0">
+                    <Select
+                        isMultiple={true}
+                        name="allergens"
+                        label={'Select Allergens'}
+                        selectedValues={selectValues}
+                        setSelectedValues={setSelectValues}
+                        options={allergenOptions}
+                    />
                 </div>
                 <div className="w-full md:mb-0">
                     <p className="mb-2 text-sm md:text-base">

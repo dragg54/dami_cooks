@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react"
 import { FaAngleDown } from "react-icons/fa";
 
 
-const SelectInput = ({ options, selectedValue, onChange, label, name }) => {
+const SelectInput = ({ options, selectedValues, onChange, label, name, isMultiple, setSelectedValues }) => {
     const [open, setOpen] = useState(false)
     const dropdownRef = useRef(null);
     useEffect(() => {
@@ -22,37 +22,70 @@ const SelectInput = ({ options, selectedValue, onChange, label, name }) => {
         <div ref={dropdownRef} className="w-full text-sm md:text-base">
             <p className="mb-2">{label}</p>
             <button
-              type="button"
+                type="button"
                 onClick={() => setOpen(!open)}
                 className="w-full border border-gray-400 px-2 md:px-4 py-2 bg-white rounded shadow text-xs md:text-base text-gray-400 flex justify-between items-center"
             >
-                {selectedValue[name].label || "Select an option"}
+                {isMultiple ? label : ((selectedValues && selectedValues[name]?.label) || "Select an option")}
                 <span><FaAngleDown /></span>
             </button>
-            <SelectOptions {...{ open, options, setOpen, onChange, selectedValue , name}} />
+            {isMultiple ? 
+             <MultipleSelectOptions {...{ open, options, setOpen, onChange, selectedValues, setSelectedValues, name }}/> :
+            <SelectOptions {...{ open, options, setOpen, onChange, selectedValues, name }} />}
         </div>
     )
 }
 
-const SelectOptions = ({ open, options, setOpen, onChange, selectedValue, name}) => {
+const SelectOptions = ({ open, options, setOpen, onChange, selectedValues, name }) => {
     return (
         <>
             {open && (
-                <ul className="absolute min-w-[150px] mt-1 bg-white z-40 border rounded shadow">
+                <ul className="absolute min-w-[150px] mt-1 bg-white z-40 border rounded shadow" >
                     {options?.map((option) => (
                         <li
                             key={option.value}
                             onClick={() => {
-                                onChange({...selectedValue, [name]: option});
+                                onChange({ ...selectedValues, [name]: option });
                                 setOpen(false);
                             }}
-                            className="px-4 py-2 cursor-pointer hover:bg-red-500 hover:text-white"
+                            className="px-4 py-2 cursor-pointer hover:bg-gray-300  "
                         >
                             {option.label}
                         </li>
                     ))}
                 </ul>
             )}
+        </>
+    )
+}
+
+const MultipleSelectOptions = ({ open, options, setOpen, onChange, selectedValues, name, setSelectedValues }) => {
+    const handleChange = (e) => {
+        if (selectedValues[name].includes(e.target.value)) {
+            setSelectedValues({ ...selectedValues, [name]: selectedValues[name].filter(val => val != e.target.value) })
+        }
+        else {
+            setSelectedValues({ ...selectedValues, [name]: [...selectedValues[name], e.target.value] })
+        }
+    }
+    return (
+        <>
+        {open && (
+                <ul onClick={(e)=> e.stopPropagation()} className="absolute min-w-[300px] bg-white mt-1
+                  z-40 border rounded shadow-md shadow-gray-300">
+            {options && options.length > 0 && options.map((option) => (
+                <li
+                    key={option.value}
+                    className="px-4 py-2 cursor-pointer hover:bg-gray-300  list-none"
+                >
+                    <span className="w-full text-gray-500 items-center flex justify-start gap-x-6 ">
+                        <input checked={selectedValues[name]?.includes(option.value.toString())} className="appearance-none  border border-gray-600 hover:cursor-pointer w-5 h-5 rounded bg-white checked:bg-gray-400" 
+                        onChange={(e) => handleChange(e)} value={option.value} type="checkbox" />
+                        <span>{option.label}</span>
+                    </span>
+                </li>
+            ))}
+            </ul>)}
         </>
     )
 }

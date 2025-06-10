@@ -14,6 +14,7 @@ const MainFormContainer = ({ children, title, handleSubmit, subTitle, initialVal
       <small className='text-gray-500'>{subTitle || ""}</small>
       <div className='my-3 border w-full border-gray-200'></div>
       <Formik initialValues={initialValues}
+        enableReinitialize
         validationSchema={validationSchema ? validationSchema : null}
         onSubmit={(values, { resetForm }) => {
           handleSubmit(values, resetForm)

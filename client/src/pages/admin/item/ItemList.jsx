@@ -34,7 +34,7 @@ const ItemList = () => {
 
   let processedData = items?.rows?.map((dta)=>(
     {
-      "Item Id": dta.id,
+      id: dta.id,
       "Item Number": dta.itemCd,
       name: dta.name,
       description: dta.description,
@@ -42,6 +42,7 @@ const ItemList = () => {
       imageUrl: dta.imageUrl,
       uom:dta?.uom,
       status: dta.status,
+      allergens: dta.allergens,
       "Item Category": {id:dta.itemCategory.id,name:dta.itemCategory?.name},
       price: dta.price,
       "Created At": format(new Date(dta.createdAt), 'dd-MM-yyy HH:mm'),

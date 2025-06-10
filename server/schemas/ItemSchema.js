@@ -9,6 +9,7 @@ export const itemSchema = Joi.object({
   itemType: Joi.string().valid("MAIN_ITEM", "SUB_ITEM").default("MAIN_ITEM").label("Item Type"),
   uom: Joi.string().required().label("Unit of Measure (UOM)"),
   status: Joi.string().valid("OFFLINE", "ONLINE", "OUTOFSTOCK").default("OFFLINE").label("Status"),
+  allergenIds: Joi.array()
 });
 
 
@@ -21,5 +22,6 @@ export const updateItemSchema = Joi.object({
   itemType: Joi.string().valid("MAIN_ITEM", "SUB_ITEM").default("MAIN_ITEM").label("Item Type"),
   uom: Joi.string().required().label("Unit of Measure (UOM)"),
   status: Joi.string().allow(null).label("Status"),
-  imageUrl: Joi.string().allow(null, "")
+  imageUrl: Joi.string().allow(null, ""),
+    allergenIds: Joi.array()
 })
