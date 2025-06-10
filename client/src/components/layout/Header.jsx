@@ -49,6 +49,10 @@ export const Header = ({ setNavIsOpen, setCartOpen, setUserAccountOpen, setOpenL
             navigate("/about-us")
             setCurrentMenu("AboutUs")
           }}  className={`cursor-pointer ${currentMenu == "AboutUs" && 'text-orange-500'}`}>About Us</li>
+          <li onClick={()=>{
+            navigate("/services")
+            setCurrentMenu("Services")
+          }}  className={`cursor-pointer ${currentMenu == "Services" && 'text-orange-500'}`}>Services</li>
           <li  className={`cursor-pointer ${currentMenu == "ContactUs" && 'text-orange-500'}`} onClick={()=>{
             navigate("/contact-us")
             setCurrentMenu("ContactUs")

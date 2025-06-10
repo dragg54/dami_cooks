@@ -41,6 +41,7 @@ import Allergens from "./pages/admin/allergens/Allergens"
 import AddAllergen from "./pages/admin/allergens/AddAllergen"
 import UpdateAllergen from "./pages/admin/allergens/UpdateAllergen"
 import UpdateAllergenUI from "./pages/admin/allergens/UpdateAllergen"
+import Services from "./pages/customer/services/Services"
 
 function App() {
   const user = useSelector(state => state.user).user
@@ -86,6 +87,7 @@ function App() {
           <Route path="/success" element={<Success />} /> 
           <Route path="/cancel" element={<Cancel />} /> 
           <Route path="/about-us" element={<AboutUs />} /> 
+          <Route path="/services" element={<Services />} /> 
           <Route path="/contact-us" element={<ContactUs />} /> 
           <Route path='/checkout' element={<Checkout/>} />
           <Route path="*" element={<NotFoundPage/>} />

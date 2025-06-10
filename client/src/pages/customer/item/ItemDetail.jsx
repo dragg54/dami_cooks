@@ -17,7 +17,12 @@ const ItemDetail = () => {
                 <p className="mt-4 text-gray-400 text-sm md:w-2/3 whitespace-normal">{item.description}</p>
                 <p className="mt-4 text-3xl  text-[#fdb750] font-bold">€{item.price}</p>
                 <p className=" mt-3 text-green-600">{item.status == "ONLINE" ? "Available" : "Unavailable"}</p>
-                <div className="w-2/3 h-20 mt-8 flex items-center gap-4">
+                <div className="mt-6">
+                  <p><span className="font-semibold">Allergens</span>: {item.allergens?.map((allergen, index) => (
+                    <span key={index}>{allergen.name}</span>
+                  ))}</p>
+                </div>
+                <div className="w-2/3 h-20 mt-6 flex items-center gap-4">
                     <AddToCartButton {...{ item }} />
                 </div>
             </div>
