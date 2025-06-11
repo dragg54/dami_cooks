@@ -10,7 +10,7 @@ import { FaCcVisa } from "react-icons/fa";
 
 const Footer = () => {
     return (
-        <div className='w-full md:h-[350px] md:mt-0  h-[440px]  bg-primary p-8 text-white flex flex-col'>
+        <div className='w-full md:h-[350px] md:mt-0  h-[500px]  bg-primary p-8 text-white flex flex-col'>
             <div className="flex md:flex-row md:gap-20 flex-col">
                <div className="flex flex-col">
                  <p className="font-logo md:text-7xl font-semibold text-[#fff] text-4xl">Dami Cooks</p>

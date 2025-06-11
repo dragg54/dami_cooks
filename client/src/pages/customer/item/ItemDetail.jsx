@@ -6,7 +6,7 @@ const ItemDetail = () => {
     const location = useLocation()
     const { item } = location.state
     return (
-        <div className="w-full  md:flex-row items-center flex flex-col bg-white pt-8 p-5">
+        <div className="w-full  md:flex-row mb-20 items-center flex flex-col bg-white pt-8 p-5">
             <div className="md:w-1/2 md:h-full flex justify-center ">
                 <div className="!w-[200px] !h-[200px] rounded-full overflow-hidden flex justify-center items-center">
                     <ItemImage style={'h-full w-full'} {...{ item }} />
@@ -18,7 +18,7 @@ const ItemDetail = () => {
                 <p className="mt-4 text-3xl  text-[#fdb750] font-bold">€{item.price}</p>
                 <p className=" mt-3 text-green-600">{item.status == "ONLINE" ? "Available" : "Unavailable"}</p>
                 <div className="mt-6">
-                  <p><span className="font-semibold">Allergens</span>: {item.allergens?.map((allergen, index) => (
+                  <p><span className="font-semibold">Allergens</span>: {item.allergens?.length < 0 ? "No allergens" :item.allergens.map((allergen, index) => (
                     <span key={index}>{allergen.name}</span>
                   ))}</p>
                 </div>
