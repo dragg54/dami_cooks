@@ -56,7 +56,7 @@ const Slider = ({
                         src={image}
                         alt={`Slide ${index + 1}`}
                         style={{ width: '300px', height: '300px'}}
-                    /> : <div className='h-full flex items-center justify-center'>
+                    /> : <div className='h-full object-contain flex items-center justify-center'>
                         {image}
                     </div>}
                 </SwiperSlide>

@@ -42,7 +42,7 @@ const AddToCartButton = ({ item, style }) => {
     return (
         <Button
             onClick={() => handleAddToCart()} className={`${style} !rounded-full w-1/2 md:py-3 font-semibold`}>
-            {addToCartMutation.isPending ? <Spinner style={'!w-6 !h-6 mx-auto !border-white !border-t-transparent !text-white '}
+            {addToCartMutation.isLoading ? <Spinner style={'!w-6 !h-6 mx-auto !border-white !border-t-transparent !text-white '}
               isLoading={addToCartMutation.isLoading} /> : "Add To Cart"}
         </Button>)
 }

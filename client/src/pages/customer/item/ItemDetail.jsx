@@ -18,7 +18,7 @@ const ItemDetail = () => {
                 <p className="mt-4 text-3xl  text-[#fdb750] font-bold">€{item.price}</p>
                 <p className=" mt-3 text-green-600">{item.status == "ONLINE" ? "Available" : "Unavailable"}</p>
                 <div className="mt-6">
-                  <p><span className="font-semibold">Allergens</span>: {item.allergens?.length < 0 ? "No allergens" :item.allergens.map((allergen, index) => (
+                  <p><span className="font-semibold">Allergens</span>: {(!item.allergens || item.allergens?.length < 0) ? "Allergens unspecified" :item.allergens.map((allergen, index) => (
                     <span key={index}>{allergen.name}</span>
                   ))}</p>
                 </div>

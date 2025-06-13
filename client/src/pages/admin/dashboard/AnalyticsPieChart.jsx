@@ -7,7 +7,7 @@ const chartData = [
 const COLORS = ['#fbb80f', '#85d2d0', '#d84c4c'];
 const AnalyticsPieChart = () => {
     return (
-        <div className="w-full md:w-[40%] bg-white mt-3 h-[320px] md:h-[360px] pt-5 pb-4 rounded-md shadow-md shadow-gray-300">
+        <div className="w-full md:w-[40%] bg-white mt-3 h-[320px] md:h-[320px] pt-5 pb-4 rounded-md shadow-md shadow-gray-300">
             <ResponsiveContainer width="100%" height="100%">
                 <PieChart width={200} height={120}>
                     <Pie

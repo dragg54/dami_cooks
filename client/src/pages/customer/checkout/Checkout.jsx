@@ -59,7 +59,7 @@ const Checkout = () => {
   
 
   return (
-    <div className="w-full flex flex-col md:flex-row px-4 md:px-0">
+    <div className="w-full flex flex-col md:flex-row px-4 md:px-0 mb-20">
       <BillingDetails {...{ deliveryDetails, setDeliveryDetails }} />
       <div className="md:w-1/2 w-full">
         <OrderSummary />

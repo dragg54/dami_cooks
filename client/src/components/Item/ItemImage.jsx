@@ -5,10 +5,10 @@ import Image from '../image/Image'
 const ItemImage = ({item, style}) => {
     const navigate = useNavigate()
     return (
-        <div className={`${style} h-[170px] md:h-[230px] w-full `} onClick={()=>{
+        <div className={`${style} object-contain overflow-hidden h-[170px] md:h-[230px] md:w-[230px] w-full `} onClick={()=>{
           navigate(`/itemDetails/${item?.id}`, {state: {item}})
         }}>
-            <Image style={'object-cover'} src={item?.imageUrl} />
+            <Image style={''} src={item?.imageUrl} />
         </div>
     )
 }

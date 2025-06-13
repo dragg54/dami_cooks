@@ -42,21 +42,21 @@ let processedData = [
 ]
 const AnalyticsBarChart = () => {
     return (
-        <div className='mt-4 border  border-gray-300 bg-white rounded-md md:pt-6 shadow-sm flex mx-auto h-[300px] justify-center text-xs pt-2 md:h-[360px]' style={{ width: '100%' }}>
+        <div className='mt-4 border  border-gray-300 bg-white rounded-md md:pt-6 shadow-sm flex mx-auto h-[250px] justify-center text-xs pt-2 md:h-[320px]' style={{ width: '40%' }}>
             {
                 <ResponsiveContainer height={'100%'}>
                     <BarChart
                         data={processedData}
                         margin={{ top: 20, bottom: 4, right: 12, left: -18 }}
                         padding={{ top: 3 }}
-                        barSize={getScreenSize().isMobile ? 30 : 50}
+                        barSize={getScreenSize().isMobile ? 30 : 20}
                     >
                         <XAxis dataKey="day" />
                         <YAxis domain={[0, 50]} />
                         <Tooltip />
-                        <Bar dataKey="sales" fill="#d01110" name='Orders' />
+                        <Bar dataKey="sales" fill="#d01110" name='Orders'  radius={[10, 10, 0, 0]}/>
                         <text x={130} y={7} fill="#383940" textAnchor="middle" dominantBaseline="central">
-                            <tspan fontSize={getScreenSize().isMobile ? "16": "20"}  fontWeight={600}>Revenue Chart</tspan>
+                            <tspan fontSize={getScreenSize().isMobile ? "16": "16"}  fontWeight={600}>Revenue Chart</tspan>
                         </text>
                     </BarChart>
                 </ResponsiveContainer>

@@ -20,7 +20,7 @@ const Hero = () => {
         </Button>
         </a>
       </div>
-      <div className=" overflow-hidden -mt-8 w-[200px] md:mr-0 -mr-20 h-[200px] md:w-[400px] md:h-[400px]">
+      <div className="  -mt-8 w-[200px] md:mr-0 -mr-20 h-[200px] md:w-[400px] md:h-[400px]">
       <Slider height="100%" imgs={imageCont} autoplay={true} setActiveIndex={setActiveIndex} activeIndex={activeIndex} width="100%"/>
       </div>
     </div>

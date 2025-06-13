@@ -7,6 +7,8 @@ import AnalyticsPieChart from "./AnalyticsPieChart";
 import { FetchOrders } from "./api/FetchAllOrders";
 import { euro } from "../../../constants/Currency";
 import { FetchTotalRevenue } from "./api/FetchTotalRevenue";
+import AnalyticsGraph from "./AnalyticsGraph";
+import FilterCard from "./FilterCard";
 
 const Dashboard = () => {
   const {data: orderAggregates, isLoading: isDataAggregatesLoading} = FetchOrders({})
@@ -14,6 +16,10 @@ const Dashboard = () => {
   
   return (
     <div className="w-full h-full flex flex-col ">
+      <div className="w-full flex justify-between items-start mb-4">
+        <p className="text-2xl font-semibold text-gray-600 ">Dashboard</p>
+        <FilterCard />
+      </div>
      <div className="w-full flex justify-between">
         <AnalyticsCard {...{title: "Total Revenue", isLoading:totalRevenueLoading, value: `${euro}${totalRevenue || 0}`, icon:< RiMoneyEuroCircleLine />}}/>
         <AnalyticsCard {...{title: "Total Order", isLoading:isDataAggregatesLoading, value: orderAggregates?.totalOrders || 0, icon:<RiFileList3Fill />}}/>
@@ -21,6 +27,7 @@ const Dashboard = () => {
      </div>
     <div className="w-full flex md:flex-row flex-col md:mt-6 md:gap-4">
     <AnalyticsBarChart />
+    <AnalyticsGraph />
     <AnalyticsPieChart />
     </div>
     </div>
