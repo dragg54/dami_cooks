@@ -19,7 +19,7 @@ const ItemDetail = () => {
                 <p className=" mt-3 text-green-600">{item.status == "ONLINE" ? "Available" : "Unavailable"}</p>
                 <div className="mt-6">
                   <p><span className="font-semibold">Allergens</span>: {(!item.allergens || item.allergens?.length < 0) ? "Allergens unspecified" :item.allergens.map((allergen, index) => (
-                    <span key={index}>{allergen.name}</span>
+                    <span className="text-gray-500" key={index}>{allergen.name}{index+1 < item.allergens.length && ", "}</span>
                   ))}</p>
                 </div>
                 <div className="w-2/3 h-20 mt-6 flex items-center gap-4">
