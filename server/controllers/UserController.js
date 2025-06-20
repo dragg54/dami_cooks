@@ -64,3 +64,27 @@ export const loginUser = async (req, res) => {
       res.status(error.statusCode || 500).json(error.message || "Internal server error")
     }
   }
+
+export const verifyEmail = async (req, res) => {
+  try {
+    await userService.verifyEmail(req)
+    res.json("Verification email sent")
+  }
+  catch (error) {
+    console.log(error)
+    res.status(error.statusCode || 500).json(error.message || "Internal server error")
+  }
+}
+
+export const resendEmailVerification = async (req, res) => {
+  try {
+    await userService.resentVerificationEmail(req)
+    res.json("Verification email resent")
+  }
+  catch (error) {
+    console.log(error)
+    res.status(error.statusCode || 500).json(error.message || "Internal server error")
+  }
+}
+
+

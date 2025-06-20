@@ -1,7 +1,17 @@
 /* eslint-disable react/prop-types */
+import { clearUser } from "@/redux/UserSlice";
 import { motion } from "framer-motion";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 
 const NavigationMenu = ({navIsOpen, setNavIsOpen}) => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+   const handleLogout = () =>{
+        dispatch(clearUser())
+        navigate("/login")
+     }
+  const user = useSelector(state => state.user)
   return (
     <div className="relative">
       {navIsOpen && (
@@ -26,7 +36,9 @@ const NavigationMenu = ({navIsOpen, setNavIsOpen}) => {
           <a href="/services" className="block  font-medium border-b ">SERVICES</a>
           <a href="/customer/orders" className="block  font-medium border-b ">MY ORDERS</a>
           <a href="/contact-us" className="block  font-medium border-b ">CONTACT</a>
-          <a href="#" className="block  font-medium border-b ">LOGOUT</a>
+          <a href="/login" className="block  font-medium border-b ">{(!user.user || !user.isLoggedIn) ? "LOGIN" : 
+           <span onClick={()=>handleLogout()}>LOGOUT</span>}
+          </a>
         </nav>
       </motion.div>
     </div>

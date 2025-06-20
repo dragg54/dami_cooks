@@ -6,11 +6,11 @@ const __dirname = path.dirname(__filename);
 import { sendEmail } from '../../services/EmailService.js';
 
 
-export function sendCustomerOrderCancelledMail(orderId, customerName, recipient){
+export async function sendCustomerOrderCancelledMail(orderId, customerName, recipient){
     const html = fs.readFileSync(path.join(__dirname, '../templates/CustomerOrderRejected.html'), 'utf8');
     const emailHtml = html
       .replace('{{customerName}}', customerName)
       .replace('{{orderId}}', orderId)
-    sendEmail(recipient, "Order Cancelled", emailHtml)
+   await sendEmail(recipient, "Order Cancelled", emailHtml)
 }
 

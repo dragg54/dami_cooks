@@ -59,7 +59,7 @@ const Orders = ({ userOrdersOpened, setUserOrdersOpened }) => {
                     <div className="w-full flex flex-col mb-8">
                         {
                         isLoading ? <Spinner style={'!w-12 !h-12 mx-auto'}  isLoading={isLoading}/> :
-                        orders?.length < 1 ?
+                        orders?.rows.length < 1 ?
                             <div className="w-full mt-5">
                                 <p>No orders yet</p>
                                 <Button onClick={() => {

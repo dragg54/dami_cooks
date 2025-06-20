@@ -7,15 +7,22 @@ import Image from "../../components/image/Image"
 import { PostLogin } from "./api/PostLogin"
 import Spinner from "../../components/Spinner"
 import { useNavigate } from "react-router-dom"
+import * as Yup from 'yup'
 
 
 const Login = () => {
     const initialValues = {
-        firstName: "",
-        lastName: "",
         email: "",
         password: ""
     }
+
+    const validationSchema = Yup.object().shape({
+  email: Yup.string()
+    .email('Invalid email format')
+    .required('Email is required'),
+    password: Yup.string()
+    .min(8)
+});
 
     const navigate = useNavigate()
 
@@ -30,11 +37,13 @@ const Login = () => {
                 <p className="font-extrabold mt-6 md:text-3xl text-[#d01110] text-[1.6rem] md:text-[1.8rem]">Sign in</p>
                 <small className="text-gray-400">Sign in to your account</small>
                 <Formik initialValues={initialValues}
-                    // validationSchema={() => null}
+                    validationSchema={validationSchema}
+                    validateOnMount
                     onSubmit={(values, { resetForm }) => {
                         handleSubmit(values)
                         resetForm()
                     }}>
+                         {({ isSubmitting, isValid }) => (
                     <Form className="w-full mt-8 flex flex-col  items-center gap-x-3 gap-y-3">
                         <div className="w-full">
                             <TextInput  name='email' label='Email' />
@@ -46,11 +55,12 @@ const Login = () => {
                             <CheckBoxInput {...{ name: "termsAndCondition", label: "Remember Me", className: "items-center" }} />
                         </div>
                         <p className="mt-3 cursor-pointer" onClick={()=> navigate("/register")}>Don't have an account yet? <span className="text-yellow-600 ">Sign up</span></p>
-                        <Button className={'w-full md:py-3 !rounded-full mt-1 !bg-[#d01110]'}>
+                        <Button disabled={!isValid || isSubmitting} className={'w-full md:py-3 !rounded-full mt-1 !bg-[#d01110]'}>
                             {isLoading ? <Spinner style={'!border-t-white !border-gray-200 !mx-auto !h-5 !w-5'} isLoading={isLoading}/> : "Log in"}
                         </Button>
                         <p className="underline text-gray-600 -mt-1">Forgot password? </p>
                     </Form>
+                         )}
                 </Formik>
             </div>
             <div className="hidden md:flex w-1/2 h-full bg-white">

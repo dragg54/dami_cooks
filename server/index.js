@@ -19,6 +19,7 @@ import { init } from './socket/socket.js'
 import { notificationRoute } from './routes/NotificationRoute.js'
 import { adminSettingRoute } from './routes/AdminSettingRoute.js'
 import { allergenRoute } from './routes/AllergenRoute.js';
+import morgan from 'morgan';
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -36,7 +37,8 @@ app.use((req, res, next) => {
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
-const whitelist = ['http://localhost:5173', 'https://localhost:5173', 'https://dami-cooks-1.onrender.com', 'http://localhost:5000', 'http://127.0.0.1:5173']
+app.use(morgan('dev'));
+const whitelist = ['http://localhost:5173', 'https://localhost:5173', 'https://damicooks.com' 'https://dami-cooks-1.onrender.com', 'http://localhost:5000', 'http://127.0.0.1:5173']
 
 const corsOptions = {
   credentials: true,

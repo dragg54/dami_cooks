@@ -2,7 +2,7 @@
 import { IoLogOutOutline } from "react-icons/io5";
 import { FaList } from "react-icons/fa6";
 import { useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { clearUser } from "../../redux/UserSlice";
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 const UserAccount = ({userAccountOpen, setUserAccountOpen, setUserOrdersOpened}) => {
     const modalRef = useRef();
     const dispatch = useDispatch()
+    const user = useSelector(state => state.user)
     const navigate = useNavigate()
     const handleLogout = () =>{
       dispatch(clearUser())
@@ -39,7 +40,7 @@ const UserAccount = ({userAccountOpen, setUserAccountOpen, setUserOrdersOpened})
           onClick={() => setUserAccountOpen(false)}
         />
       )}
-     <p className="font-bold text-xl w-full pb-3 border-b">SADIQ AJIBOLA</p>
+     <p className="font-bold text-xl w-full pb-3 border-b">{user?.user?.firstName?.toUpperCase()} {user?.user?.lastName?.toUpperCase()}</p>
      <ul className="text-xl mt-3 flex flex-col gap-3">
         <li className="w-full hover:bg-orange-200 text-gray-500" onClick={()=> setUserOrdersOpened(true)}>
             <span className="px-2 absolute pl-4 py-2 hover:bg-orange-200 hover:cursor-pointer w-full left-0 flex items-center gap-2 "><FaList className="text-sm"/> My Orders</span></li>

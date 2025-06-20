@@ -42,6 +42,7 @@ import AddAllergen from "./pages/admin/allergens/AddAllergen"
 import UpdateAllergen from "./pages/admin/allergens/UpdateAllergen"
 import UpdateAllergenUI from "./pages/admin/allergens/UpdateAllergen"
 import Services from "./pages/customer/services/Services"
+import VerifyEmail from "./pages/register/VerifyEmail"
 
 function App() {
   const user = useSelector(state => state.user).user
@@ -51,7 +52,7 @@ function App() {
   }
 
   const {data: notifications} = useQuery('notifications', {
-    queryFn: getUnreadNotifications
+    queryFn: getUnreadNotifications,
   })
 
   const dispatch = useDispatch()
@@ -121,6 +122,7 @@ function App() {
         <Route element={<AuthLayout />}>
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
         </Route>
         <Route element={<Layout />}>
           <Route path="/not-found" element={<NotFoundPage />} />

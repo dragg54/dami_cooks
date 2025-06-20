@@ -9,7 +9,7 @@ import { useFetchAllData } from "../../hooks/api/useFetchAllData";
 import { fetchToCart } from "../../redux/CartSlice";
 import { useEffect, useState } from "react";
 import { useIgnoreMatchedPath } from "../../hooks/useIgnoreMatchedRoute";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { getScreenSize } from "../../utils/getScreenSize";
 import { usePostData } from "../../hooks/api/usePostData";
 import { FaSearch, FaUser } from "react-icons/fa";
@@ -27,7 +27,6 @@ export const Header = ({ setNavIsOpen, setCartOpen, setUserAccountOpen, setOpenL
     localStorage.removeItem("cartItems")
     refetch()
   }
-
 
   useEffect(() => {
     const localStorageItems = localStorage.getItem("cartItems")
@@ -61,17 +60,17 @@ export const Header = ({ setNavIsOpen, setCartOpen, setUserAccountOpen, setOpenL
                   <FaSearch />
                 </div>
               </div>
-             <div className="flex items-center gap-x-3">
-               <span className="text-[0.8rem] text-gray-500">Welcome Back, {user?.user?.firstName} {user?.user?.lastName}</span>
-              <span onClick={() => setOpenLogout(true)} className="rounded-full cursor-pointer border border-gray-500 p-2 text-gray-500 text-2xl">
-                <FaUser />
-              </span>
-         
+              <div className="flex items-center gap-x-3">
+                <span className="text-[0.8rem] text-gray-500">Welcome Back, {user?.user?.firstName} {user?.user?.lastName}</span>
+                <span onClick={() => setOpenLogout(true)} className="rounded-full cursor-pointer border border-gray-500 p-2 text-gray-500 text-2xl">
+                  {(!user || !user.user || !user.isLoggedIn) ? <Link to={'/login'}>LOGIN</Link> : <FaUser />}
+                </span>
+
               </div>   </div> : ""
       }
       {
-        useIgnoreMatchedPath() ? <div></div> : user.user && !user.user.isAdmin ? <div className="flex gap-2">
-          {getScreenSize().isMobile ? <div></div> : !user.user ? <span className="text-sm font-semibold h-full flex items-center">LOGIN</span> : <span onClick={() => setUserAccountOpen(true)} className="text-[1.8rem] hover:cursor-pointer font-semibold h-full flex items-center"><FiUser /></span>}
+        useIgnoreMatchedPath() ? <div></div> : user.user && !user.user.isAdmin ? <div className="flex gap-2 items-center">
+          {getScreenSize().isMobile ? <div></div> : (!user.user || !user.isLoggedIn) ? <Link to={"/login"} className="text-sm font-semibold h-full flex items-center">LOGIN</Link> : <span onClick={() => setUserAccountOpen(true)} className="text-[1.8rem] hover:cursor-pointer font-semibold h-full flex items-center"><FiUser /></span>}
           <button onClick={() => setCartOpen(true)} className="text-2xl md:text-3xl relative">
             <IoCartOutline /><span className={`absolute left-2 md:left-3 -top-2 md:-top-1 h-5 w-5 flex items-center 
               ${!cart || cart.cartItems.length < 1 && 'hidden'} justify-center rounded-full bg-red-700 text-white -right-1 text-xs`}>{cart?.cartItems?.length || ''}</span></button>

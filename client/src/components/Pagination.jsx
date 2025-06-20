@@ -27,7 +27,7 @@ const Pagination = ({ currentPage,showTotal, totalPages, onPageChange, showLabel
       <button className="rounded-full border-red-500 text-sm p-1 border text-red-600" onClick={handleNextPage} disabled={currentPage === totalPages}>
         <MdOutlineNavigateNext className="text-red-600"/>
       </button>
-      {showTotal && <p className="inline-flex whitespace-nowrap">Total: {totalItems || 0}</p>}
+      {showTotal && <p className="inline-flex whitespace-nowrap">Total Items: {totalItems || 0}</p>}
       </div>
     </div>
   );

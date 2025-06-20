@@ -23,7 +23,7 @@ const User = db.define('user', {
     type: DataTypes.BOOLEAN,
     defaultValue: false
   },
-  isVerifiedEmail:{
+  emailVerified:{
     type: DataTypes.BOOLEAN,
     defaultValue: false
   },
@@ -34,7 +34,9 @@ const User = db.define('user', {
   password: {
     type: DataTypes.STRING,
     allowNull: false
-  }
+  },
+  emailVerificationToken: DataTypes.STRING,
+  emailTokenExpiresAt: DataTypes.DATE,
 });
 
 db.sync()

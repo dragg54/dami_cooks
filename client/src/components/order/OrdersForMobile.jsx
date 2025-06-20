@@ -48,7 +48,7 @@ const OrdersForMobile = ({ userOrdersOpened, setUserOrdersOpened }) => {
                         {
                         
                         isLoading ? <Spinner style={'!w-12 !h-12 mx-auto'} isLoading={isLoading}/> :
-                        orders?.length < 1 ?
+                        orders?.rows.length < 1 ?
                             <div className="w-full mt-5 mb-8">
                                 <p>No orders yet</p>
                                 <Button onClick={() => {

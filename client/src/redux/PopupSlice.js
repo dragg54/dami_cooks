@@ -6,12 +6,13 @@ export const popupSlice = createSlice({
   initialState: {
     isOpened: true,
     message: null,
+    success: null
   },
   reducers: {
     openPopup: (state, action) => {
       state.isOpened = true;
       state.message = action.payload.message;
-
+      state.success = action.payload.success 
     },
     closePopup: (state) => {
       state.isOpened = false;

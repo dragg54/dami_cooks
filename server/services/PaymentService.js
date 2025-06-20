@@ -79,7 +79,7 @@ export const refundPayment = async (req, transaction) => {
     await stripe.refunds.create({
         payment_intent: payment.gatewayPaymentId,
     });
-    sendCustomerPaymentRefundProcessingMail(orderCd, customer.name, customer.email)
+   await sendCustomerPaymentRefundProcessingMail(orderCd, customer.name, customer.email)
 }
 
 export const paymentWebhook = async (req, res) => {
@@ -131,13 +131,13 @@ export const paymentWebhook = async (req, res) => {
             //     cartId: userCart.id
             // }})
             sendNotification()
-            sendCustomerOrderPlacedMail(customer?.dataValues?.firstName, orderCd, customer?.dataValues?.email)
-            sendMerchantOrderPlacedMail(orderCd, customer?.dataValues?.firstName, process.env.MERCHANT_GMAIL)
+            await sendCustomerOrderPlacedMail(customer?.dataValues?.firstName, orderCd, customer?.dataValues?.email)
+            await sendMerchantOrderPlacedMail(orderCd, customer?.dataValues?.firstName, process.env.MERCHANT_GMAIL)
             await transaction.commit()
 
         }
         if (event.type == "charge.refunded") {
-            sendCustomerPaymentRefundedMail(paymentIntent.billing_details.name, paymentIntent.payment_intent, paymentIntent.amount,  `XXXXXXXXXXXXX${paymentIntent.payment_method_details?.card?.last4, paymentIntent}`)
+            await sendCustomerPaymentRefundedMail(paymentIntent.billing_details.name, paymentIntent.payment_intent, paymentIntent.amount,  `XXXXXXXXXXXXX${paymentIntent.payment_method_details?.card?.last4, paymentIntent}`)
             await Payment.update({
                 status: "refunded"
             }, { where: { gatewayPaymentId: paymentIntent.payment_intent } }, { transaction });
