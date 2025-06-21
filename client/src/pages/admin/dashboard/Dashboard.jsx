@@ -5,7 +5,7 @@ import { MdOutlineFreeCancellation } from "react-icons/md";
 import AnalyticsBarChart from "./AnalyticsBarChart";
 import AnalyticsPieChart from "./AnalyticsPieChart";
 import { FetchOrders } from "./api/FetchAllOrders";
-import { euro } from "../../../constants/Currency";
+import { Euro } from "../../../constants/Currency";
 import { FetchTotalRevenue } from "./api/FetchTotalRevenue";
 import AnalyticsGraph from "./AnalyticsGraph";
 import FilterCard from "./FilterCard";
@@ -21,7 +21,7 @@ const Dashboard = () => {
         <FilterCard />
       </div>
      <div className="w-full flex justify-between">
-        <AnalyticsCard {...{title: "Total Revenue", isLoading:totalRevenueLoading, value: `${euro}${totalRevenue || 0}`, icon:< RiMoneyEuroCircleLine />}}/>
+        <AnalyticsCard {...{title: "Total Revenue", isLoading:totalRevenueLoading, value: <span><Euro />{totalRevenue || 0}</span>, icon:< RiMoneyEuroCircleLine />}}/>
         <AnalyticsCard {...{title: "Total Order", isLoading:isDataAggregatesLoading, value: orderAggregates?.totalOrders || 0, icon:<RiFileList3Fill />}}/>
         <AnalyticsCard {...{title: "Total Cancelled",isLoading:isDataAggregatesLoading, value: orderAggregates?.totalCancelled || 0, icon:< MdOutlineFreeCancellation/>}}/>
      </div>

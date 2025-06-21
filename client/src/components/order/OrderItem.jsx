@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux"
 import FetchOrderDetails from "./api/FetchOrderDetails"
 import Image from "../image/Image"
-import { euro } from "../../constants/Currency"
+import { Euro } from "../../constants/Currency"
 import { MdRemoveShoppingCart } from "react-icons/md";
 
 const OrderItem = ({setUserOrderView}) => {
@@ -16,7 +16,7 @@ const OrderItem = ({setUserOrderView}) => {
                             <Image src={item?.item?.imageUrl} style={'!object-cover'} />
                         </div>
                         <span className="text-gray-600">{item?.item?.name}</span>
-                        <span className="font-bold">{euro}{item?.item?.price}</span>
+                        <span className="font-bold"><Euro />{item?.item?.price}</span>
                         <span className="text-orange-500">
                             x{item?.quantity}
                         </span>
@@ -28,7 +28,7 @@ const OrderItem = ({setUserOrderView}) => {
             </div>
             <div className="flex justify-between">
             <div>
-                <p className=" font-semibold ">Total Amount: <span className="">{euro}{orderItem?.amount}</span></p>
+                <p className=" font-semibold ">Total Amount: <span className=""><Euro />{orderItem?.amount}</span></p>
                 <p className=" font-semibold mt-2">Status: <span className={`text-sm ${orderItem?.status == "PENDING" ? 'text-orange-500' : orderItem?.status == "ACCEPTED" || orderItem?.status == "SHIPPED" ? "text-green-700" : "text-red-700"}`}>{orderItem?.status}</span></p>
             </div>    
          <div >

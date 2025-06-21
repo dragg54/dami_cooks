@@ -10,6 +10,7 @@ import { extractFileNameFromFileURL } from "../../../utils/extractFileNameFromFi
 import { UpdateItem } from "./api/UpdateItem"
 import OrderSwitch from "../../../components/input/Switch"
 import { FetchAllAllergens } from "../allergens/api/FetchAllAllergens"
+import { DeleteItem } from "./api/DeleteItem"
 
 
 const UpdateItemUI = () => {
@@ -38,6 +39,7 @@ const UpdateItemUI = () => {
     }
     const [file, setFile] = useState()
     const { mutate, isError, isLoading } = UpdateItem({ setResponseStatus, id: initialValues?.id })
+    const { mutate:deleteItemMutation } = DeleteItem({setResponseStatus, id: initialValues?.id})
     const [status, setStatus] = useState(initialValues.status);
     useEffect(() => {
         const options = []
@@ -68,6 +70,11 @@ const UpdateItemUI = () => {
 
         mutate(formData, { resetForm, setFile })
     }
+
+    const handleDelete = () =>{
+        deleteItemMutation()
+    }
+
     const validationSchema = Yup.object({
         name: Yup.string().required("Item Name is required"),
         description: Yup.string().required("Item Description is required"),
@@ -96,7 +103,7 @@ const UpdateItemUI = () => {
                 isUpdate={true}
                 formStyle={'grid md:grid-cols-3 grid-cols-2 gap-x-3 gap-y-3'}
                 {...{
-                    title: "Update Item", handleSubmit, isLoading,
+                    title: "Update Item", handleSubmit, isLoading, handleDelete,
                     initialValues, responseStatus, validationSchema, isError, setFile
                 }}>
                 <div className="w-full ">

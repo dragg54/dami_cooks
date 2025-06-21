@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { FetchItems } from "./api/fetchItems";
 import { useDispatch, useSelector } from "react-redux";
 import ItemImage from "../../../components/Item/ItemImage";
-import { euro } from '../../../constants/Currency'
+import { Euro } from '../../../constants/Currency'
 import { changeSearchQuery } from "../../../redux/GlobalSearchItemSlice";
 const SearchItem = () => {
     const [debouncedQuery, setDebouncedQuery] = useState("")
@@ -59,7 +59,7 @@ const SearchItem = () => {
                             <ItemImage item={item} style={'bg-red-500 rounded-full !h-full !w-full flex justify-center items-center'} />
                         </div>
                         <p className="font-semibold text-lg">{item.name}</p>
-                        <p className="text-orange-500 text-lg">{euro}{item.price}</p>
+                        <p className="text-orange-500 text-lg"><Euro />{item.price}</p>
                     </div>
                 ))
             }

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import ItemImage from "../Item/ItemImage";
 import ItemQuantityCounter from "../Item/ItemQuantityCounter";
-import { euro } from "../../constants/Currency";
+import { Euro } from "../../constants/Currency";
 import { useDispatch, useSelector } from "react-redux";
 import CheckoutButton from "./CheckoutButton";
 import { useState } from "react";
@@ -74,7 +74,7 @@ const Cart = ({ cartOpen, setCartOpen }) => {
               ))
             }
              <div className="mb-10">
-            <span>Sub Total: {euro}{cart?.cartItems?.length > 1 ? cart?.cartItems?.reduce((prevItem, nextItem) =>
+            <span>Sub Total: <Euro />{cart?.cartItems?.length > 1 ? cart?.cartItems?.reduce((prevItem, nextItem) =>
               (Number(prevItem?.item?.price || 0) * Number(prevItem?.quantity || 0)) + (Number(nextItem?.item?.price || 0) * Number(nextItem?.quantity || 0))) :
               cart?.cartItems?.length && (Number(cart?.cartItems[0].item.price) * Number(cart?.cartItems[0].quantity))}
             </span>
@@ -98,7 +98,7 @@ const ItemDtl = ({ cartItem }) => {
     <div className="w-[2/3] mt-4 -ml-2">
       <p className="font-semibold mb-4">{cartItem.item?.name}</p>
       <ItemQuantityCounter {...{ quantity, setQuantity, cartItem }} style={'!h-6 !mt-5'} />
-      <p className="mt-3 text-orange-700 font-semibold">{euro}{cartItem.item?.price}</p>
+      <p className="mt-3 text-orange-700 font-semibold"><Euro />{cartItem.item?.price}</p>
     </div>
   )
 }

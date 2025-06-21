@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* esNavLinknt-disable react-hooks/rules-of-hooks */
 /* esNavLinknt-disable react/prop-types */

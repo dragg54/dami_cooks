@@ -1,0 +1,1 @@
+export const Euro = () => <span className="font-[Segoe UI, sans-serif]">£</span>

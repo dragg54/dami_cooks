@@ -32,7 +32,7 @@ const cartSlice = createSlice({
       const localStorageCartItems = localStorage.getItem("cartItems")
       const parsedCartItems = JSON.parse(localStorageCartItems)
       if(parsedCartItems && parsedCartItems.length > 0){
-        localStorage.setItem(JSON.stringify(state.cartItems))
+        localStorage.setItem("cartItem", JSON.stringify(state.cartItems))
       }
     },
     increaseQuantity: (state, action) => {

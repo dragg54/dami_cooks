@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import FetchUserOrder from "./api/FetchUserOrder";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from 'date-fns'
-import { euro } from "../../constants/Currency";
+import { Euro } from "../../constants/Currency";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "react-query";
 import { addUserOrderItem } from "../../redux/UserOrderItem";
@@ -82,7 +82,7 @@ const Orders = ({ userOrdersOpened, setUserOrdersOpened }) => {
                                                   "text-green-700" : "text-red-700"}`}>{order?.status}</span>                                           
                                             </div>
                                             <div className="text-[1.2rem] font-bold">
-                                                {euro}{order.amount}
+                                                <Euro />{order.amount}
                                             </div>
                                             <div>
                                                 <button onClick={() => {

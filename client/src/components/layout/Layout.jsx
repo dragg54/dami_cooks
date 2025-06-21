@@ -10,6 +10,8 @@ import GlobalModal from '../GlobalModal';
 import PopUp from '../PopUp';
 import UserAccount from './UserAccount';
 import Orders from '../order/Orders';
+import MobileNavigation from './MobileNavigation';
+import ChatBox from './ChatBox';
 
 const Layout = () => {
   const [navIsOpen, setNavIsOpen] = useState(false);
@@ -30,6 +32,8 @@ const Layout = () => {
       </div>
       <PopUp />
       <Footer />
+      <ChatBox />
+      <MobileNavigation {...{setCartOpen, setNavIsOpen}}/>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import ItemImage from './ItemImage'
 import AddToCartButton from '../button/AddToCartButton'
+import { Euro } from '@/constants/Currency'
 
 const Item = ({ item }) => {
     return (
@@ -10,7 +11,7 @@ const Item = ({ item }) => {
             </div>
             <div className='w-full  text-sm '>
                 <p className='font-semibold text-gray-700 font-bold mt-5'>{item?.name}</p>
-                <p className='font-semibold mt-3 text-gray-500 text-[1.2rem]'>€{item?.price}</p>
+                <p className='font-semibold mt-3 text-gray-500 text-[1.2rem]'><Euro />{item?.price}</p>
                 <AddToCartButton {...{item, style:'!w-full mt-4 md:mt-6'}}/>
             </div>
         </div>

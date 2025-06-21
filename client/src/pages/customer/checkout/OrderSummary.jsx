@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux"
 import Image from "../../../components/image/Image"
-import { euro } from "../../../constants/Currency"
+import { Euro } from "../../../constants/Currency"
 
 const OrderSummary = () => {
     const cartItems = useSelector(state => state.cart)?.cartItems
@@ -14,12 +14,12 @@ const OrderSummary = () => {
                         <li key={cartItem.id} className="inline-flex items-center border-b py-3 border-gray-300 justify-between w-full text-sm text-gray-400">
                             <span className="flex gap-2 items-center"><Image style={'!h-16 !w-16'} src={cartItem?.item.imageUrl} />{cartItem?.item.name} <span className="text-[#fdb750]">x {cartItem?.quantity}</span></span>
                         
-                            <span className="">{euro}{cartItem?.item.price}</span></li>
+                            <span className=""><Euro />{cartItem?.item.price}</span></li>
                     ))
                 }
             </ul>
             <div>
-                <p className="text-lg font-semibold mt-4"><span>Total</span> <span>{euro}{cartItems?.length > 1 ? cartItems?.reduce((prevItem, nextItem)=> (Number(prevItem?.item?.price || 0) 
+                <p className="text-lg font-semibold mt-4"><span>Total</span> <span><Euro />{cartItems?.length > 1 ? cartItems?.reduce((prevItem, nextItem)=> (Number(prevItem?.item?.price || 0) 
                 * Number(prevItem?.quantity || 0)) + (Number(nextItem?.item?.price || 0) * Number(nextItem?.quantity || 0))): cartItems?.length && (Number(cartItems[0].item.price) * (cartItems[0].quantity))}</span></p>
             </div>
         </div>
