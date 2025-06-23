@@ -3,16 +3,21 @@ import db from "../configs/db.js";
 import { Item } from "./Item.js";
 import { Order } from "./Order.js";
 
-export const OrderItem = db.define('orderItem',{
-    quantity: {
-        type: DataTypes.INTEGER
-    }
+export const OrderItem = db.define('orderItem', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  quantity: {
+    type: DataTypes.INTEGER
+  }
 })
 
-OrderItem.belongsTo(Item, {onDelete: 'CASCADE'})
+OrderItem.belongsTo(Item, { onDelete: 'CASCADE' })
 Item.hasOne(OrderItem)
 
-OrderItem.belongsTo(Order, {onDelete: 'CASCADE'})
+OrderItem.belongsTo(Order, { onDelete: 'CASCADE' })
 Order.hasMany(OrderItem)
 
 

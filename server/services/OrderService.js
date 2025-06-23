@@ -15,12 +15,72 @@ import { sendMerchantOrderCancelledMail } from "../emails/sendMessages/SendMerch
 import dotenv from 'dotenv'
 import { sendCustomerOrderCancelledMail } from "../emails/sendMessages/SendCustomerOrderRejectedMail.js"
 import { generateCd } from "../utils/generateCd.js"
+import { Payment } from "../models/Payment.js"
 
 dotenv.config()
 
-export const createOrder = async (req) => {
+export const createOrder = async (req, trans) => {
+    const user = req.user
+    let userId = user.id
+    if(user.isAdmin){
+        const { customerName, customerPhone,  orderItems } = req.body
+        let totalAmount = 0;
+        for(let item of orderItems){
+            const existingItem = await Item.findOne({where:{id: item.id}, raw: true, transaction: trans})
+            if(!existingItem){
+                throw new BadRequestError("Item does not exist")
+            }
+            console.log(existingItem.price)
+            console.log(item.quantity)
+            totalAmount += (Number(existingItem.price) * Number(item.quantity))
+        }
+        const existingUser = await User.findOne({where: {phone: customerPhone}, raw: true})
+        let newUserId = existingUser?.id
+        if(!existingUser){
+            const nameArr = customerName.split(" ")
+           const newUser =  await User.create({
+                firstName: nameArr[0],
+                lastName: nameArr[1],
+                phone: customerPhone,
+                password: "System_Admin"
+            }, {transaction: trans, raw: true})
+            userId = newUser.id
+        }
+        const newOrder = await Order.create({
+            amount: totalAmount,
+            orderCd: generateCd("ORD"),
+            status: "ACCEPTED",
+            userId: newUserId
+        }, {transaction: trans, raw: true})
+
+        await Payment.create({
+            orderId: newOrder.id,
+            gatewayPaymentId: generateCd("SYS"),
+            amount: totalAmount,
+            paymentType: 'TRANSFER',
+            paymentGateway: "TRANSFER",
+        }, {transaction: trans})
+
+         await Shipping.create({
+                        userId: userId,
+                        orderId: newOrder.id,
+                        address: "UNSPECIFIED",
+                        city:  "UNSPECIFIED",
+                        phone: customerPhone,
+                        email: "UNSPECIFIED",
+                        postalCode:  "UNSPECIFIED",
+                        state:  "UNSPECIFIED"
+                    }, { transaction: trans })
+        
+        const newOrderItems = orderItems.map((itm)=> ({
+            quantity: itm.quantity,
+            "orderId": newOrder.id,
+            "itemId": itm.id
+        }))
+        await OrderItem.bulkCreate(newOrderItems, {transaction: trans})
+        return
+    }
     const { cartId } = req.body
-    const userId = req.user.id
     const existingCart = await Cart.findByPk(cartId)
     if (!existingCart) {
         const errMsg = `Failed to create order: Cart must exist before order creation`

@@ -2,11 +2,15 @@ import db from '../configs/db.js';
 import * as orderService from '../services/OrderService.js'
 
 export const createOrder = async (req, res) => {
+    const transaction = await db.transaction()
     try {
         await orderService.createOrder(req)
+        await transaction.commit()
         res.json("order created")
     }
     catch (error) {
+        console.log(error)
+        await transaction.rollback()
         res.status(error.statusCode || 500).json(error.message
             || "Internal server error"
         );

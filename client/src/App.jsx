@@ -43,6 +43,7 @@ import UpdateAllergen from "./pages/admin/allergens/UpdateAllergen"
 import UpdateAllergenUI from "./pages/admin/allergens/UpdateAllergen"
 import Services from "./pages/customer/services/Services"
 import VerifyEmail from "./pages/register/VerifyEmail"
+import Order from "./pages/admin/order/Order"
 
 function App() {
   const user = useSelector(state => state.user).user
@@ -106,6 +107,7 @@ function App() {
           <Route path="/orderlist" element={<OrderList />} />
           <Route path="/allergens" element={<Allergens />}/>
           <Route path="/allergen" element={<AddAllergen />}/>
+          <Route path="/order" element={<Order />}/>
           <Route path="/updateAllergen" element={<UpdateAllergenUI />}/>
           <Route path="/settings" element={<Settings />}>
           <Route index element={<Navigate to="user-management" replace />} />

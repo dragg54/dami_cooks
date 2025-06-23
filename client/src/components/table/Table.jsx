@@ -108,7 +108,7 @@ const CustomTable = ({
           <div className="flex items-center gap-2 cursor-pointer" onClick={toggleFilter}>
             <IoFilterSharp className="text-sm text-gray-600" />
             <span className="text-xs font-semibold">FILTERS</span>
-            <Filter {...{ isFilterOpen, handleEnterKey, toggleFilter, filterRef, filterValues, setFilterValues }} />
+            <Filter {...{ isFilterOpen, handleEnterKey, toggleFilter, filterRef, filterValues, setFilterValues, setDebouncedQuery }} />
           </div>
           <div className="flex items-center gap-2 cursor-pointer">
             <TfiExport className="text-sm text-gray-600" />

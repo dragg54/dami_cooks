@@ -8,7 +8,6 @@ import { Order } from "./Order.js";
 export const Payment = db.define("payment", {
     paymentGateway:{
        type: DataTypes.ENUM('STRIPE', 'PAYSTACK', 'TRANSFER'),
-        defaultValue: 'STRIPE'
     },
     gatewayPaymentId:{
         type: DataTypes.STRING

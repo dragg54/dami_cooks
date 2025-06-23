@@ -9,8 +9,8 @@ const PaymentList = () => {
     const [debouncedQuery, setDebouncedQuery] = useState("")
     const [fetchEnabled, setFetchEnabled] = useState(true)
     const [filterValues, setFilterValues] = useState({
-        'PAYMENT GATEWAY': { id: "paymentGateway", value: null },
-        'ORDER ID': { id: "orderId", value: null },
+        'PAYMENT GATEWAY ID': { id: "gatewayPaymentId", value: null },
+        'ORDER ID': { id: "orderCd", value: null },
         'Gateway Payment Id': { id: "gatewayPaymentId", value: null },
         'Payment Type': { id: "paymentType", value: null },
         'Status': { id: "status", value: null },
@@ -22,8 +22,8 @@ const PaymentList = () => {
         size,
         page,
         searchText: debouncedQuery,
-        paymentGateway: filterValues["PAYMENT GATEWAY"]?.value,
-        orderId: filterValues["Order ID"]?.value,
+        gatewayPaymentId: filterValues["PAYMENT GATEWAY ID"]?.value,
+        orderCd: filterValues["ORDER ID"]?.value,
         paymentType: filterValues["Payment Type"]?.value,
         amount: filterValues["Amount"]?.value,
         status: filterValues["STATUS"]?.value,
@@ -37,7 +37,7 @@ const PaymentList = () => {
             "id":dta.id,
             "Payment Id": dta.gatewayPaymentId,
             status: dta.status,
-            "Order ID": dta.order?.id,
+            "ORDER ID": dta.order?.orderCd,
             amount: dta.amount,
             "Payment Type": dta.paymentType,
             "Payment Gateway": dta.paymentGateway,
@@ -51,6 +51,7 @@ const PaymentList = () => {
     const handleEnterKey = (e) => {
         if (e.key == "Enter") {
             e.preventDefault()
+            setDebouncedQuery("")
             setFetchEnabled(true)
             refetch()
         }

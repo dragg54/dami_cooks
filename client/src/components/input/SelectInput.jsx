@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import { ErrorMessage } from "formik";
 import { useEffect, useRef, useState } from "react"
 import { FaAngleDown } from "react-icons/fa";
 
@@ -29,6 +30,8 @@ const SelectInput = ({ options, selectedValues, onChange, label, name, isMultipl
                 {isMultiple ? label : ((selectedValues && selectedValues[name]?.label) || "Select an option")}
                 <span><FaAngleDown /></span>
             </button>
+         <ErrorMessage name={name} component="div" className="text-red-500 text-sm" />
+        
             {isMultiple ? 
              <MultipleSelectOptions {...{ open, options, setOpen, onChange, selectedValues, setSelectedValues, name }}/> :
             <SelectOptions {...{ open, options, setOpen, onChange, selectedValues, name }} />}
@@ -40,7 +43,7 @@ const SelectOptions = ({ open, options, setOpen, onChange, selectedValues, name 
     return (
         <>
             {open && (
-                <ul className="absolute min-w-[150px] mt-1 bg-white z-40 border rounded shadow" >
+                <ul className="absolute min-w-[150px] mt-1 bg-white z-40 border text-gray-500 rounded shadow" >
                     {options?.map((option) => (
                         <li
                             key={option.value}

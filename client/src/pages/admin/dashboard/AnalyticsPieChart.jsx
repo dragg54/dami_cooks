@@ -4,7 +4,7 @@ const chartData = [
     { name: "Delivered", value: 200 },
     { name: "Cancelled", value: 50 }
 ]
-const COLORS = ['#85d2d0', '#d84c4c'];
+const COLORS = ['#107869', '#ff2511'];
 const AnalyticsPieChart = () => {
     return (
         <div className="w-full md:w-[40%] bg-white mt-3 h-[320px] md:h-[320px] pt-5 pb-4 rounded-md shadow-md shadow-gray-300">
@@ -16,7 +16,7 @@ const AnalyticsPieChart = () => {
                         cy="50%"
                         innerRadius={55}
                         outerRadius={100}
-                        fill="#d01110"
+                        fill="#ff2511"
                         dataKey="value"
                     >
                         {chartData.map((entry, index) => (

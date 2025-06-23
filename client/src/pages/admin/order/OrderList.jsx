@@ -46,7 +46,6 @@ const OrderList = () => {
       "Order Number": dta.orderCd,
       "Customer Name": dta.user?.firstName + " " + dta.user?.lastName,
       status: dta.status,
-      "Payment Method": 'CARD',
       "city": dta.shipping?.city,
       amount: dta.amount,
        "Ordered At": format(new Date(dta.createdAt), 'dd-MM-yyy HH:mm')
@@ -56,6 +55,7 @@ const OrderList = () => {
   const handleEnterKey = (e) =>{
     if(e.key == "Enter"){
       e.preventDefault()
+      setDebouncedQuery("")
       setFetchEnabled(true)
      refetch()
    }
@@ -70,7 +70,7 @@ const OrderList = () => {
 <div className="w-full">
      <CustomTable
        {...{caption: "Orders", tableData: processedData ,setFetchEnabled,
-        openModal:true, totalItems: orderData?.totalItems, 
+        openModal:true, totalItems: orderData?.totalItems,  canAdd: true, formRoute: "/order",
          placeholder: "Search orders",canEdit: true, isLoading, updateLink: "/update-order-status",
          currentPage: page, debouncedQuery, setDebouncedQuery,
          totalPages: orderData?.totalPages, filterValues,handleEnterKey, fetchEnabled,

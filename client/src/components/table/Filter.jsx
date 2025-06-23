@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { GoPencil } from "react-icons/go";
 
-const Filter = ({ filterRef, isFilterOpen, filterValues,toggleFilter, setFilterValues, handleEnterKey}) => {
+const Filter = ({ filterRef, isFilterOpen,setDebouncedQuery, filterValues,toggleFilter, setFilterValues, handleEnterKey}) => {
     const filters = Object.entries(filterValues)
 
     const handleInputChange = (e) =>{

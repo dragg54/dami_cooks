@@ -152,14 +152,14 @@ export const paymentWebhook = async (req, res) => {
 
 export const getPayments = async (req) => {
     const { page, size, status, gatewayPaymentId, paymentType,
-        paymentGateway, amount, customerId, orderId, fromDate, toDate } = req.query;
+        paymentGateway, amount, customerId, orderCd, fromDate, toDate } = req.query;
     const user = req.user
     if (!req.user.isAdmin) {
         throw new UnauthorizedError('Only admin is allowed to complete operation')
     }
     const { limit, offset } = getPagination(page, size);
     const queryOpts = {}
-
+    const orderQryOpts = {}
     if (status != null) {
         queryOpts['where'] = { status: status.toUpperCase() }
     }
@@ -197,20 +197,17 @@ export const getPayments = async (req) => {
         }
     }
 
-    if (customerId) {
 
-    }
-
-    if (orderId) {
-        queryOpts.where = {
-            ...queryOpts.where,
-            [Op.or]: [
-                {
-                    orderId: { [Op.like]: `%${orderId}%` }
-                }
-            ]
-        }
-    }
+    // if (orderCd) {
+    //     queryOpts.where = {
+    //         ...queryOpts.where,
+    //         [Op.or]: [
+    //             {
+    //                 orderCd: { [Op.like]: `%${orderCd}%` }
+    //             }
+    //         ]
+    //     }
+    // }
 
     if (fromDate && !toDate) {
         queryOpts.where = {
@@ -235,6 +232,20 @@ export const getPayments = async (req) => {
         }
     }
 
+    if (orderCd) {
+        orderQryOpts.where = {
+            ...orderQryOpts,
+            orderCd: { [Op.like]: `%${orderCd}%` }
+        }
+    }
+
+    if(customerId){
+        orderQryOpts.where = {
+          ...orderQryOpts,
+        userId: customerId
+        }
+    }
+
     if (amount) {
         queryOpts.where = {
             ...queryOpts.where,
@@ -250,10 +261,8 @@ export const getPayments = async (req) => {
         include: [
             {
                 model: Order,
-                where: customerId && {
-                    userId: customerId
-                },
-                attributes: ['id']
+                attributes: ['id', 'orderCd'],
+                ...orderQryOpts
             }
         ],
         limit,
