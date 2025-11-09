@@ -23,6 +23,7 @@ import { sendCustomerPaymentRefundedMail } from '../emails/sendMessages/SendCust
 import User from '../models/User.js'
 import { sendCustomerPaymentRefundProcessingMail } from '../emails/sendMessages/SendCustomerPaymentRefundedProcessingMail.js'
 import { generateCd } from '../utils/generateCd.js'
+import logger from '../configs/logger.js'
 
 dotenv.config()
 
@@ -35,7 +36,7 @@ export const initializePayment = async (req) => {
         }
         if (items && items.length > 0) {
             const totalCartItemAmount = items.length > 1 ? items.reduce((prevItem, nextItem) => ((Number(prevItem.price || 0) * Number(prevItem.quantity || 0))
-                + (Number(nextItem.price || 0) * Number(nextItem.quantity || 0)))) :  Number(items[0]?.price) * Number(items[0].quantity)
+                + (Number(nextItem.price || 0) * Number(nextItem.quantity || 0)))) : Number(items[0]?.price) * Number(items[0].quantity)
             const paymentItem = items.map((item) => (
                 {
                     id: item.id,
@@ -44,16 +45,36 @@ export const initializePayment = async (req) => {
                     quantity: item.quantity
                 }
             ))
+
+            let existingOrder = await Order.findOne({
+                where: { cartId: userCart.id, status: 'PENDING' },
+                transaction,
+                lock: true,
+            });
+
+            const orderCd = generateCd("ORD")
+
+            let newOrder;
+            if (!existingOrder) {
+                const newOrder = await Order.create({
+                    orderCd: orderCd,
+                    orderedBy: req.user.id, amount: totalCartItemAmount , userId: req.user.id,
+                    cartId: userCart.id
+                }, {transaction});
+            }
+
+            newOrder = newOrder.toJSON()
             const paymentIntent = await stripe.paymentIntents.create({
                 amount: totalCartItemAmount * 100,
                 currency: "eur",
                 metadata: {
+                    orderCd: newOrder.orderCd,
                     orderedBy: req.user.id,
                     cartId: userCart.dataValues.id,
                     cartItems: JSON.stringify(paymentItem)
                 }
             });
-            return { clientSecret: paymentIntent.client_secret };
+                 return { clientSecret: paymentIntent.client_secret };
         }
         return { clientSecret: null }
 
@@ -90,25 +111,34 @@ export const paymentWebhook = async (req, res) => {
         const event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
         const paymentIntent = event.data.object;
         if (event.type === "payment_intent.succeeded") {
-            const orderCd = generateCd("ORD")
-            const { orderedBy, cartItems, cartId } = paymentIntent.metadata
+            const { orderedBy, cartItems, cartId, orderCd } = paymentIntent.metadata
             const customer = await User.findOne({where: {id: orderedBy}, attributes: ['firstName', "email"]})
-            const order = await Order.create({orderCd, orderedBy, amount: paymentIntent.amount/100, userId: orderedBy }, { transaction });
+            const existingOrder = await Order.findOne({where: {orderCd}})
+            if(!existingOrder){
+                logger.error("Update order failed: Existing order not found for "+orderCd)
+            }
+            const order = await Order.update({status: "PLACED"}, {where:{orderCd}, transaction });
+            logger.info("Order status updated")
+
             const orderItems = JSON.parse(cartItems).map(cartItem => ({
                 itemId: cartItem.id,
-                orderId: order.dataValues.id,
+                orderId: existingOrder.dataValues.id,
                 quantity: cartItem.quantity,
             }))
             await OrderItem.bulkCreate(orderItems, { transaction })
+
+            //Create payment
             await Payment.create({
                 gatewayPaymentId: paymentIntent.id,
                 amount: paymentIntent.amount/100,
                 status: paymentIntent.status,
-                orderId: order.dataValues.id
+                orderId: existingOrder.dataValues.id
             }, { transaction })
+
+            //Create shipping
             await Shipping.create({
                 userId: orderedBy,
-                orderId: order.dataValues.id,
+                orderId: existingOrder.dataValues.id,
                 address: paymentIntent.shipping.address.line1,
                 city: paymentIntent.shipping.address.city,
                 phone: paymentIntent.shipping.phone,
@@ -121,6 +151,7 @@ export const paymentWebhook = async (req, res) => {
                     cartId
                 }
             },{transaction})
+            
             await Notification.create({
                 read: false,
                 message: `You have a new order`,

@@ -6,6 +6,7 @@ export const createAllergen = async (req, res) => {
         res.json("Allergen created")
     }
     catch (error) {
+        console.log(error)
         res.status(error.statusCode || 500).json(error.message
             || "Internal server error"
         );
@@ -18,6 +19,7 @@ export const updateAllergen = async (req, res) => {
         res.json("Allergen updated")
     }
     catch (error) {
+        console.log(error)
         res.status(error.statusCode || 500).json(error.message
             || "Internal server error"
         );
@@ -30,6 +32,7 @@ export const deleteAllergen = async (req, res) => {
         res.json("Allergen deleted")
     }
     catch (error) {
+        console.log(error)
         res.status(error.statusCode || 500).json(error.message
             || "Internal server error"
         );
@@ -43,6 +46,7 @@ export const getAllAllergens = async (req, res) => {
         res.json(Allergens)
     }
     catch (error) {
+        console.log(error)
         res.status(error.statusCode || 500).json(error.message
             || "Internal server error"
         );
@@ -55,6 +59,7 @@ export const getAllergenById = async (req, res) => {
         res.json(Allergen)
     }
     catch (error) {
+        console.log(error)
         res.status(error.statusCode || 500).json(error.message
             || "Internal server error"
         );

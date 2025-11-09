@@ -20,7 +20,6 @@ export const createItem = async (req, res) => {
 export const updateItem = async (req, res) => {
     const transaction = await db.transaction()
     try {
-        console.log(req.body)
         await itemService.updateItem(req, transaction)
         await transaction.commit()
         res.json("Item updated")

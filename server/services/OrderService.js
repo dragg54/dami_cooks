@@ -30,8 +30,6 @@ export const createOrder = async (req, trans) => {
             if(!existingItem){
                 throw new BadRequestError("Item does not exist")
             }
-            console.log(existingItem.price)
-            console.log(item.quantity)
             totalAmount += (Number(existingItem.price) * Number(item.quantity))
         }
         const existingUser = await User.findOne({where: {phone: customerPhone}, raw: true})
@@ -42,7 +40,7 @@ export const createOrder = async (req, trans) => {
                 firstName: nameArr[0],
                 lastName: nameArr[1],
                 phone: customerPhone,
-                password: "System_Admin"
+                // password: "System_Admin"
             }, {transaction: trans, raw: true})
             userId = newUser.id
         }

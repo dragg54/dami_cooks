@@ -23,5 +23,5 @@ export const updateItemSchema = Joi.object({
   uom: Joi.string().required().label("Unit of Measure (UOM)"),
   status: Joi.string().allow(null).label("Status"),
   imageUrl: Joi.string().allow(null, ""),
-    allergenIds: Joi.array()
+  allergenIds: Joi.array()
 })

@@ -19,7 +19,7 @@ export const getAllCartItems = async (req, res) => {
         res.json(CartItems)
     }
     catch (error) {
-        console.log(error.message)
+        console.log(error.error)
         res.status(error.statusCode || 500).json(error.message
             || "Internal server error"
         );
@@ -32,7 +32,7 @@ export const deleteCartItem = async(req, res) =>{
         res.json("Cart item deleted")
     }
     catch (error) {
-        console.log(error.message)
+        console.log(error.error)
         res.status(error.statusCode || 500).json(error.message
             || "Internal server error"
         );
