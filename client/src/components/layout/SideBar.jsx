@@ -17,7 +17,7 @@ const SideBar = () => {
         <li className="menus"><MdOutlineInventory2 /><Link className="menus" to="/itemlist">Items</Link></li>
         <li className="menus"><BiHealth /><Link className="menus" to="/allergens">Allergens</Link></li>
         <li className="menus relative"><FaBasketShopping /><Link className="menus" to="/orderlist">Orders
-          {unreadNotification > 0 && <span className="h-6 w-6 flex items-center justify-center text-[0.5rem] text-white !rounded-full bg-green-400 absolute -right-6 -top-1 ">new</span>}
+          {unreadNotification < 1 && <span className="h-3 w-3 flex items-center justify-center text-[0.5rem] text-white !rounded-full bg-green-400 absolute -right-5 top-2 "></span>}
         </Link></li>
         <li className="menus"><MdOutlinePayments /><Link className="menus" to="/paymentlist">Payments</Link></li>
         <li className="menus"><MdSettings /><Link className="menus" to="/settings">Settings</Link></li>

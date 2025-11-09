@@ -52,7 +52,7 @@ export const Header = ({ setNavIsOpen, setCartOpen, setUserAccountOpen, setOpenL
               `cursor-pointer ${isActive && 'text-orange-500'}`}>Menu</NavLink>
           <NavLink to={'/about-us'}
             className={({ isActive }) => `cursor-pointer ${isActive && 'text-orange-500'}`}>About Us</NavLink>
-          <NavLink to={'/services'} className={({ isActive }) => `cursor-pointer ${isActive && 'text-orange-500'}`}>Services</NavLink>
+          <NavLink to={'/services'} className={({ isActive }) => `cursor-pointer ${isActive && 'text-orange-500'}`}>Catering</NavLink>
           <NavLink to={"/contact-us"} className={({ isActive }) =>
             `cursor-pointer ${isActive && 'text-orange-500'}`}>Contact Us</NavLink>
         </nav>

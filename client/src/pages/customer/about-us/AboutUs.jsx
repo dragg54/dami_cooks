@@ -1,6 +1,7 @@
 import { Button } from "@/components/button/Button"
 import Image from "../../../components/image/Image"
 import ScrollFadeIn from "@/components/animations/ScrollFadeIn"
+import { getScreenSize } from "@/utils/getScreenSize"
 
 const AboutUs = () => {
     return (
@@ -9,8 +10,8 @@ const AboutUs = () => {
                 <img className="w-[500px] md:w-[1800px] -mt-24 md:-mt-[22rem] flex-justify-center" src={'/images/FOOD3.jpg'} />
             </ScrollFadeIn>
             <ScrollFadeIn className="w-full p-6 md:flex  flex-col md:flex-row gap-4 md:mt-[200px] mt-6 z-40 md:h-[770px] relative">
-                <ScrollFadeIn className="md:w-1/2 w-2/3 flex object-contain h-[400px] md:h-[550px]">
-                    <Image src={'/images/chef2.jpg'} />
+                <ScrollFadeIn className={`${getScreenSize().isMobile && '!w-full'} md:w-1/2 w-2/3 flex object-contain h-[400px] md:h-[550px]`}>
+                    <Image s src={'/images/chef2.jpg'} />
                 </ScrollFadeIn>
                 <ScrollFadeIn className="md:w-1/2 mt-6 md:mt-0 md:ml-8">
                     <ScrollFadeIn>

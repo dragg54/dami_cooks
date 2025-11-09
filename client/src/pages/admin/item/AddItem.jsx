@@ -45,7 +45,7 @@ const AddItem = () => {
         formData.append('itemCategoryId', updatedValues.itemCategoryId);
         formData.append('status', status)
         selectValues.allergens.forEach(allergen => {
-            formData.append("allergenIds", allergen)
+            formData.append("allergenIds[]", allergen)
         })
         mutate(formData)
     }

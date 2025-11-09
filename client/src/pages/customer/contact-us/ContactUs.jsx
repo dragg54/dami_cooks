@@ -23,8 +23,8 @@ const ContactUs = () => {
 
   return (
     <div className="w-full mb-20 max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-4xl font-bold mt-8 text-center mb-4">Contact Us</h2>
-      <p className="text-center text-[#fdb750]  mb-6">
+      <h2 className="text-4xl font-bold mt-8 text-center mb-4 text-[#d01110]">Contact Us</h2>
+      <p className="text-center text-gray-500 mb-6">
         Have a question or feedback? We’d love to hear from you!
       </p>
 
@@ -34,24 +34,30 @@ const ContactUs = () => {
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4 mb-12">
-          <input
+         <div>
+          <label htmlFor="">Name</label>
+           <input
             type="text"
             name="name"
-            placeholder="Your Name"
+            placeholder="Enter your Name"
             value={formData.name}
             onChange={handleChange}
             required
             className="w-full p-3 border rounded"
           />
-          <input
-            type="email"
-            name="email"
-            placeholder="Your Email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            className="w-full p-3 border rounded"
-          />
+         </div>
+            <div>
+              <label htmlFor="">Email</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="Enter your Email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="w-full p-3 border rounded"
+              />
+         </div>
           <textarea
             name="message"
             placeholder="Your Message"
@@ -63,7 +69,7 @@ const ContactUs = () => {
           ></textarea>
           <Button
             type="submit"
-            className="w-full p-3 md:py-4 !rounded-full  text-white !font-bold  hover:shadow-red-500 hover:shadow-md transition"
+            className="w-full p-3 !mt-7 md:py-4 !rounded-full  text-white !font-bold  hover:shadow-red-500 hover:shadow-md transition"
           >
             Send Message
           </Button>

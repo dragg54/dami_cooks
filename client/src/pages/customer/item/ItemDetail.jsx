@@ -1,6 +1,8 @@
 import { useLocation } from "react-router-dom"
 import ItemImage from "../../../components/Item/ItemImage"
 import AddToCartButton from "../../../components/button/AddToCartButton"
+import { PoundSterling } from "lucide-react"
+import { Euro } from "@/constants/Currency"
 
 const ItemDetail = () => {
     const location = useLocation()
@@ -14,16 +16,16 @@ const ItemDetail = () => {
             </div>
             <div className="md:w-1/2 w-full mt-8 md:mt-0">
                 <p className="text-2xl font-semibold">{item.name}</p>
-                <p className="mt-4 text-gray-400 text-sm md:w-2/3 whitespace-normal">{item.description}</p>
-                <p className="mt-4 text-3xl  text-[#fdb750] font-bold">€{item.price}</p>
+                <p className="mt-4 text-gray-700 text-sm md:w-2/3 whitespace-normal">{item.description}</p>
+                <p className="mt-4 text-3xl flex items-center text-[#ffa303] font-bold"><Euro className=""/>{item.price}</p>
                 <p className=" mt-3 text-green-600">{item.status == "ONLINE" ? "Available" : "Unavailable"}</p>
                 <div className="mt-6">
                   <p><span className="font-semibold">Allergens</span>: {(!item.allergens || item.allergens?.length < 0) ? "Allergens unspecified" :item.allergens.map((allergen, index) => (
-                    <span className="text-gray-500" key={index}>{allergen.name}{index+1 < item.allergens.length && ", "}</span>
+                    <span className="text-gray-600" key={index}>{allergen.name}{index+1 < item.allergens.length && ", "}</span>
                   ))}</p>
                 </div>
-                <div className="w-2/3 h-20 mt-6 flex items-center gap-4">
-                    <AddToCartButton {...{ item }} />
+                <div className="md:w-2/3 h-20 mt-6 flex items-center gap-4">
+                    <AddToCartButton {...{ item , style:"!w-full !py-3"}} />
                 </div>
             </div>
         </div>

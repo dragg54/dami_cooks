@@ -75,7 +75,7 @@ const MultipleSelectOptions = ({ open, options, setOpen, onChange, selectedValue
         <>
         {open && (
                 <ul onClick={(e)=> e.stopPropagation()} className="absolute min-w-[300px] bg-white mt-1
-                  z-40 border rounded shadow-md shadow-gray-300">
+                  z-40 border max-h-[200px] overflow-scroll rounded shadow-md shadow-gray-300">
             {options && options.length > 0 && options.map((option) => (
                 <li
                     key={option.value}
