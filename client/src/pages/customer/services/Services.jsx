@@ -53,11 +53,11 @@ const Services = () => {
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className='w-full h-[500px] object-contain overflow-hidden md:mb-[500px]'>
+          className='w-full h-[500px] object-contain overflow-hidden mb-6 md:mb-[500px]'>
           <Image style={'!w-full'} src={'/images/catering3.jpg'} />
         </ScrollFadeIn>
       <div className="md:absolute w-full  gap-x-5 mb-0 flex md:justify-between md:pr-[1px] items-center flex-col md:flex-row h-[840px]
-                  md:h-[400px] bg-[#fdb750] text-red-700 left-0 md:px-10 py-3 md:-bottom-[155rem] ">
+                  md:h-[400px] bg-[#fdb750] text-red-700 left-0 md:px-10 py-3 md:-bottom-[153rem] ">
         <div className="md:w-[450px] md:ml-20 ml-20 flex justify-center md:justify-start items-center w-full mx-auto object-cover md:-mt-4 h-[300px] md:h-[100px] ">
           <img className="flex justify-center mx-auto md:justify-start md:mr-0" src={'/images/FOOD3.png'} />
         </div>
