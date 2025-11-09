@@ -4,7 +4,7 @@ const chartData = [
     { name: "Delivered", value: 200 },
     { name: "Cancelled", value: 50 }
 ]
-const COLORS = ['#107869', '#ff2511'];
+const COLORS = ['#18a558', '#ff2511'];
 const AnalyticsPieChart = () => {
     return (
         <div className="w-full md:w-[40%] bg-white mt-3 h-[320px] md:h-[320px] pt-5 pb-4 rounded-md shadow-md shadow-gray-300">

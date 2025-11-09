@@ -18,12 +18,10 @@ import { FaSearch, FaUser } from "react-icons/fa";
 
 export const Header = ({ setNavIsOpen, setCartOpen, setUserAccountOpen, setOpenLogout }) => {
   const dispatch = useDispatch()
-  const navigate = useNavigate()
   const user = useSelector(state => state.user)
   const { data, isLoading, refetch } = useFetchAllData("/cartItems", { enabled: user?.isLoggedIn })
   const cartItemMutation = usePostData({ url: "/cartItems", onSuccess })
   const cart = useSelector(state => state.cart)
-  const [currentMenu, setCurrentMenu] = useState("Menu")
 
   function onSuccess() {
     localStorage.removeItem("cartItems")

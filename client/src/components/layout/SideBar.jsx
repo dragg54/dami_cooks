@@ -12,7 +12,7 @@ const SideBar = () => {
   const unreadNotification = useSelector(state => state.notification)?.unread
   return (
     <div className="md:w-[240px] h-screen w-[50px] bg-white">
-      <ul className="gap-6 w-full hidden md:flex flex-col mt-10 items-start ml-4 !text-gray-200 ">
+      <ul className="gap-3 w-full hidden md:flex text-lg flex-col mt-10 items-start ml-4 !text-gray-200 ">
         <li className="menus mt-12" ><MdOutlineDashboard /><Link className="menus" to="/dashboard">Dashboard</Link></li>
         <li className="menus"><MdOutlineInventory2 /><Link className="menus" to="/itemlist">Items</Link></li>
         <li className="menus"><BiHealth /><Link className="menus" to="/allergens">Allergens</Link></li>

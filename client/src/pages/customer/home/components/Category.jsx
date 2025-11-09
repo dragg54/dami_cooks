@@ -8,7 +8,7 @@ const Category = ({selectedCategory, setSelectedCategory, refetch}) => {
     const categoryImages = [{ name: "Mains", image: "/images/Meal.jpg" },
     { name: "Pastries", image: "/images/Pastries.png" },
     { name: "Soups", image: "/images/Soup.jpg"},
-    { name: "Drinks", image: "/images/Drinks.png" }]
+    { name: "Proteins", image: "/images/protein.jpg" }]
     return (
         <div className='w-full  gap-4 md:gap-12 flex justify-center pb-4 '>
             {data && data.length && data?.map((cat, index) => (
