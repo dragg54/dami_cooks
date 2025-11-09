@@ -6,11 +6,9 @@ import { getScreenSize } from "@/utils/getScreenSize"
 const AboutUs = () => {
     return (
         <div className="w-full  md:mb-60 h-full">
-            <ScrollFadeIn className="w-full object-contain md:absolute  overflow-hidden h-[50px] md:h-[200px] left-0 right-0 md:top-[8.5rem]">
-                <img className="w-[500px] md:w-[1800px] -mt-24 md:-mt-[22rem] flex-justify-center" src={'/images/FOOD3.jpg'} />
-            </ScrollFadeIn>
-            <ScrollFadeIn className="w-full p-6 md:flex  flex-col md:flex-row gap-4 md:mt-[200px] mt-6 z-40 md:h-[770px] relative">
-                <ScrollFadeIn className={`${getScreenSize().isMobile && '!w-full'} md:w-1/2 w-2/3 flex object-contain h-[400px] md:h-[550px]`}>
+          
+            <ScrollFadeIn className={`${getScreenSize().isMobile && '!w-full !p-0'} w-full p-6 md:flex  flex-col md:flex-row gap-4 md:mt-[20px]  z-40 md:h-[770px] relative`}>
+                <ScrollFadeIn className={`${getScreenSize().isMobile && '!w-full'}  md:w-2/3 flex object-contain h-[400px] md:h-[550px]`}>
                     <Image s src={'/images/chef2.jpg'} />
                 </ScrollFadeIn>
                 <ScrollFadeIn className="md:w-1/2 mt-6 md:mt-0 md:ml-8">
@@ -29,11 +27,11 @@ const AboutUs = () => {
                         <p className="text-gray-700">
                             Enjoy authentic Nigerian flavors, freshly prepared with love, and delivered hot and on time, with secure payments and the convenience of ordering anytime, anywhere.                    </p>
                     </ScrollFadeIn>
-                    <Button {...{className: '!rounded-full !mx-auto  md:!w-[200px] py-3 mt-12 md:mt-20 !font-semibold'}}>Contact Us</Button>
+                    <Button {...{ className: '!rounded-full !mx-auto !w-[200px]  md:!w-[200px] py-3 mt-12 md:mt-20 !font-semibold' }}>Contact Us</Button>
                 </ScrollFadeIn>
             </ScrollFadeIn>
             <ScrollFadeIn className="md:absolute w-full  gap-x-5 mb-0 flex md:justify-between md:pr-[1px] items-center flex-col md:flex-row h-[840px]
-                  md:h-[400px] bg-[#fdb750] text-red-700 left-0 md:px-10 py-3 md:-bottom-[44rem] ">
+                  md:h-[400px] bg-[#fdb750] text-red-700 left-0 md:px-10 py-3 mt-[60px] md:-bottom-[32rem] ">
                 <ScrollFadeIn className="md:w-[450px] md:ml-20 ml-20 flex justify-center md:justify-start items-center w-full mx-auto object-cover md:-mt-4 h-[300px] md:h-[100px] ">
                     <img className="flex justify-center mx-auto md:justify-start md:mr-0" src={'/images/FOOD3.png'} />
                 </ScrollFadeIn>
