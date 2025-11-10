@@ -64,7 +64,7 @@ const Services = () => {
         <p className='text-5xl font-semibold'>Let's make your event unforgettable</p>
         <p className='mt-6'>Whether you’re hosting 20 or 200 guests, our team ensures delicious meals, professional service, and a seamless dining experience from start to finish.</p>
         <p className='font-bold mt-4 text-xl underline'>What We Offer:</p>
-        <ul className='list-none text-lg'>
+        <ul className='list-none text-[1.1rem]'>
           <li className='flex items-center gap-2'><Bullet /> Customized menu options to suit your guests’ taste</li>
           <li className='flex items-center gap-2'><Bullet /> On-site service or buffet-style setup
           </li>
