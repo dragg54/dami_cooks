@@ -9,7 +9,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import PaymentForm from "./PaymentForm";
 import { Button } from "../../../components/button/Button";
 
-const Payment = ({deliveryDetails, clientSecret}) => {
+const Payment = ({deliveryDetails, clientSecret, setClientSecret}) => {
   const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
   const CARD_OPTIONS = {
     style: {

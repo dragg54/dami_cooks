@@ -6,13 +6,19 @@ import { usePostData } from '../../hooks/api/usePostData'
 import Spinner from '../Spinner'
 import { openPopup } from '../../redux/PopupSlice'
 import { useEffect } from 'react'
+import { FetchAdminSettings } from './api/FetchAdminSettings'
+import { openModal } from '@/redux/GlobalModalSlice'
+import Unavailable from '../Unavailable'
+import { addMinutes } from 'date-fns'
 
 const AddToCartButton = ({ item, style }) => {
     const user = useSelector(state => state.user)
+    const { data: settings, refetch, isLoading } = FetchAdminSettings({})
+
     const cartItems = useSelector(state => state.cart)?.cartItems
     const onSuccess = () => {
         dispatch(addToCart(item))
-        dispatch(openPopup({message: "Item successfully added"}))
+        dispatch(openPopup({ message: "Item successfully added" }))
     }
 
     const onError = (error) => {
@@ -22,28 +28,34 @@ const AddToCartButton = ({ item, style }) => {
     const addToCartMutation = usePostData({ onSuccess, onError, url: '/cartItems', })
 
     const handleAddToCart = () => {
-       if(user.isLoggedIn){
-        addToCartMutation.mutate({ itemId: item.id })
-       }
-       else {
-           dispatch(addToCart(item))
-           dispatch(openPopup({ message: "Item successfully added" }))
-       }
+        if (settings.isOnline) {
+            if (user.isLoggedIn) {
+                addToCartMutation.mutate({ itemId: item.id })
+            }
+            else {
+                dispatch(addToCart(item))
+                dispatch(openPopup({ message: "Item successfully added" }))
+            }
+        }
+        else{
+            const nextAvailabilityTime = addMinutes(new Date(), settings?.offlineDuration)
+            dispatch(openModal({component: <Unavailable {...{nextAvailabilityTime}}/>}))
+        }
     }
 
     const dispatch = useDispatch()
 
-    useEffect(()=>{
-        if(!user || !user.isLoggedIn){
+    useEffect(() => {
+        if (!user || !user.isLoggedIn) {
             localStorage.setItem("cartItems", JSON.stringify(cartItems))
         }
     }, [cartItems, user])
-    
+
     return (
         <Button
             onClick={() => handleAddToCart()} className={`${style} !rounded-full w-1/2 md:py-3 font-semibold`}>
             {addToCartMutation.isLoading ? <Spinner style={'!w-6 !h-6 mx-auto !border-white !border-t-transparent !text-white '}
-              isLoading={addToCartMutation.isLoading} /> : "Add To Cart"}
+                isLoading={addToCartMutation.isLoading} /> : "Add To Cart"}
         </Button>)
 }
 

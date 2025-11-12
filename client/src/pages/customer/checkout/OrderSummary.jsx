@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux"
+ import { useSelector } from "react-redux"
 import Image from "../../../components/image/Image"
 import { Euro } from "../../../constants/Currency"
 

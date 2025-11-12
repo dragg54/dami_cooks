@@ -31,7 +31,7 @@ const Availability = () => {
     }
      return (
         <div className='w-full p-10'>
-            <h1 className='text-xl font-semibold'>Availability</h1>
+            <h1 className='text-lg font-semibold'>Availability</h1>
             <small className='text-gray-400'>Manage your availabilty</small>
             <div className='mt-6'>
                 <ul className="text-gray-600 text-sm flex flex-col gap-8 mt-6 w-[700px]">

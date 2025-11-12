@@ -2,7 +2,7 @@ import { useMutation } from "react-query"
 import Axios from "../../services/apiClient";
 
 const postData =  async ({ payload, url, headers }) => {
-    const response = await Axios.post(url, payload, {headers});
+    const response = await Axios.post(url, payload, {headers, signal: payload.signal});
     return response;
 };
 export const usePostData =({ onSuccess, onError, url, headers}) =>{

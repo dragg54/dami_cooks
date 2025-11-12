@@ -49,7 +49,7 @@ const UserManagement = () => {
         initialValues={initialValues}
         formStyle={'grid md:grid-cols-3 grid-cols-2 gap-x-3 gap-y-3'}
                 {...{
-                    title: "User Management",
+                    title: "Admin Management",
                     subTitle: "Manage admin profile"
                 }}>
                 <div className="w-full ">

@@ -19,6 +19,7 @@ const SelectInput = ({ options, selectedValues, onChange, label, name, isMultipl
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
+
     return (
         <div ref={dropdownRef} className="w-full text-sm md:text-base">
             <p className="mb-2">{label}</p>

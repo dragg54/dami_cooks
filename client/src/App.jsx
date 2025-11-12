@@ -44,22 +44,23 @@ import UpdateAllergenUI from "./pages/admin/allergens/UpdateAllergen"
 import Services from "./pages/customer/services/Services"
 import VerifyEmail from "./pages/register/VerifyEmail"
 import Order from "./pages/admin/order/Order"
+import CustomerList from "./pages/admin/customer/CustomerList"
 
 function App() {
   const user = useSelector(state => state.user).user
   const message = useSelector(state => state.notification)
-  if(user && user.isAdmin){
+  if (user && user.isAdmin) {
     socket.emit('register');
   }
 
-  const {data: notifications} = useQuery('notifications', {
+  const { data: notifications } = useQuery('notifications', {
     queryFn: getUnreadNotifications,
   })
 
   const dispatch = useDispatch()
-  
+
   useEffect(() => {
-    try { 
+    try {
       // Listen for notifications sent to this user
       socket.on('receiveNotification', () => {
         console.log("sending notification...")
@@ -75,51 +76,52 @@ function App() {
     };
   }, [message]);
 
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(fetchNotifications(notifications?.data))
   }, [notifications])
 
   return (
     <BrowserRouter>
-          <ScrollToTop />
+      <ScrollToTop />
       <Routes>
         <Route element={<Layout />}>
           <Route path="/itemdetails/:id" element={<ItemDetail />} />
-          <Route path="/customer/orders" element={<OrdersForMobile />}/>
-          <Route path="/success" element={<Success />} /> 
-          <Route path="/cancel" element={<Cancel />} /> 
-          <Route path="/about-us" element={<AboutUs />} /> 
-          <Route path="/services" element={<Services />} /> 
-          <Route path="/contact-us" element={<ContactUs />} /> 
-          <Route path='/checkout' element={<Checkout/>} />
-          <Route path="*" element={<NotFoundPage/>} />
-          <Route  path="/" element={<HomeRedirect />} />
-          <Route  path="/home" element={<Home />} />
+          <Route path="/customer/orders" element={<OrdersForMobile />} />
+          <Route path="/success" element={<Success />} />
+          <Route path="/cancel" element={<Cancel />} />
+          <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/contact-us" element={<ContactUs />} />
+          <Route path='/checkout' element={<Checkout />} />
+          <Route path="*" element={<NotFoundPage />} />
+          <Route path="/" element={<HomeRedirect />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/checkout/payment-intent-failed" element={<PaymentIntentFailed />} />
           <Route path="/checkout/payment-failed" element={<PaymentFailed />} />
         </Route>
-        <Route  element={<AdminLayout />}>
-        <Route element={<ProtectedRoute isAdminRoute={true}/>}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/itemlist" element={<ItemList />} />
-          <Route path="/additem" element={<AddItem />} />
-          <Route path="/updateItem" element={<UpdateItemUI />} />
-          <Route path="/orderlist" element={<OrderList />} />
-          <Route path="/allergens" element={<Allergens />}/>
-          <Route path="/allergen" element={<AddAllergen />}/>
-          <Route path="/order" element={<Order />}/>
-          <Route path="/updateAllergen" element={<UpdateAllergenUI />}/>
-          <Route path="/settings" element={<Settings />}>
-          <Route index element={<Navigate to="user-management" replace />} />
-            <Route path="/settings/user-management" element={<UserManagement />}/>
-            <Route path="/settings/availability" element={<Availability />}/>
-            <Route path="/settings/reports" element={<Reports />}/>
-            <Route path="/settings/notifications" element={<Notification />}/>
-            <Route path="/settings/change-password" element={<ChangePassword />}/>
+        <Route element={<AdminLayout />}>
+          <Route element={<ProtectedRoute isAdminRoute={true} />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/customers" element={<CustomerList />} />
+            <Route path="/itemlist" element={<ItemList />} />
+            <Route path="/additem" element={<AddItem />} />
+            <Route path="/updateItem" element={<UpdateItemUI />} />
+            <Route path="/orderlist" element={<OrderList />} />
+            <Route path="/allergens" element={<Allergens />} />
+            <Route path="/allergen" element={<AddAllergen />} />
+            <Route path="/order" element={<Order />} />
+            <Route path="/updateAllergen" element={<UpdateAllergenUI />} />
+            <Route path="/settings" element={<Settings />}>
+              <Route index element={<Navigate to="user-management" replace />} />
+              <Route path="/settings/user-management" element={<UserManagement />} />
+              <Route path="/settings/availability" element={<Availability />} />
+              <Route path="/settings/reports" element={<Reports />} />
+              <Route path="/settings/notifications" element={<Notification />} />
+              <Route path="/settings/change-password" element={<ChangePassword />} />
+            </Route>
+            <Route path="/update-order-status" element={<OrderView />} />
+            <Route path="/paymentlist" element={<PaymentList />} />
           </Route>
-          <Route path="/update-order-status" element={<OrderView />} />
-          <Route path="/paymentlist" element={<PaymentList />} />
-        </Route>
         </Route>
         <Route element={<AuthLayout />}>
           <Route path="/register" element={<Register />} />
@@ -128,7 +130,7 @@ function App() {
         </Route>
         <Route element={<Layout />}>
           <Route path="/not-found" element={<NotFoundPage />} />
-          </Route>
+        </Route>
       </Routes>
     </BrowserRouter>
   )

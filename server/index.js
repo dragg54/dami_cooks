@@ -20,6 +20,7 @@ import { notificationRoute } from './routes/NotificationRoute.js'
 import { adminSettingRoute } from './routes/AdminSettingRoute.js'
 import { allergenRoute } from './routes/AllergenRoute.js';
 import morgan from 'morgan';
+import { customerRouter } from './routes/CustomerRoute.js';
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -78,6 +79,8 @@ app.use("/api/v1/payments", paymentRoute)
 app.use("/api/v1/notifications", notificationRoute)
 app.use("/api/v1/adminSettings", adminSettingRoute)
 app.use("/api/v1/allergens", allergenRoute)
+app.use("/api/v1/customers", customerRouter)
+
 
 const port = 8080
 const io = init(server, corsOptions)

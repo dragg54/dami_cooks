@@ -36,7 +36,7 @@ const OrderView = () => {
           dispatch(openModal({ component: <AcceptOrRejectOrder {...{ status: 'REJECT',  id: orderItemData.id }} /> }))
         }} className={'!bg-gray-400 !rounded-full !w-[100px]'}>Reject</Button>
         <Button onClick={() => {
-          dispatch(openModal({ component: <AcceptOrRejectOrder {...{ status: 'ACCEPT', id: orderItemData.id }} /> }))
+          dispatch(openModal({ component: <AcceptOrRejectOrder {...{ status: 'CONFIRMED', id: orderItemData.id }} /> }))
         }} className={'!bg-green-600 !rounded-full !w-[100px]'}>Accept</Button>
       </div>
       : <Button

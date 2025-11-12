@@ -13,7 +13,7 @@ const queryClient = new QueryClient()
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+  // <React.StrictMode>
       <Elements stripe={stripePromise}>
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
@@ -23,5 +23,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       </QueryClientProvider>
     </Provider>
     </Elements>
-  </React.StrictMode>,
+  // </React.StrictMode>,
 )

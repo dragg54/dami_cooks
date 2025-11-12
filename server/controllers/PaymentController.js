@@ -1,13 +1,16 @@
+import db from '../configs/db.js'
 import * as paymentService from '../services/PaymentService.js'
 
 export const initializePayment = async(req, res) =>{
-
+   const transaction = await db.transaction()
     try{
-       const clientSecret = await paymentService.initializePayment(req)
+       const clientSecret = await paymentService.initializePayment(req, transaction)
+       await transaction.commit()
         res.json(clientSecret)
     }
     catch (error) {
-        console.log(error.message)
+        console.log(error)
+        await transaction.rollback()
         res.status(error.statusCode || 500).json(error.message
             || "Internal server error"
         );

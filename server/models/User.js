@@ -16,18 +16,25 @@ const User = db.define('user', {
   phone: {
     type: DataTypes.STRING
   },
+  address: {
+    type: DataTypes.STRING,
+  },
   email: {
     type: DataTypes.STRING,
   },
-  isFirst:{
+  postalCode: {
+    type: DataTypes.STRING,
+
+  },
+  isFirst: {
     type: DataTypes.BOOLEAN,
     defaultValue: false
   },
-  emailVerified:{
+  emailVerified: {
     type: DataTypes.BOOLEAN,
     defaultValue: false
   },
-  isAdmin:{
+  isAdmin: {
     type: DataTypes.BOOLEAN,
     defaultValue: false
   },

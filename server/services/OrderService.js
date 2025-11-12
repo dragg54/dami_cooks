@@ -13,7 +13,7 @@ import { NotFoundError } from "../exceptions/NotFoundError.js"
 import { refundPayment } from "./PaymentService.js"
 import { sendMerchantOrderCancelledMail } from "../emails/sendMessages/SendMerchantOrderCancelledMail.js"
 import dotenv from 'dotenv'
-import { sendCustomerOrderCancelledMail } from "../emails/sendMessages/SendCustomerOrderRejectedMail.js"
+import { sendCustomerOrderCancelledMail } from "../emails/sendMessages/SendCustomerOrderCancelledMail.js"
 import { generateCd } from "../utils/generateCd.js"
 import { Payment } from "../models/Payment.js"
 
@@ -47,7 +47,7 @@ export const createOrder = async (req, trans) => {
         const newOrder = await Order.create({
             amount: totalAmount,
             orderCd: generateCd("ORD"),
-            status: "ACCEPTED",
+            status: "CONFIRMED",
             userId: newUserId
         }, {transaction: trans, raw: true})
 
@@ -258,19 +258,19 @@ export const updateOrderStatus = async (req, transaction) => {
     const isInvalidOrderStatus = (
         (existingOrder.status == orderStatus.DELIVERED
             || existingOrder.status == orderStatus.CANCELLED
-            || existingOrder.status == orderStatus.ACCEPTED
-            || existingOrder.status == orderStatus.REJECTED
+            || existingOrder.status == orderStatus.CONFIRMED
+            || existingOrder.status == orderStatus.CANCELLED
             || existingOrder.status == orderStatus.SHIPPED
         ) && (
-            status == orderStatus.ACCEPTED
-            || status == orderStatus.REJECTED
-            || status == orderStatus.PENDING)) || (existingOrder.status != orderStatus.ACCEPTED && status == orderStatus.SHIPPED)
+            status == orderStatus.CONFIRMED
+            || status == orderStatus.CANCELLED
+            || status == orderStatus.PENDING)) || (existingOrder.status != orderStatus.CONFIRMED && status == orderStatus.SHIPPED)
     if (isInvalidOrderStatus) {
         const errMsg = `Order status is invalid for this operation`
         throw new BadRequestError(errMsg)
     }
     await Order.update({ status }, { where: { id } }, { transaction })
-    if (status == orderStatus.REJECTED) {
+    if (status == orderStatus.CANCELLED) {
         const customer = await User.findOne({ where: { id: existingOrder.createdBy } })
         if (!customer) {
             throw new NotFoundError("Registered Customer does not exist")
@@ -293,7 +293,7 @@ export const cancelOrder = async (req, transaction) => {
     const { status } = req.body
     const { id } = req.params
     const existingOrder = await Order.findByPk(id)
-    if (status != orderStatus.CANCELLED && status != orderStatus.REJECTED) {
+    if (status != orderStatus.CANCELLED && status != orderStatus.CANCELLED) {
         return
     }
     if (!existingOrder) {
@@ -303,8 +303,8 @@ export const cancelOrder = async (req, transaction) => {
     const isInvalidOrderStatus =
         existingOrder.status == orderStatus.DELIVERED
         || existingOrder.status == orderStatus.CANCELLED
-        || existingOrder.status == orderStatus.ACCEPTED
-        || existingOrder.status == orderStatus.REJECTED
+        || existingOrder.status == orderStatus.CONFIRMED
+        || existingOrder.status == orderStatus.CANCELLED
         || existingOrder.status == orderStatus.SHIPPED
     if (isInvalidOrderStatus) {
         const errMsg = `Order status is invalid for this operation`
@@ -324,7 +324,7 @@ export const cancelOrder = async (req, transaction) => {
         }
         await refundPayment(refundPaymentRequest, transaction)
         await Order.update({ status }, { where: { id } }, { transaction })
-        await sendMerchantOrderCancelledMail(existingOrder.dataValues.orderCd, customer.dataValues?.firstName, process.env.MERCHANT_GMAIL)
+        // await sendMerchantOrderCancelledMail(existingOrder.dataValues.orderCd, customer.dataValues?.firstName, process.env.MERCHANT_GMAIL)
     }
     catch (ex) {
         console.log(ex)
@@ -353,5 +353,7 @@ export const getOrderAggregates = async(req) =>{
         totalCancelled: parseInt(totalCancelled)
       };
 }
+
+
 
   

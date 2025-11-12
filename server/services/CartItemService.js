@@ -1,5 +1,6 @@
 import { BadRequestError } from "../exceptions/BadRequestError.js"
 import { DuplicateError } from "../exceptions/DuplicateError.js"
+import { AdminSetting } from "../models/AdminSettings.js"
 import { Cart } from "../models/Cart.js"
 import { CartItem } from "../models/CartItem.js"
 import { Item } from "../models/Item.js"
@@ -8,6 +9,10 @@ import { getItemById } from "./ItemService.js"
 
 export const addCartItem = async(req, res) =>{
     const { itemId, cartItems } = req.body
+    const isAvailable = await AdminSetting.findOne({raw: true})?.isOnline
+    if(!isAvailable){
+        throw BadRequestError("Restaurant is not online") 
+    }
     const existingCart = await getUserCart(req)
     if(!existingCart){
         throw new BadRequestError(`Cart does not exist for user`)
@@ -21,7 +26,9 @@ export const addCartItem = async(req, res) =>{
         const existingCartItem = await CartItem.findOne({where:{itemId: item.item.id, cartId: existingCart.dataValues?.id}})
         if(!existingCartItem){
             await CartItem.create({cartId: existingCart.id, itemId: item.item.id})
+            return
         }
+        await CartItem.update({quantity: existingCartItem.dataValues.quantity + 1}, {where:{id: existingCartItem.id}})
        }
     }
     else {
@@ -29,10 +36,13 @@ export const addCartItem = async(req, res) =>{
         if (!existingItem) {
             throw new BadRequestError(`Item with id ${itemId} does not exist`)
         }
-        const existingCartItem = await CartItem.findOne({ where: { itemId, cartId: existingCart.dataValues?.id} })
+        const existingCartItem = await CartItem.findOne({ where: { itemId, cartId: existingCart.dataValues?.id } })
+        console.log(existingCart)
         if (!existingCartItem) {
             await CartItem.create({ cartId: existingCart.id, itemId: req.body.itemId })
+            return
         }
+        await CartItem.update({ quantity: existingCartItem.dataValues.quantity + 1 }, { where: { id: existingCartItem.dataValues.id } })
     }
 }
 

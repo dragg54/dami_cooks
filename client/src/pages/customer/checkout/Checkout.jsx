@@ -6,11 +6,12 @@ import { useSelector } from "react-redux"
 import { usePostData } from "../../../hooks/api/usePostData"
 import Spinner from "../../../components/Spinner"
 import UnauthenticatedCheckout from "./UnauthenticatedCheckout"
-import PaymentIntentFailed from "./PaymentIntentFailed"
 import { useNavigate } from "react-router-dom"
+import { v4 as uuidv4 } from 'uuid';
 
 const Checkout = () => {
   const user = useSelector(state => state.user)
+  const [idempotencyKey] = useState(uuidv4)
   const navigate = useNavigate()
   const initialValues = {
     firstName: user?.user?.firstName,
@@ -40,10 +41,11 @@ const Checkout = () => {
     const cartItems = cart.cartItems?.map(cartItem => (
       { ...cartItem.item, quantity: cartItem.quantity }
     ))
-    if(user?.isLoggedIn){
-      mutate({ items: cartItems })
+    if (user?.isLoggedIn) {
+     
+      mutate({ items: cartItems, idempotencyKey })
     }
-  }, [cart, cart?.cartItems, user])
+  }, [])
  
   if(!user || !user.user || !user?.isLoggedIn){
     return(
@@ -63,7 +65,7 @@ const Checkout = () => {
       <BillingDetails {...{ deliveryDetails, setDeliveryDetails }} />
       <div className="md:w-1/2 w-full">
         <OrderSummary />
-        <Payment {...{ deliveryDetails, clientSecret }} />
+        <Payment {...{ deliveryDetails, clientSecret, setClientSecret }} />
       </div>
     </div>
   )

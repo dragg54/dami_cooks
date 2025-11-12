@@ -4,7 +4,7 @@ import * as orderService from '../services/OrderService.js'
 export const createOrder = async (req, res) => {
     const transaction = await db.transaction()
     try {
-        await orderService.createOrder(req)
+        await orderService.createOrder(req, transaction)
         await transaction.commit()
         res.json("order created")
     }

@@ -8,20 +8,20 @@ import { clearCart } from "../../../redux/CartSlice";
 import { useState } from "react";
 import PaymentFailed from "./PaymentFailed";
 
-function PaymentForm({clientSecret, deliveryDetails}) {
+function PaymentForm({ clientSecret, deliveryDetails }) {
   const stripe = useStripe();
-  const elements = useElements(); 
+  const elements = useElements();
   const navigate = useNavigate()
-  const [paymentIntentLoading, setPaymentIntentLoading ] = useState(false)
+  const [paymentIntentLoading, setPaymentIntentLoading] = useState(false)
   const dispatch = useDispatch()
   const handleSubmit = async (e) => {
     e.preventDefault()
     setPaymentIntentLoading(true)
     const cardElement = elements.getElement(CardNumberElement);
-  if (!cardElement) {
-    console.error("CardNumberElement not found!");
-    return;
-  }
+    if (!cardElement) {
+      console.error("CardNumberElement not found!");
+      return;
+    }
     try {
       const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
@@ -38,30 +38,43 @@ function PaymentForm({clientSecret, deliveryDetails}) {
               country: "GB",
             },
           }
-      },
-      shipping:{
-        name: `${deliveryDetails?.firstName} ${deliveryDetails?.lastName}`,
-        phone: deliveryDetails?.phone,
-        address: {
-          line1: deliveryDetails?.address || "",
-          line2: "",
-          city: deliveryDetails?.city || "",
-          state: "",
-          postal_code: deliveryDetails?.postalCode || "",
-          country: "GB",
-      }
-    },
+        },
+        shipping: {
+          name: `${deliveryDetails?.firstName} ${deliveryDetails?.lastName}`,
+          phone: deliveryDetails?.phone,
+          address: {
+            line1: deliveryDetails?.address || "",
+            line2: "",
+            city: deliveryDetails?.city || "",
+            state: "",
+            postal_code: deliveryDetails?.postalCode || "",
+            country: "GB",
+          }
+        },
       });
 
-      if(paymentIntent && paymentIntent.status == "succeeded"){
+      if (paymentIntent && paymentIntent.status == "succeeded") {
         setPaymentIntentLoading(false)
-        navigate("/success")
+        navigate("/success", {
+          state: {
+            deliveryDetails: {
+              phone: deliveryDetails?.phone,
+              address: {
+                line1: deliveryDetails?.address || "",
+                line2: "",
+                city: deliveryDetails?.city || "",
+                state: "",
+                postal_code: deliveryDetails?.postalCode || "",
+                country: "GB",
+              }
+            }
+          }
+        })
         dispatch(clearCart())
       }
-      else{
+      else {
         setPaymentIntentLoading(false)
-        console.log(paymentIntent)
-        return(
+        return (
           navigate("payment-failed")
         )
       }
@@ -73,38 +86,20 @@ function PaymentForm({clientSecret, deliveryDetails}) {
 
   return (
     <form style={{
-        maxWidth: "400px",
-        margin: "auto",
-        display: "flex",
-        flexDirection: "column",
-        gap: "20px"
-      }} onSubmit={handleSubmit}>
-    <div className="mt-1 w-full" style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
-      <label className="text-sm text-gray-500">Card Details</label>
-      <div className="border border-gray-400 p-2 relative">
-        <CardNumberElement
-          options={{
-            style: {
-              base: {
-                border: "1px solid #747474",
-                fontSize: "13px",
-                color: "#212529",
-                "::placeholder": { color: "#888" },
-              },
-              invalid: { color: "#dc3545" },
-            },
-          }}
-        />
-        <FaCreditCard className="absolute right-1 -top-1/2 h-full text-lg text-gray-500 translate-y-1/2" />
-      </div>
-
-      <div className="mt-4">
-        <label className="text-sm text-gray-500">Expiry Date</label>
-        <div className="border border-gray-400 p-2 mt-2 relative">
-          <CardExpiryElement
+      maxWidth: "400px",
+      margin: "auto",
+      display: "flex",
+      flexDirection: "column",
+      gap: "20px"
+    }} onSubmit={handleSubmit}>
+      <div className="mt-1 w-full" style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+        <label className="text-sm text-gray-500">Card Details</label>
+        <div className="border border-gray-400 p-2 relative">
+          <CardNumberElement
             options={{
               style: {
                 base: {
+                  border: "1px solid #747474",
                   fontSize: "13px",
                   color: "#212529",
                   "::placeholder": { color: "#888" },
@@ -113,32 +108,50 @@ function PaymentForm({clientSecret, deliveryDetails}) {
               },
             }}
           />
+          <FaCreditCard className="absolute right-1 -top-1/2 h-full text-lg text-gray-500 translate-y-1/2" />
         </div>
-      </div>
 
-      <div className="mt-4">
-        <label className="text-sm text-gray-500">CVC</label>
-        <div className="border border-gray-400 p-2 mt-2">
-          <CardCvcElement
-            options={{
-              style: {
-                base: {
-                  fontSize: "13px",
-                  color: "#212529",
-                  "::placeholder": { color: "#888" },
+        <div className="mt-4">
+          <label className="text-sm text-gray-500">Expiry Date</label>
+          <div className="border border-gray-400 p-2 mt-2 relative">
+            <CardExpiryElement
+              options={{
+                style: {
+                  base: {
+                    fontSize: "13px",
+                    color: "#212529",
+                    "::placeholder": { color: "#888" },
+                  },
+                  invalid: { color: "#dc3545" },
                 },
-                invalid: { color: "#dc3545" },
-              },
-            }}
-          />
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <label className="text-sm text-gray-500">CVC</label>
+          <div className="border border-gray-400 p-2 mt-2">
+            <CardCvcElement
+              options={{
+                style: {
+                  base: {
+                    fontSize: "13px",
+                    color: "#212529",
+                    "::placeholder": { color: "#888" },
+                  },
+                  invalid: { color: "#dc3545" },
+                },
+              }}
+            />
+          </div>
         </div>
       </div>
-    </div>
-    <p className="text-gray-500 text-sm mt-3">
-    Your personal data will be used to process your order, support your experience throughout this website,
-      and for other purposes described in our privacy policy.
-    </p>
-     <Button className={'!rounded-full'} isLoading={paymentIntentLoading}>Place Order</Button>
+      <p className="text-gray-500 text-sm mt-3">
+        Your personal data will be used to process your order, support your experience throughout this website,
+        and for other purposes described in our privacy policy.
+      </p>
+      <Button className={'!rounded-full'} isLoading={paymentIntentLoading}>Place Order</Button>
     </form>
   );
 }

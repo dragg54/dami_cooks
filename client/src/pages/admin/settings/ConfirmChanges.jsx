@@ -4,7 +4,6 @@ import { closeModal } from "../../../redux/GlobalModalSlice"
 
 /* eslint-disable react/no-unescaped-entities */
 const ConfirmChanges = ({updateChanges}) => {
-    console.log(updateChanges)
     const dispatch = useDispatch()
   return (
     <div onClick={(e)=> e.stopPropagation()} className="w-[400px] p-10 h-[250px] bg-white rounded-md shadow-md shadow-gray-500">

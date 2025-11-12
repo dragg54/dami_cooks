@@ -87,6 +87,7 @@ export const loginUser = async (req) => {
 }
 
 export const updateUser = async (req) => {
+    console.log(req.body)
     const { id } = req.params
     const user = await User.findOne({ where: { id } })
     if (!user) {
@@ -164,7 +165,3 @@ export const hashPassword = async (password) => {
     return hashedPassword
 }
 
-function generateEmailToken(length = 6) {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-}
