@@ -24,8 +24,6 @@ export const getAdminSettngs = async (req) => {
 
 async function goOnline( request) {
     const adminSettings = await AdminSetting.findOne({ raw: true });
-    console.log(request.body)
-    console.log(adminSettings)
     if (!request.body.isOnline && !adminSettings.isOnline) {
         const offlineEndTime = addHours(new Date(), adminSettings.offlineDuration);
         const timeoutDuration = differenceInMilliseconds(offlineEndTime, new Date());
