@@ -28,7 +28,8 @@ const AddToCartButton = ({ item, style }) => {
     const addToCartMutation = usePostData({ onSuccess, onError, url: '/cartItems', })
 
     const handleAddToCart = () => {
-        if (settings.isOnline) {
+        if (settings?.isOnline) {
+            console.log(user)
             if (user.isLoggedIn) {
                 addToCartMutation.mutate({ itemId: item.id })
             }

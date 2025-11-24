@@ -9,9 +9,9 @@ import { getItemById } from "./ItemService.js"
 
 export const addCartItem = async(req, res) =>{
     const { itemId, cartItems } = req.body
-    const isAvailable = await AdminSetting.findOne({raw: true})?.isOnline
-    if(!isAvailable){
-        throw BadRequestError("Restaurant is not online") 
+    const settings = await AdminSetting.findAll({raw: true})
+    if(!settings[0].isOnline){
+        throw new BadRequestError("Restaurant is not online") 
     }
     const existingCart = await getUserCart(req)
     if(!existingCart){
@@ -37,7 +37,6 @@ export const addCartItem = async(req, res) =>{
             throw new BadRequestError(`Item with id ${itemId} does not exist`)
         }
         const existingCartItem = await CartItem.findOne({ where: { itemId, cartId: existingCart.dataValues?.id } })
-        console.log(existingCart)
         if (!existingCartItem) {
             await CartItem.create({ cartId: existingCart.id, itemId: req.body.itemId })
             return

@@ -16,6 +16,7 @@ const OrderView = () => {
   if (!orderItemData) {
     return <>Loading...</>
   }
+  console.log(orderItemData)
   return (
     <div onClick={(e) => e.stopPropagation()} className='md:w-[550px] max-h-[600px] overflow-hidden -mt-10  text-gray-500 w-[95%] md:p-6 p-4 min-h-[300px] bg-white rounded-md shadow-md shadow-gray-400'>
       <p className='font-semibold text-xl bg-gray-300 p-2 text-gray-900 pb-3 w-full border-b border-gray-300'>Customer Order</p>
@@ -28,7 +29,7 @@ const OrderView = () => {
       <p className='mt-2 text-xs'><span className="font-semibold text-gray-900">Order Status</span>: <span className="p-1 text-gray-800 text-xs bg-green-200 rounded-full">{orderItemData.status}</span></p>
       <div className="w-full  border border-gray-300 my-5"></div>
       <p className=' text-base font-bold  text-gray-900'>Order Items</p>
-      <OrderItemTable {...{ orderItems: orderItemData?.orderItems }} />
+      <OrderItemTable {...{ orderItems: orderItemData.orderItems }} />
     {
       orderItemData?.status == "PENDING" ? 
       <div className="mt-6 ml-auto gap-2 flex">
