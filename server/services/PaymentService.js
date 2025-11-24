@@ -172,10 +172,10 @@ export const paymentWebhook = async (req, res) => {
             //     cartId: userCart.id
             // }})
             sendNotification()
-            try {
-                await sendCustomerOrderPlacedMail(customer?.dataValues?.firstName, orderCd, customer?.dataValues?.email)
-                await sendMerchantOrderPlacedMail(orderCd, customer?.dataValues?.firstName, process.env.MERCHANT_GMAIL)
-            }
+            // try {
+            //     await sendCustomerOrderPlacedMail(customer?.dataValues?.firstName, orderCd, customer?.dataValues?.email)
+            //     await sendMerchantOrderPlacedMail(orderCd, customer?.dataValues?.firstName, process.env.MERCHANT_GMAIL)
+            // }
             catch (exception) {
                 console.log(exception)
             }
