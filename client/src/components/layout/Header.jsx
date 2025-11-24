@@ -14,12 +14,14 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { getScreenSize } from "../../utils/getScreenSize";
 import { usePostData } from "../../hooks/api/usePostData";
 import { FaSearch, FaUser } from "react-icons/fa";
+import { FetchAdminSettings } from "../button/api/FetchAdminSettings";
 
 
 export const Header = ({ setNavIsOpen, setCartOpen, setUserAccountOpen, setOpenLogout }) => {
   const dispatch = useDispatch()
   const user = useSelector(state => state.user)
   const { data, isLoading, refetch } = useFetchAllData("/cartItems", { enabled: user?.isLoggedIn })
+  const { data: settings, refetch: settingsRefresh, isLoading: settingsLoading } = FetchAdminSettings({})
   const cartItemMutation = usePostData({ url: "/cartItems", onSuccess })
   const cart = useSelector(state => state.cart)
 
@@ -66,8 +68,10 @@ export const Header = ({ setNavIsOpen, setCartOpen, setUserAccountOpen, setOpenL
                 </div>
               </div>
               <div className="flex items-center gap-x-3">
-                <span className="text-[0.8rem] text-gray-500">Welcome Back, {user?.user?.firstName} {user?.user?.lastName}</span>
-                <span onClick={() => setOpenLogout(true)} className="rounded-full cursor-pointer border border-gray-500 p-2 text-gray-500 text-2xl">
+                <div className="text-[0.8rem] text-gray-500 flex flex-col"><div>Welcome Back,</div> <span className="font-semibold text-lg text-gray-700">{user?.user?.firstName} {user?.user?.lastName}</span> </div>
+                <div className="border h-10  border-gray-200 shdow-sm shadow-gray-300"></div>
+               {(settings && settings.isOnline) ?  <p className="text-green-600 font-semibold">ON</p> :  <p className="text-red-600 font-semibold">OFF</p>}
+                <span onClick={() => setOpenLogout(true)} className="rounded-full cursor-pointer border border-gray-400  p-2 text-gray-400 text-lg">
                   {(!user || !user.user || !user.isLoggedIn) ? <Link to={'/login'}>LOGIN</Link> : <FaUser />}
                 </span>
 

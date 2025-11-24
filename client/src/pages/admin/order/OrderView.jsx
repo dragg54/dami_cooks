@@ -31,14 +31,14 @@ const OrderView = () => {
       <p className=' text-base font-bold  text-gray-900'>Order Items</p>
       <OrderItemTable {...{ orderItems: orderItemData.orderItems }} />
     {
-      orderItemData?.status == "PENDING" ? 
+      orderItemData?.status == "PLACED" ? 
       <div className="mt-6 ml-auto gap-2 flex">
         <Button onClick={() => {
           dispatch(openModal({ component: <AcceptOrRejectOrder {...{ status: 'REJECT',  id: orderItemData.id }} /> }))
-        }} className={'!bg-gray-400 !rounded-full !w-[100px]'}>Reject</Button>
+        }} className={'!bg-gray-400 !rounded-full !w-[100px]'}>Cancel</Button>
         <Button onClick={() => {
           dispatch(openModal({ component: <AcceptOrRejectOrder {...{ status: 'CONFIRMED', id: orderItemData.id }} /> }))
-        }} className={'!bg-green-600 !rounded-full !w-[100px]'}>Accept</Button>
+        }} className={'!bg-green-600 !rounded-full !w-[100px]'}>Confirm</Button>
       </div>
       : <Button
         className={'flex !w-[120px] !rounded-full !ml-auto justify-center items-center gap-2'}
