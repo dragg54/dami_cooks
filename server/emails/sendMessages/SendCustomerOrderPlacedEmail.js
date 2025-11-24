@@ -6,9 +6,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export async function sendCustomerOrderPlacedMail(customerName, orderId, recipient){
-    const html = fs.readFileSync(path.join(__dirname, '../templates/OrderPlacedTemplate.html'), 'utf8');
+    try{
+      const html = fs.readFileSync(path.join(__dirname, '../templates/OrderPlacedTemplate.html'), 'utf8');
     const emailHtml = html
       .replace('{{customerName}}', customerName)
       .replace('{{orderId}}', orderId)
     await sendEmail(recipient, "Order Placed", emailHtml)
+    }
+    catch(exception){
+      throw exception
+    }
 }
