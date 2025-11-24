@@ -29,7 +29,6 @@ const AddToCartButton = ({ item, style }) => {
 
     const handleAddToCart = () => {
         if (settings?.isOnline) {
-            console.log(user)
             if (user.isLoggedIn) {
                 addToCartMutation.mutate({ itemId: item.id })
             }
@@ -39,8 +38,11 @@ const AddToCartButton = ({ item, style }) => {
             }
         }
         else{
-            const nextAvailabilityTime = addMinutes(new Date(), settings?.offlineDuration)
+            console.log(settings)
+            if(settings && settings.offlineDuration){
+                const nextAvailabilityTime = addMinutes(new Date(), settings?.offlineDuration)
             dispatch(openModal({component: <Unavailable {...{nextAvailabilityTime}}/>}))
+            }
         }
     }
 
