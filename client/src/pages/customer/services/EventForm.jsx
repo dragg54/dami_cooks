@@ -93,7 +93,7 @@ const EventForm = () => {
             value={formData.name}
             onChange={handleChange}
             required
-            className="w-full p-3 border rounded"
+            className="w-full p-3 border rounded !bg-white"
           />
         </div>
 
@@ -106,7 +106,7 @@ const EventForm = () => {
             value={formData.email}
             onChange={handleChange}
             required
-            className="w-full p-3 border rounded"
+            className="w-full p-3 border rounded !bg-white"
           />
         </div>
 
@@ -119,7 +119,7 @@ const EventForm = () => {
             value={formData.whatsapp}
             onChange={handleChange}
             required
-            className="w-full p-3 border rounded"
+            className="w-full p-3 border rounded !bg-white"
           />
         </div>
 
@@ -132,7 +132,7 @@ const EventForm = () => {
             value={formData.mobileNumber}
             onChange={handleChange}
             required
-            className="w-full p-3 border rounded"
+            className="w-full p-3 border rounded !bg-white"
           />
         </div>
 
@@ -161,11 +161,11 @@ const EventForm = () => {
             value={formData.guestCount}
             onChange={handleChange}
             required
-            className="w-full p-3 border rounded"
+            className="w-full p-3 border rounded !bg-white"
           />
         </div>
 
-        <div>
+        <div className="flex-col w-full">
           <label className="font-bold inline-flex items-center gap-2"><FaRegCalendarAlt /> Event Date</label>
           <input
             type="date"
@@ -173,11 +173,11 @@ const EventForm = () => {
             value={formData.eventDate}
             onChange={handleChange}
             required
-            className="w-full p-3 border rounded"
+            className="w-full p-3 border rounded !bg-white"
           />
         </div>
 
-        <div>
+        <div className="flex-col w-full">
           <label className="font-bold inline-flex items-center gap-2"><CiClock2 /> Event Start Time</label>
           <input
             type="time"
@@ -185,11 +185,11 @@ const EventForm = () => {
             value={formData.eventStartTime}
             onChange={handleChange}
             required
-            className="w-full p-3 border rounded"
+            className="w-full p-3 border rounded !bg-white"
           />
         </div>
 
-        <div>
+        <div className="flex-col w-full">
           <label className="font-bold inline-flex items-center gap-2"><CiClock2 /> Event End Time</label>
           <input
             type="time"
@@ -197,7 +197,7 @@ const EventForm = () => {
             value={formData.eventEndTime}
             onChange={handleChange}
             required
-            className="w-full p-3 border rounded"
+            className="w-full p-3 border rounded !bg-white"
           />
         </div>
 
@@ -210,7 +210,7 @@ const EventForm = () => {
             value={formData.eventLocation}
             onChange={handleChange}
             required
-            className="w-full p-3 border rounded"
+            className="w-full p-3 border rounded !bg-white"
           />
         </div>
 
@@ -237,7 +237,7 @@ const EventForm = () => {
             value={formData.eventAddress}
             onChange={handleChange}
             required
-            className="w-full p-3 border rounded"
+            className="w-full p-3 border rounded !bg-white"
             rows="3"
           ></textarea>
         </div>
@@ -249,7 +249,7 @@ const EventForm = () => {
             placeholder="Any allergies, dietary restrictions or special requirements"
             value={formData.dietaryRequirements}
             onChange={handleChange}
-            className="w-full p-3 border rounded"
+            className="w-full p-3 border rounded !bg-white"
             rows="3"
           ></textarea>
         </div>
@@ -261,7 +261,7 @@ const EventForm = () => {
             placeholder="Preferred dishes, cuisine types or special requests"
             value={formData.foodPackageReferences}
             onChange={handleChange}
-            className="w-full p-3 border rounded"
+            className="w-full p-3 border rounded !bg-white"
             rows="3"
           ></textarea>
         </div>

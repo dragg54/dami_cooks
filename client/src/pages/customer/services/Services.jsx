@@ -17,7 +17,7 @@ const Services = () => {
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className='w-full  mb-20'>
+        className='w-full p-2 mb-20'>
         <EventForm />
       </ScrollFadeIn>
       <ScrollFadeIn
