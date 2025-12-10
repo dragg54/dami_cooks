@@ -7,6 +7,7 @@ import { MdOutlinePayments } from "react-icons/md";
 import { BiHealth } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import { IoPeople } from "react-icons/io5";
+import { MdEventNote } from "react-icons/md";
 
 const SideBar = () => {
   const unreadNotification = useSelector(state => state.notification)?.unread
@@ -18,6 +19,9 @@ const SideBar = () => {
         <li className="menus"><MdOutlineInventory2 /><Link className="menus" to="/itemlist">Items</Link></li>
         <li className="menus"><BiHealth /><Link className="menus" to="/allergens">Allergens</Link></li>
         <li className="menus relative"><FaBasketShopping /><Link className="menus" to="/orderlist">Orders
+          {unreadNotification > 0 && <span className="h-3 w-3 flex items-center justify-center text-[0.5rem] text-white !rounded-full bg-green-400 absolute -right-5 top-2 "></span>}
+        </Link></li>
+          <li className="menus relative"><MdEventNote /><Link className="menus" to="/eventBookings">Event Bookings
           {unreadNotification > 0 && <span className="h-3 w-3 flex items-center justify-center text-[0.5rem] text-white !rounded-full bg-green-400 absolute -right-5 top-2 "></span>}
         </Link></li>
         <li className="menus"><MdOutlinePayments /><Link className="menus" to="/paymentlist">Payments</Link></li>

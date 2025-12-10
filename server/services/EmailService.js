@@ -23,7 +23,6 @@ export async function sendEmail(recipient, subject, message) {
 
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log("Email sent");
   } catch (err) {
     throw new InternalServerError(err.message);
   }

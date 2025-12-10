@@ -8,7 +8,7 @@ const TableHeader = ({ children }) => <thead className="bg-tertiary !text-sm sti
 
 const TableBody = ({ children }) => <tbody className="">{children}</tbody>;
 
-const TableRow = ({ children }) => <tr className="border-b sticky max-w-[100px]   truncate">{children}</tr>;
+const TableRow = ({ children, onClick }) => <tr onClick ={onClick} className={`border-b sticky max-w-[100px]   truncate ${onClick && 'cursor-pointer'}`}>{children}</tr>;
 
 const TableCaption = ({ children }) => <tr className="border-b">{children}</tr>;
 

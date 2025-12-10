@@ -7,6 +7,7 @@ import { Button } from '@/components/button/Button'
 import { motion } from "framer-motion";
 import ScrollFadeIn from '@/components/animations/ScrollFadeIn'
 import { PiChefHatThin } from "react-icons/pi";
+import EventForm from './EventForm'
 
 
 const Services = () => {
@@ -16,8 +17,8 @@ const Services = () => {
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className='w-full h-[500px] object-contain overflow-hidden'>
-        <Image style={'!w-full'} src={'/images/catering2.jpg'} />
+        className='w-full  mb-20'>
+        <EventForm />
       </ScrollFadeIn>
       <ScrollFadeIn
         initial={{ opacity: 0, scale: 0.5 }}
@@ -35,7 +36,7 @@ const Services = () => {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
         className='w-full h-[500px] object-contain overflow-hidden'>
-        <Image style={'!w-full'} src={'/images/CUTLERY.jpg'} />
+        <Image style={'!w-full'} src={'/images/damicooks.jpg'} />
       </ScrollFadeIn>
       <ScrollFadeIn
         initial={{ opacity: 0, scale: 0.5 }}

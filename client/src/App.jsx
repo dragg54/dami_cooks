@@ -45,6 +45,8 @@ import Services from "./pages/customer/services/Services"
 import VerifyEmail from "./pages/register/VerifyEmail"
 import Order from "./pages/admin/order/Order"
 import CustomerList from "./pages/admin/customer/CustomerList"
+import EventBookings from "./pages/admin/booking/EventBookings"
+import UpdateEventBookingChargeUI from "./pages/admin/booking/UpdateEventBookingChargeUI"
 
 function App() {
   const user = useSelector(state => state.user).user
@@ -108,6 +110,8 @@ function App() {
             <Route path="/updateItem" element={<UpdateItemUI />} />
             <Route path="/orderlist" element={<OrderList />} />
             <Route path="/allergens" element={<Allergens />} />
+            <Route path="/eventBookings" element={<EventBookings />} />
+            <Route path="/eventBooking" element={<UpdateEventBookingChargeUI />} />
             <Route path="/allergen" element={<AddAllergen />} />
             <Route path="/order" element={<Order />} />
             <Route path="/updateAllergen" element={<UpdateAllergenUI />} />

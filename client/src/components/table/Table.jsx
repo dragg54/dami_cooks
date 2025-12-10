@@ -26,6 +26,7 @@ const CustomTable = ({
   tableData, 
   placeholder, caption,
   currentPage,
+  handleOpenModal,
   modalComponent,
   totalPages,
   showTotal,
@@ -154,23 +155,26 @@ const CustomTable = ({
         ))}
         </TableHeader>
         <TableBody className=''>
-          {table.getRowModel().rows.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
-                {canEdit && 
-                <TableCell >
-                  <FaEdit onClick={() => openModal ? dispatch(openGlobalModal({component: modalComponent, props: row.original})):navigate(updateLink, {state: {row:rawData || row.original}})}
-                    className=" text-gray-500 text-lg cursor-pointer" />
-                </TableCell>
-}
-                {row.getVisibleCells().map((cell, index) => (
-                  // cell.column.id == "id" ? '':
-                    <TableCell hidden={cell.column.id == "id"} key={index}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}      
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
+              {table.getRowModel().rows.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow key={row.id} onClick={() => handleOpenModal({data: row.original})}>
+                    {canEdit &&
+                      <TableCell >
+                        <FaEdit onClick={(e) => {
+                          e.stopPropagation()
+                          openModal ? dispatch(openGlobalModal({ component: modalComponent, props: row.original })) : navigate(updateLink, { state: { row: rawData || row.original } })
+                        }}
+                          className=" text-gray-500 text-lg cursor-pointer" />
+                      </TableCell>
+                    }
+                    {row.getVisibleCells().map((cell, index) => (
+                      // cell.column.id == "id" ? '':
+                      <TableCell hidden={cell.column.id == "id"} key={index}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="text-center">
