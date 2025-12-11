@@ -167,38 +167,44 @@ const EventForm = () => {
 
         <div className="flex-col flex w-full">
           <label className="font-bold flex !w-full  items-center gap-2"><FaRegCalendarAlt /> Event Date</label>
-          <input
+         <div className="!w-full block p-3 border rounded !bg-white">
+           <input
             type="date"
             name="eventDate"
             value={formData.eventDate}
             onChange={handleChange}
             required
-            className="!w-full block p-3 border rounded !bg-white"
+            className="!bg-white !border-none !outline-none"
           />
+         </div>
         </div>
 
         <div className="flex-col flex w-full">
           <label className="font-bold flex items-center gap-2 !w-full "><CiClock2 /> Event Start Time</label>
-          <input
+          <div className="!w-full block p-3 border rounded !bg-white">
+            <input
             type="time"
             name="eventStartTime"
             value={formData.eventStartTime}
             onChange={handleChange}
             required
-            className="!w-full block p-3 border rounded !bg-white"
+            className="!bg-white !border-none !outline-none"
           />
+          </div>
         </div>
 
         <div className="flex-col flex w-full">
           <label className="font-bold flex items-center gap-2 !w-full "><CiClock2 /> Event End Time</label>
-          <input
+          <div className="!w-full block p-3 border rounded !bg-white">
+            <input
             type="time"
             name="eventEndTime"
             value={formData.eventEndTime}
             onChange={handleChange}
             required
-            className="!w-full block p-3 border rounded !bg-white"
+            className="!border-none !bg-white !outline-none"
           />
+          </div>
         </div>
 
         <div>
@@ -216,17 +222,19 @@ const EventForm = () => {
 
         <div>
           <label className="font-bold flex items-center gap-2">Catering Type</label>
-          <select
+         <div className="!w-full block p-3 border rounded !bg-white">
+           <select
             name="cateringType"
             value={formData.cateringType}
             onChange={handleChange}
             required
-            className="w-full bg-white p-3 border rounded"
+            className="!border-none !bg-white !outline-none"
           >
             <option value="">Select Catering Type</option>
             <option value="Outdoor">Outdoor</option>
             <option value="Indoor">Indoor</option>
           </select>
+         </div>
         </div>
 
         <div className="col-span-full">
