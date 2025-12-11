@@ -85,7 +85,7 @@ const EventForm = () => {
 
       <form onSubmit={handleSubmit} className="mb-12 flex flex-col gap-4 md:grid grid-cols-2 md:gap-6">
         <div>
-          <label className="font-bold inline-flex items-center gap-2"><RiPassportLine /> Name</label>
+          <label className="font-bold flex items-center gap-2"><RiPassportLine /> Name</label>
           <input
             type="text"
             name="name"
@@ -98,7 +98,7 @@ const EventForm = () => {
         </div>
 
         <div>
-          <label className="font-bold inline-flex items-center gap-2"><MdOutlineMailOutline /> Email</label>
+          <label className="font-bold flex items-center gap-2"><MdOutlineMailOutline /> Email</label>
           <input
             type="email"
             name="email"
@@ -111,7 +111,7 @@ const EventForm = () => {
         </div>
 
         <div>
-          <label className="font-bold inline-flex items-center gap-2"><BsChatSquare /> WhatsApp Number</label>
+          <label className="font-bold flex items-center gap-2"><BsChatSquare /> WhatsApp Number</label>
           <input
             type="text"
             name="whatsapp"
@@ -124,7 +124,7 @@ const EventForm = () => {
         </div>
 
         <div>
-          <label className="font-bold inline-flex items-center gap-2"><TiPhoneOutline />  Mobile Number</label>
+          <label className="font-bold flex items-center gap-2"><TiPhoneOutline />  Mobile Number</label>
           <input
             type="text"
             name="mobileNumber"
@@ -137,7 +137,7 @@ const EventForm = () => {
         </div>
 
         <div>
-          <label className="font-bold inline-flex items-center gap-2"><ImSpoonKnife /> Event Type</label>
+          <label className="font-bold flex items-center gap-2"><ImSpoonKnife /> Event Type</label>
           <select
             name="eventType"
             value={formData.eventType}
@@ -153,7 +153,7 @@ const EventForm = () => {
         </div>
 
         <div>
-          <label className="font-bold inline-flex items-center gap-2"><IoPeopleOutline /> Guest Count</label>
+          <label className="font-bold flex items-center gap-2"><IoPeopleOutline /> Guest Count</label>
           <input
             type="number"
             name="guestCount"
@@ -165,8 +165,8 @@ const EventForm = () => {
           />
         </div>
 
-        <div className="flex-col w-full">
-          <label className="font-bold inline-flex !w-full items-center gap-2"><FaRegCalendarAlt /> Event Date</label>
+        <div className="flex-col flex w-full">
+          <label className="font-bold flex !w-full items-center gap-2"><FaRegCalendarAlt /> Event Date</label>
           <input
             type="date"
             name="eventDate"
@@ -177,8 +177,8 @@ const EventForm = () => {
           />
         </div>
 
-        <div className="flex-col w-full">
-          <label className="font-bold inline-flex items-center gap-2 !w-full"><CiClock2 /> Event Start Time</label>
+        <div className="flex-col flex w-full">
+          <label className="font-bold flex items-center gap-2 !w-full"><CiClock2 /> Event Start Time</label>
           <input
             type="time"
             name="eventStartTime"
@@ -189,8 +189,8 @@ const EventForm = () => {
           />
         </div>
 
-        <div className="flex-col w-full">
-          <label className="font-bold inline-flex items-center gap-2 !w-full"><CiClock2 /> Event End Time</label>
+        <div className="flex-col flex w-full">
+          <label className="font-bold flex items-center gap-2 !w-full"><CiClock2 /> Event End Time</label>
           <input
             type="time"
             name="eventEndTime"
@@ -202,7 +202,7 @@ const EventForm = () => {
         </div>
 
         <div>
-          <label className="font-bold inline-flex items-center gap-2"><CiLocationOn /> Event Location</label>
+          <label className="font-bold flex items-center gap-2"><CiLocationOn /> Event Location</label>
           <input
             type="text"
             name="eventLocation"
@@ -215,7 +215,7 @@ const EventForm = () => {
         </div>
 
         <div>
-          <label className="font-bold inline-flex items-center gap-2">Catering Type</label>
+          <label className="font-bold flex items-center gap-2">Catering Type</label>
           <select
             name="cateringType"
             value={formData.cateringType}
@@ -230,7 +230,7 @@ const EventForm = () => {
         </div>
 
         <div className="col-span-full">
-          <label className="font-bold inline-flex items-center gap-2">Event Address</label>
+          <label className="font-bold flex items-center gap-2">Event Address</label>
           <textarea
             name="eventAddress"
             placeholder="Event Address"
@@ -243,7 +243,7 @@ const EventForm = () => {
         </div>
 
         <div className="col-span-full">
-          <label className="font-bold inline-flex items-center gap-2">Dietary Requirements</label>
+          <label className="font-bold flex items-center gap-2">Dietary Requirements</label>
           <textarea
             name="dietaryRequirements"
             placeholder="Any allergies, dietary restrictions or special requirements"
@@ -255,7 +255,7 @@ const EventForm = () => {
         </div>
 
         <div className="col-span-full">
-          <label className="font-bold inline-flex items-center gap-2">Food Package References</label>
+          <label className="font-bold flex items-center gap-2">Food Package References</label>
           <textarea
             name="foodPackageReferences"
             placeholder="Preferred dishes, cuisine types or special requests"
