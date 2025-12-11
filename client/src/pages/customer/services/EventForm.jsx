@@ -138,18 +138,26 @@ const EventForm = () => {
 
         <div>
           <label className="font-bold flex items-center gap-2"><ImSpoonKnife /> Event Type</label>
-          <select
+         <div className="!w-full block p-3 border rounded !bg-white">
+           <select
             name="eventType"
             value={formData.eventType}
             onChange={handleChange}
             required
-            className="w-full bg-white p-3 border rounded"
+            className="!w-full !bg-white !border-none !outline-none"
           >
             <option value="">Select Event Type</option>
             <option value="Marriage">Marriage</option>
             <option value="Naming">Naming</option>
-            <option value="Birthday">Birthday</option>
+            <option value="Birthday">Birthday Party</option>
+           <option value="Corporate">Corporate Event</option>
+           <option value="Baby Shower">Baby Shower</option>
+           <option value="Anniversary">Anniversary</option>
+            <option value="Graduation">Graduation</option>
+             <option value="Holiday Party">Holiday Party</option>
+              <option value="Other">Other</option>
           </select>
+         </div>
         </div>
 
         <div>
@@ -228,11 +236,16 @@ const EventForm = () => {
             value={formData.cateringType}
             onChange={handleChange}
             required
-            className="!border-none !bg-white !outline-none"
+            className="!border-none !bg-white !outline-none !w-full block"
           >
             <option value="">Select Catering Type</option>
-            <option value="Outdoor">Outdoor</option>
-            <option value="Indoor">Indoor</option>
+            <option value="Full Service">Full Service</option>
+            <option value="Drop-off">Drop-off</option>
+            <option value="Buffet Style">Buffet Style</option>
+            <option value="Plated Service">Plated Service</option>
+            <option value="Cocktail Reception">Cocktail Reception</option>
+            <option value="Family Style">Family Style</option>
+            <option value="Waiter Service">Waiter Service</option>
           </select>
          </div>
         </div>
