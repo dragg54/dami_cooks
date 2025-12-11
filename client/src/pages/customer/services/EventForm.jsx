@@ -166,38 +166,38 @@ const EventForm = () => {
         </div>
 
         <div className="flex-col w-full">
-          <label className="font-bold inline-flex items-center gap-2"><FaRegCalendarAlt /> Event Date</label>
+          <label className="font-bold inline-flex !w-full items-center gap-2"><FaRegCalendarAlt /> Event Date</label>
           <input
             type="date"
             name="eventDate"
             value={formData.eventDate}
             onChange={handleChange}
             required
-            className="w-full p-3 border rounded !bg-white"
+            className="!w-full p-3 border rounded !bg-white"
           />
         </div>
 
         <div className="flex-col w-full">
-          <label className="font-bold inline-flex items-center gap-2"><CiClock2 /> Event Start Time</label>
+          <label className="font-bold inline-flex items-center gap-2 !w-full"><CiClock2 /> Event Start Time</label>
           <input
             type="time"
             name="eventStartTime"
             value={formData.eventStartTime}
             onChange={handleChange}
             required
-            className="w-full p-3 border rounded !bg-white"
+            className="!w-full p-3 border rounded !bg-white"
           />
         </div>
 
         <div className="flex-col w-full">
-          <label className="font-bold inline-flex items-center gap-2"><CiClock2 /> Event End Time</label>
+          <label className="font-bold inline-flex items-center gap-2 !w-full"><CiClock2 /> Event End Time</label>
           <input
             type="time"
             name="eventEndTime"
             value={formData.eventEndTime}
             onChange={handleChange}
             required
-            className="w-full p-3 border rounded !bg-white"
+            className="!w-full p-3 border rounded !bg-white"
           />
         </div>
 
