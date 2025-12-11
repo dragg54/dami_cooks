@@ -4,7 +4,7 @@ import { PostEventBooking } from "./api/PostEventBooking";
 import { RiPassportLine } from "react-icons/ri";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { BsChatSquare } from "react-icons/bs";
-import { TiPhoneOutline } from "react-icons/ti";
+import { MdOutlinePhoneIphone } from "react-icons/md";
 import { ImSpoonKnife } from "react-icons/im";
 import { IoPeopleOutline } from "react-icons/io5";
 import { FaRegCalendarAlt } from "react-icons/fa";
@@ -83,7 +83,7 @@ const EventForm = () => {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="mb-12 flex flex-col gap-4 md:grid grid-cols-2 md:gap-6">
+      <form onSubmit={handleSubmit} className="mb-12 flex flex-col gap-6 md:grid md:grid-cols-2 md:gap-6">
         <div>
           <label className="font-bold flex items-center gap-2"><RiPassportLine /> Name</label>
           <input
@@ -124,7 +124,7 @@ const EventForm = () => {
         </div>
 
         <div>
-          <label className="font-bold flex items-center gap-2"><TiPhoneOutline />  Mobile Number</label>
+          <label className="font-bold flex items-center gap-2"><MdOutlinePhoneIphone />  Mobile Number</label>
           <input
             type="text"
             name="mobileNumber"
@@ -166,38 +166,38 @@ const EventForm = () => {
         </div>
 
         <div className="flex-col flex w-full">
-          <label className="font-bold flex !w-full items-center gap-2"><FaRegCalendarAlt /> Event Date</label>
+          <label className="font-bold flex !w-full  items-center gap-2"><FaRegCalendarAlt /> Event Date</label>
           <input
             type="date"
             name="eventDate"
             value={formData.eventDate}
             onChange={handleChange}
             required
-            className="!w-full p-3 border rounded !bg-white"
+            className="!w-full block p-3 border rounded !bg-white"
           />
         </div>
 
         <div className="flex-col flex w-full">
-          <label className="font-bold flex items-center gap-2 !w-full"><CiClock2 /> Event Start Time</label>
+          <label className="font-bold flex items-center gap-2 !w-full "><CiClock2 /> Event Start Time</label>
           <input
             type="time"
             name="eventStartTime"
             value={formData.eventStartTime}
             onChange={handleChange}
             required
-            className="!w-full p-3 border rounded !bg-white"
+            className="!w-full block p-3 border rounded !bg-white"
           />
         </div>
 
         <div className="flex-col flex w-full">
-          <label className="font-bold flex items-center gap-2 !w-full"><CiClock2 /> Event End Time</label>
+          <label className="font-bold flex items-center gap-2 !w-full "><CiClock2 /> Event End Time</label>
           <input
             type="time"
             name="eventEndTime"
             value={formData.eventEndTime}
             onChange={handleChange}
             required
-            className="!w-full p-3 border rounded !bg-white"
+            className="!w-full block p-3 border rounded !bg-white"
           />
         </div>
 
