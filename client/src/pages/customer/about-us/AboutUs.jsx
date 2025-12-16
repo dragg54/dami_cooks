@@ -8,11 +8,10 @@ const AboutUs = () => {
         <div className="w-full  md:mb-[25rem] h-full">
 
             <ScrollFadeIn className={`${getScreenSize().isMobile && '!w-full'} w-full md:mx-6  md:flex  flex-col md:flex-row gap-4 md:mt-[20px]  z-40 md:h-[770px] relative`}>
-                <ScrollFadeIn className={`${getScreenSize().isMobile && '!w-full'}  md:w-2/3 flex object-contain h-[400px] md:h-[550px]`}>
+                <ScrollFadeIn className={`${getScreenSize().isMobile && '!w-full'}  -mt-20 md:mt-0  md:w-2/3 flex object-contain h-[400px] md:h-[550px]`}>
                     <Image style={'!object-contain md:!object-cover'} src={'/images/damicooks.jpg'} />
                 </ScrollFadeIn>
-                <ScrollFadeIn className="md:w-1/2 mt-6 md:mt-0 md:ml-8 mx-6">
-                <ScrollFadeIn></ScrollFadeIn>
+                <ScrollFadeIn className="md:w-1/2 -mt-6 md:mt-0 md:ml-8 mx-6">
                     <ScrollFadeIn>
                         <p className="text-4xl text-[#fdb750] font-semibold">About Us</p>
                         <p className="text-gray-700">Welcome to Dami Cooks, where authentic Nigerian flavors meet modern convenience.

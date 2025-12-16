@@ -54,6 +54,7 @@ const EventBookings = () => {
         ["Event Start Time"]: d.eventStartTime,
         ["Event End Time"]: d.eventEndTime,
         ["Event Location"]: d.eventLocation,
+        ["Acknowlegement Url"]: d.eventBookingAcknowlegementUrl,
         ["Event Address"]: d.eventAddress,
          ["Booking Charge"]: d.bookingCharge,
         ["Dietary Requirements"]: d.dietaryRequirements,
