@@ -75,8 +75,8 @@ const UpdateEventBookingChargeUI = () => {
           handleSubmit,
           isLoading,
           initialValues,
-          actionButton: <Button disabled={bookingCharge == 0} className={`${bookingCharge == 0 && "bg-red-300"} cursor-pointer px-4 py-2 bg-primary z-10  w-full text-xs md:text-sm text-white
-             rounded-3xl border hover:shadow-lg shadow-gray-600`}>Complete</Button>,
+          actionButton: <Button disabled={bookingCharge == 0} className={`${bookingCharge == 0 && "bg-red-300"} cursor-pointer px-4 !h-10 bg-primary z-10  w-full text-xs md:text-sm text-white
+             !rounded-full border hover:shadow-lg shadow-gray-600`}>Complete</Button>,
           responseStatus,
           // validationSchema,
           isError

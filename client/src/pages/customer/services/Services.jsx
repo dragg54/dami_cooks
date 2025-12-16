@@ -36,7 +36,7 @@ const Services = () => {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
         className='w-full h-[500px] object-contain overflow-hidden'>
-        <Image style={'!w-full'} src={'/images/damicooks.jpg'} />
+        <Image style={'md:!w-full !object-contain md:!object-cover'} src={'/images/damicooks.jpg'} />
       </ScrollFadeIn>
       <ScrollFadeIn
         initial={{ opacity: 0, scale: 0.5 }}

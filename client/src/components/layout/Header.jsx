@@ -42,9 +42,9 @@ export const Header = ({ setNavIsOpen, setCartOpen, setUserAccountOpen, setOpenL
     <div className='h-16 bg-white flex md:px-16 justify-between items-center p-4 w-full border-b shadow-gray-300'>
       <div className="md:w-[56px] w-[44px] h-[44px]  object-cover border-red-600 md:h-[56px] overflow-hidden flex justify-center items-center">
 <img
-  src="/images/LOGO SVG.svg"
+  src="/images/logo.png"
   alt=""
-  className="w-24 h-auto text-red-500 fill-red-500"
+  className="w-32 h-auto text-red-500 fill-red-500"
 />        </div>
       {
         !user.user.isAdmin ? <nav className="hidden md:flex gap-8 text-gray-500 items-center">

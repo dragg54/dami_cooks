@@ -42,6 +42,7 @@ const EventBookings = () => {
     // ---- PROCESS TABLE DATA ----
     const processedData = items?.rows?.map((d) => ({
         id: d.id,
+        ["Booking ID"]: d.bknId,
         name: d.name,
         email: d.email,
         whatsapp: d.whatsapp,
@@ -54,6 +55,7 @@ const EventBookings = () => {
         ["Event End Time"]: d.eventEndTime,
         ["Event Location"]: d.eventLocation,
         ["Event Address"]: d.eventAddress,
+         ["Booking Charge"]: d.bookingCharge,
         ["Dietary Requirements"]: d.dietaryRequirements,
         ["Food Package References"]: d.foodPackageReferences,
         "Created At": format(new Date(d.createdAt), "dd-MM-yyyy HH:mm"),

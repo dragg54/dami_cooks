@@ -15,7 +15,7 @@ const MobileNavigation = ({setCartOpen, setNavIsOpen}) => {
     
  if(getScreenSize().isMobile){
     return(
-        <nav className="w-full h-16 px-8 flex items-center justify-between bg-white border shadow-lg shadow-gray-500 sticky bottom-0">
+        <nav className="w-full z-50 h-16 px-8 flex items-center justify-between bg-white border shadow-lg shadow-gray-500 sticky bottom-0">
          <NavLink to={'/home'} className="flex flex-col gap-1 justify-center items-center">
              <GoHome className="text-2xl"/>
              <span className="text-xs text-gray-500">Home</span>
