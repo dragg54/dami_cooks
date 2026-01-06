@@ -4,11 +4,14 @@ import EventBookingService from "../services/EventBookingService.js";
 
 class EventBookingController {
     static async createBooking(req, res) {
+        const transaction = await db.transaction()
         try {
             const booking = await EventBookingService.createEventBooking(req.body);
+            await transaction.commit()
             res.status(201).json({ message: "Booking created successfully", booking });
         } catch (error) {
             console.log(error)
+            await transaction.rollback()
             res.status(error.statusCode || 500).json(error.message
                 || "Internal server error"
             );
@@ -58,6 +61,18 @@ class EventBookingController {
     static async updateBooking(req, res) {
         try {
             const booking = await EventBookingService.updateEventBooking(req.params.id, req.body);
+            res.status(200).json({ message: "Booking updated successfully", booking });
+        } catch (error) {
+            console.log(error)
+            res.status(error.statusCode || 500).json(error.message
+                || "Internal server error"
+            );
+        }
+    }
+
+     static async updateBookingStatus(req, res) {
+        try {
+            const booking = await EventBookingService.updateEventBookingStatus(req);
             res.status(200).json({ message: "Booking updated successfully", booking });
         } catch (error) {
             console.log(error)

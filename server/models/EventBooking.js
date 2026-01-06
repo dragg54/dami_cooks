@@ -2,6 +2,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../configs/db.js"; 
 import { EventBookingItem } from "./EventBookingItem.js";
+import User from "./User.js";
 
 const EventBooking = sequelize.define("eventBooking", {
     bknId:{
@@ -39,6 +40,10 @@ const EventBooking = sequelize.define("eventBooking", {
         type: DataTypes.DATEONLY,
         allowNull: false,
     },
+    idempotencyKey:{
+      type: DataTypes.STRING,
+      unique: true
+    },
     eventStartTime: {
         type: DataTypes.TIME,
         allowNull: false,
@@ -52,7 +57,7 @@ const EventBooking = sequelize.define("eventBooking", {
         allowNull: false,
     },
     bookingStatus: {
-        type: DataTypes.ENUM("quote_requested", "quote_computed", "quote_acknowleged", "booked", "completed", "postponed"),
+        type: DataTypes.ENUM("quote_requested", "quote_computed", "quote_acknowleged","quote_rejected", "booked", "completed", "postponed"),
         defaultValue: "quote_requested"
       },
     eventBookingAcknowlegementUrl:{
@@ -75,6 +80,10 @@ const EventBooking = sequelize.define("eventBooking", {
         allowNull: true,
     },
 });
+
+EventBooking.belongsTo(User, {foreignKey: "userId", onDelete: "CASCADE"})
+User.hasMany(EventBooking)
+
 EventBooking.hasMany(EventBookingItem)
 EventBookingItem.belongsTo(EventBooking, {onDelete: 'CASCADE'})
 

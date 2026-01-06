@@ -3,7 +3,7 @@ import db from "../configs/db.js";
 import { Order } from "./Order.js";
 import User from "./User.js";
 
-export const Shipping = db.define('shipping',{
+export const Shipping = db.define('shipping', {
   address: {
     type: DataTypes.STRING,
     allowNull: false
@@ -24,16 +24,48 @@ export const Shipping = db.define('shipping',{
     type: DataTypes.STRING,
     defaultValue: "United Kingdom"
   },
-  phone:{
+  phone: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  provider: {
+    type: DataTypes.STRING,
+    defaultValue: "STUART"
+  },
+  stuartJobId: {
+    type: DataTypes.STRING
+  },
+  stuartTrackingUrl: {
+    type: DataTypes.STRING
+  },
+  status: {
+    type: DataTypes.ENUM(
+      "QUOTE_CREATED",
+      "PENDING",
+      "ACCEPTED",
+      "PICKUP_STARTED",
+      "PICKED_UP",
+      "DROP_OFF_STARTED",
+      "DELIVERED",
+      "CANCELLED",
+      "FAILED"
+    )
+  },
+  deliveryFee: {
+    type: DataTypes.DECIMAL(10, 2)
+  },
+  etaMinutes: {
+    type: DataTypes.INTEGER
+  },
+  distanceKm: {
+    type: DataTypes.DECIMAL(10, 2)
   }
 })
 
-Shipping.belongsTo(Order, {onDelete: 'CASCADE'})
+Shipping.belongsTo(Order, { onDelete: 'CASCADE' })
 Order.hasOne(Shipping)
 
-Shipping.belongsTo(User, {onDelete: 'CASCADE'})
+Shipping.belongsTo(User, { onDelete: 'CASCADE' })
 User.hasOne(Shipping)
 
 

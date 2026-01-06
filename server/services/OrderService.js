@@ -16,6 +16,9 @@ import dotenv from 'dotenv'
 import { sendCustomerOrderCancelledMail } from "../emails/sendMessages/SendCustomerOrderCancelledMail.js"
 import { generateCd } from "../utils/generateCd.js"
 import { Payment } from "../models/Payment.js"
+import { createDeliveryJob } from "./ShippingService.js"
+import { InternalServerError } from "../exceptions/InternalServerError.js"
+import { AdminSetting } from "../models/AdminSettings.js"
 
 dotenv.config()
 
@@ -250,7 +253,7 @@ export const updateOrderStatus = async (req, transaction) => {
     // }
     const { status } = req.body
     const { id } = req.params
-    const existingOrder = await Order.findByPk(id)
+    const existingOrder = await Order.findByPk(id, {raw: true})
     if (!existingOrder) {
         const errMsg = `Order ${id} not found`
         throw new BadRequestError(errMsg)
@@ -269,7 +272,72 @@ export const updateOrderStatus = async (req, transaction) => {
         const errMsg = `Order status is invalid for this operation`
         throw new BadRequestError(errMsg)
     }
-    await Order.update({ status }, { where: { id } }, { transaction })
+
+    if (status == orderStatus.SHIPPED) {
+         const adminUser = await User.findOne({ where: { isAdmin: true } })
+            if (!adminUser) {
+                throw BadRequestError("Admin user not found")
+            }
+            const adminSettings = await AdminSetting.findOne()
+            if (!adminSettings) {
+                throw BadRequestError("Admin settings not found")
+            } 
+        const initializedShipping = await Shipping.findOne({
+            where:{orderId: id}, raw: true
+        })
+        if(!initializedShipping){
+            throw new BadRequestError("Shipping has not been initialized for this order")
+        }
+
+        const customer = await User.findOne({
+            where: {
+                id: existingOrder.userId
+            }
+        })
+
+        if(!customer){
+            throw new BadRequestError("Customer not found for this order")
+        }
+        const createDeliveryJobRequest = {
+            "job": {
+                "pickups": [
+                    {
+                    address: "32 Coombe Ln, Raynes Park, London SW20 0LA",
+                    // address: adminSettings.pickupAddress,
+                    firstName: adminUser.firstName,
+                    lastName: adminUser.lastName,
+                    phone: adminUser.phone,
+                    email: adminUser.phone,
+                    company: process.env.COMPANY_NAME
+                    }
+                ],
+                "dropoffs": [
+                    {
+                        "package_type": "small",
+                        "package_description": "Food item",
+                        "client_reference": "{{client_reference}}",
+                        "address": "23 Ethelbert Rd, London SW20 8QD",
+                        "comment": "Delivery of food item",
+                        "contact": {
+                            "firstname": customer.firstName,
+                            "lastname": customer.lastName,
+                            "phone":  initializedShipping.phone,
+                            "phone": "+33712222222",
+                            "email": initializedShipping.email,
+                            "company":""
+                        }
+                    }
+                ]
+            }
+        }
+        try{
+           await createDeliveryJob(createDeliveryJobRequest)
+        }
+        catch(err){
+            console.log(err)
+            throw new InternalServerError(err)
+        }
+    }
     if (status == orderStatus.CANCELLED) {
         const customer = await User.findOne({ where: { id: existingOrder.createdBy } })
         if (!customer) {
@@ -278,14 +346,17 @@ export const updateOrderStatus = async (req, transaction) => {
         const refundPaymentRequest = {
             orderId: id,
             orderCd: existingOrder.orderCd,
-             customer: {
+            customer: {
                 name: customer.dataValues.firstName,
                 email: customer.dataValues.email
-             }
+            }
         }
-        await refundPayment(refundPaymentRequest,customer.dataValues.firstName, transaction)
+        await refundPayment(refundPaymentRequest, customer.dataValues.firstName, transaction)
         await sendCustomerOrderCancelledMail(existingOrder.orderCd, customer.dataValues.firstName, customer.dataValues.email)
     }
+
+    await Order.update({ status }, { where: { id } }, { transaction })
+
 }
 
 export const cancelOrder = async (req, transaction) => {

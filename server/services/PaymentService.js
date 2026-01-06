@@ -11,7 +11,7 @@ import { Cart } from '../models/Cart.js'
 import { getPagination, getPagingData } from '../utils/pagination.js'
 import { UnauthorizedError } from '../exceptions/UnauthorizedError.js'
 import { Op } from 'sequelize'
-import { sendNotification } from '../socket/createNotification.js'
+import { sendOrderNotification } from '../socket/createNotification.js'
 import { Notification } from '../models/Notification.js'
 import { BadRequestError } from '../exceptions/BadRequestError.js'
 import { sendEmail } from './EmailService.js'
@@ -24,72 +24,26 @@ import User from '../models/User.js'
 import { sendCustomerPaymentRefundProcessingMail } from '../emails/sendMessages/SendCustomerPaymentRefundedProcessingMail.js'
 import { generateCd } from '../utils/generateCd.js'
 import logger from '../configs/logger.js'
+import EventBooking from '../models/EventBooking.js'
+import { EventBookingItem } from '../models/EventBookingItem.js'
 
 dotenv.config()
 
 export const initializePayment = async (req, transaction) => {
-    const { items, idempotencyKey } = req.body;
+    const { items, idempotencyKey, shipping, bookingId } = req.body;
+    let client_secret;
     if (!idempotencyKey) {
         throw new BadRequestError("Idempotency key is required");
     }
-    const userCart = await Cart.findOne({ where: { userId: req.user.id } })
-    if (!userCart) {
-        throw new BadRequestError("Cart does not exist for this user")
+    if (bookingId) {
+        client_secret = await processBookingPayment(req, transaction)
     }
-    if (items && items.length > 0) {
-        const totalCartItemAmount = items.length > 1 ? items.reduce((prevItem, nextItem) => ((Number(prevItem.price || 0) * Number(prevItem.quantity || 0))
-            + (Number(nextItem.price || 0) * Number(nextItem.quantity || 0)))) : Number(items[0]?.price) * Number(items[0].quantity)
-        const paymentItem = items.map((item) => (
-            {
-                id: item.id,
-                name: item.name,
-                price: item.price,
-                quantity: item.quantity
-            }
-        ))
 
-        let existingOrder = await Order.findOne({
-            where: { idempotencyKey }
-        });
-
-        if (existingOrder) {
-            console.log('Order already exists with this idempotency key');
-            const existingPayment = await Payment.findOne({ where: { orderId: existingOrder.id } })
-            if (existingPayment.gatewayPaymentId) {
-                const paymentIntent = await stripe.paymentIntents.retrieve(
-                    existingPayment.gatewayPaymentId);
-                return {
-                    clientSecret: paymentIntent.client_secret,
-                };
-            }
-            throw new Error("Order exists but payment intent is missing");
-        }
-
-        const orderCd = generateCd("ORD")
-        let newOrder = await Order.create({
-            orderCd: orderCd,
-            idempotencyKey,
-            orderedBy: req.user.id, amount: totalCartItemAmount, userId: req.user.id,
-            cartId: userCart.id
-        }, { transaction });
-
-
-        newOrder = newOrder?.toJSON()
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount: totalCartItemAmount * 100,
-            currency: "eur",
-            metadata: {
-                orderCd: newOrder.orderCd,
-                orderedBy: req.user.id,
-                cartId: userCart.dataValues.id,
-                cartItems: JSON.stringify(paymentItem)
-            }
-        });
-
-        return { clientSecret: paymentIntent.client_secret };
-        // }
+    else if (items) {
+        client_secret = await processOrderPayment(req, transaction)
     }
-    return { clientSecret: null }
+
+    return client_secret
 
 }
 
@@ -120,66 +74,15 @@ export const paymentWebhook = async (req, res) => {
         const sig = req.headers["stripe-signature"];
         const event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
         const paymentIntent = event.data.object;
+        const { orderCd, bookingCd } = paymentIntent.metadata
+        console.log("bookingCd", bookingCd)
         if (event.type === "payment_intent.succeeded") {
-            const { orderedBy, cartItems, cartId, orderCd } = paymentIntent.metadata
-            const customer = await User.findOne({ where: { id: orderedBy }, attributes: ['firstName', "email"] })
-            const existingOrder = await Order.findOne({ where: { orderCd } })
-            if (!existingOrder) {
-                logger.error("Update order failed: Existing order not found for " + orderCd)
+            if (orderCd) {
+                await processWebhookForOrderPayment(paymentIntent, transaction)
             }
-            const order = await Order.update({ status: "PLACED" }, { where: { orderCd }, transaction });
-            logger.info("Order status updated")
-
-            const orderItems = JSON.parse(cartItems).map(cartItem => ({
-                itemId: cartItem.id,
-                orderId: existingOrder.dataValues.id,
-                quantity: cartItem.quantity,
-            }))
-            await OrderItem.bulkCreate(orderItems, { transaction })
-
-            //Create payment
-            await Payment.create({
-                gatewayPaymentId: paymentIntent.id,
-                amount: paymentIntent.amount / 100,
-                status: paymentIntent.status,
-                orderId: existingOrder.dataValues.id
-            }, { transaction })
-
-            //Create shipping
-            await Shipping.create({
-                userId: orderedBy,
-                orderId: existingOrder.dataValues.id,
-                address: paymentIntent.shipping.address.line1,
-                city: paymentIntent.shipping.address.city,
-                phone: paymentIntent.shipping.phone,
-                email: customer.dataValues.email,
-                postalCode: paymentIntent.shipping.address.postal_code,
-                state: paymentIntent.shipping.state
-            }, { transaction })
-            await CartItem.destroy({
-                where: {
-                    cartId
-                }
-            }, { transaction })
-
-            await Notification.create({
-                read: false,
-                message: `You have a new order`,
-                notificationType: 'OrderNotification'
-            }, { transaction: transaction })
-            // const userCart = await Cart.findOne({where: {userId: orderedBy}, attributes:['id']})
-            // await CartItem.destroy({where:{
-            //     cartId: userCart.id
-            // }})
-            sendNotification()
-            // try {
-            //     await sendCustomerOrderPlacedMail(customer?.dataValues?.firstName, orderCd, customer?.dataValues?.email)
-            //     await sendMerchantOrderPlacedMail(orderCd, customer?.dataValues?.firstName, process.env.MERCHANT_GMAIL)
-            // }
-            // catch (exception) {
-            //     console.log(exception)
-            // }
-            await transaction.commit()
+            else if (bookingCd) {
+                await processWebhookForBookingPayment(paymentIntent, transaction)
+            }
 
         }
         if (event.type == "charge.refunded") {
@@ -188,6 +91,8 @@ export const paymentWebhook = async (req, res) => {
                 status: "refunded"
             }, { where: { gatewayPaymentId: paymentIntent.payment_intent } }, { transaction });
         }
+
+        await transaction.commit()
     }
     catch (err) {
         await transaction.rollback()
@@ -332,4 +237,210 @@ export const getTotalRevenue = async (req) => {
         }
     })
     return revenue
+}
+
+async function processBookingPayment(req, transaction) {
+    const {bookingId, idempotencyKey} = req.body
+    const existingBooking = await EventBooking.findOne({
+        where: {
+            id: bookingId
+        },
+        raw: true
+    })
+    if (!existingBooking) {
+        throw new BadRequestError(`Booking does not exist ${bookingId}`)
+    }
+    if (existingBooking.idempotencyKey && existingBooking.idempotencyKey == idempotencyKey) {
+        return { clientSecret: null }
+    }
+    const paymentIntent = await stripe.paymentIntents.create({
+        amount: existingBooking.bookingCharge * 100,
+        currency: "eur",
+        metadata: {
+            bookingCd: existingBooking.bknId,
+            orderedBy: req.user.id,
+            bookingCharge: existingBooking.bookingCharge,
+            paymentReason: "booking"
+        }
+    });
+    const existingPayment = await Payment.findOne({
+        where: {bookingId, status: "initialized"}
+    })
+    if (!existingPayment) {
+        await Payment.create({
+            gatewayPaymentId: paymentIntent.id,
+            bookingId: existingBooking.id,
+            status: "initialized",
+            amount: existingBooking.bookingCharge,
+            paymentGateway: "STRIPE",
+            paymentReason: "booking",
+            paymentType: "Card"
+        }, { transaction })
+
+    }
+    return { clientSecret: paymentIntent.client_secret };
+}
+
+async function processOrderPayment(req, transaction) {
+    const { items, idempotencyKey, shipping } = req.body;
+    const userCart = await Cart.findOne({ where: { userId: req.user.id } })
+    if (!userCart) {
+        throw new BadRequestError("Cart does not exist for this user")
+    }
+    if (items && items.length > 0) {
+        const totalCartItemAmount = items.length > 1 ? items.reduce((prevItem, nextItem) => ((Number(prevItem.price || 0) * Number(prevItem.quantity || 0))
+            + (Number(nextItem.price || 0) * Number(nextItem.quantity || 0)))) : Number(items[0]?.price) * Number(items[0].quantity)
+        const paymentItem = items.map((item) => (
+            {
+                id: item.id,
+                name: item.name,
+                price: item.price,
+                quantity: item.quantity
+            }
+        ))
+
+        let existingOrder = await Order.findOne({
+            where: { idempotencyKey }
+        });
+
+        if (existingOrder) {
+            const existingPayment = await Payment.findOne({ where: { orderId: existingOrder.id, paymentReason: "order" }, raw: true })
+            if (existingPayment && existingPayment.gatewayPaymentId) {
+                const paymentIntent = await stripe.paymentIntents.retrieve(
+                    existingPayment.gatewayPaymentId);
+                await stripe.paymentIntents.update(existingPayment.gatewayPaymentId, {
+                    amount: ((totalCartItemAmount) + (shipping?.amount_with_tax || 0)) * 100,
+                    metadata: {
+                        orderCd: existingOrder.orderCd,
+                        orderedBy: req.user.id,
+                        shippingAmount: shipping?.amount_with_tax || 0,
+                        cartId: userCart.dataValues.id,
+                        cartItems: JSON.stringify(paymentItem),
+                        shippingId: shipping.id,
+                        paymentReason: "order"
+                    }
+                });
+
+                await Payment.update(
+                    {
+                        amount: (totalCartItemAmount) + (shipping?.amount_with_tax || 0)
+                    },
+                    { where: { id: existingPayment.id } }
+                )
+                return {
+                    clientSecret: paymentIntent.client_secret,
+                };
+            }
+            throw new Error("Order exists but payment intent is missing");
+        }
+
+        const orderCd = generateCd("ORD")
+        let newOrder = await Order.create({
+            orderCd: orderCd,
+            idempotencyKey,
+            orderedBy: req.user.id, amount: totalCartItemAmount, userId: req.user.id,
+            cartId: userCart.id
+        }, { transaction });
+
+
+        newOrder = newOrder?.toJSON()
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: ((totalCartItemAmount) + (shipping?.amount_with_tax || 0)) * 100,
+            currency: "eur",
+            metadata: {
+                orderCd: newOrder.orderCd,
+                orderedBy: req.user.id,
+                shippingAmount: shipping?.amount_with_tax || 0,
+                cartId: userCart.dataValues.id,
+                cartItems: JSON.stringify(paymentItem),
+                paymentReason: "order"
+            }
+        });
+
+        await Payment.create({
+            gatewayPaymentId: paymentIntent.id,
+            orderId: newOrder.id,
+            status: "initialized",
+            paymentReason: "order",
+            amount: (totalCartItemAmount) + (shipping?.amount_with_tax || 0),
+            paymentGateway: "STRIPE",
+            paymentType: "Card"
+        }, { transaction })
+
+        return { clientSecret: paymentIntent.client_secret };
+        // }
+    }
+    return { clientSecret: null }
+}
+
+async function processWebhookForOrderPayment(paymentIntent, transaction) {
+    const { orderedBy, cartItems, cartId, orderCd } = paymentIntent.metadata
+    const customer = await User.findOne({ where: { id: orderedBy }, attributes: ['firstName', "email"] })
+    const existingOrder = await Order.findOne({ where: { orderCd } })
+    if (!existingOrder) {
+        logger.error("Update order failed: Existing order not found for " + orderCd)
+    }
+    const order = await Order.update({ status: "PLACED" }, { where: { orderCd }, transaction });
+    logger.info("Order status updated")
+
+    const orderItems = JSON.parse(cartItems).map(cartItem => ({
+        itemId: cartItem.id,
+        orderId: existingOrder.dataValues.id,
+        quantity: cartItem.quantity,
+    }))
+    await OrderItem.bulkCreate(orderItems, { transaction })
+
+    //Create payment
+    await Payment.update({
+        status: paymentIntent.status,
+        orderId: existingOrder.dataValues.id
+    }, { where: { orderId: existingOrder.dataValues.id }, transaction })
+
+    //Create shipping
+    await Shipping.create({
+        userId: orderedBy,
+        orderId: existingOrder.dataValues.id,
+        address: paymentIntent.shipping.address.line1,
+        city: paymentIntent.shipping.address.city,
+        phone: paymentIntent.shipping.phone,
+        email: customer.dataValues.email,
+        postalCode: paymentIntent.shipping.address.postal_code,
+        state: paymentIntent.shipping.state
+    }, { transaction })
+    await CartItem.destroy({
+        where: {
+            cartId
+        }
+    }, { transaction })
+
+    await Notification.create({
+        read: false,
+        message: `You have a new order`,
+        notificationType: 'OrderNotification'
+    }, { transaction: transaction })
+    // const userCart = await Cart.findOne({where: {userId: orderedBy}, attributes:['id']})
+    // await CartItem.destroy({where:{
+    //     cartId: userCart.id
+    // }})
+    sendOrderNotification()
+    // try {
+    //     await sendCustomerOrderPlacedMail(customer?.dataValues?.firstName, orderCd, customer?.dataValues?.email)
+    //     await sendMerchantOrderPlacedMail(orderCd, customer?.dataValues?.firstName, process.env.MERCHANT_GMAIL)
+    // }
+    // catch (exception) {
+    //     console.log(exception)
+    // }
+    await transaction.commit()
+}
+
+async function processWebhookForBookingPayment(paymentIntent, transaction) {
+    const { bookingCd } = paymentIntent.metadata
+    const existingBooking = await EventBooking.findOne({ where: {bknId: bookingCd }, raw: true })
+    if (!existingBooking) {
+        logger.error("Booking does not exist for " + bookingCd)
+    }
+    await EventBooking.update({ bookingStatus: "booked" }, { where: { bknId: bookingCd }, transaction })
+    await Payment.update({
+        status: paymentIntent.status,
+    }, { where: { bookingId: existingBooking.id }, transaction })
 }

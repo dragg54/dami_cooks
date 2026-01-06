@@ -3,11 +3,8 @@ import User from '../models/User.js';
 import { DuplicateError } from '../exceptions/DuplicateError.js'
 import { BadRequestError } from '../exceptions/BadRequestError.js';
 import * as cartService from './CartService.js'
-import { UnauthorizedError } from '../exceptions/UnauthorizedError.js';
 import { generateToken } from '../utils/generateToken.js';
 import { NotFoundError } from '../exceptions/NotFoundError.js';
-import { sendNotification } from '../socket/createNotification.js';
-import { sendEmail } from './EmailService.js';
 import crypto from 'crypto'
 import { sendCustomerEmailVerificationMail } from '../emails/sendMessages/SendCustomerEmailVerificationMail.js';
 

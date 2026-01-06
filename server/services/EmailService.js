@@ -4,7 +4,7 @@ import { InternalServerError } from '../exceptions/InternalServerError.js';
 
 dotenv.config()
 
-export async function sendEmail(recipient, subject, message) {
+export async function sendEmail(recipient, subject, message, attachment) {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -19,6 +19,7 @@ export async function sendEmail(recipient, subject, message) {
     subject,
     // text: "This is a test message",
     html: message,
+    attachment: [attachment]
   };
 
   try {

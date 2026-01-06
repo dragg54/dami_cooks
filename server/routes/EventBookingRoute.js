@@ -1,27 +1,24 @@
 // routes/eventBookingRoutes.js
 import express from "express";
 import EventBookingController from "../controllers/EventBookingController.js";
+import { authMiddleware } from "../middlewares/validate.js";
 
 const router = express.Router();
 
-// Create booking
-router.post("/", EventBookingController.createBooking);
+router.post("/", authMiddleware, EventBookingController.createBooking);
 
-// Get all bookings
 router.get("/", EventBookingController.getAllBookings);
 
-router.put("/:id/charges", EventBookingController.updateBookingCharge);
+router.put("/:id/charges", authMiddleware, EventBookingController.updateBookingCharge);
+
+router.patch("/:id/status", authMiddleware, EventBookingController.updateBookingStatus);
 
 router.get("/:id/bookingItems", EventBookingController.getEventBookingItems);
 
-
-// Get booking by id
 router.get("/:id", EventBookingController.getBookingById);
 
-// Update booking
-router.put("/:id", EventBookingController.updateBooking);
+router.put("/:id", authMiddleware, EventBookingController.updateBooking);
 
-// Delete booking
 router.delete("/:id", EventBookingController.deleteBooking);
 
 export default router;

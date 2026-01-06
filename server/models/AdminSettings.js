@@ -13,6 +13,14 @@ export const AdminSetting = db.define('AdminSetting', {
         type: DataTypes.ENUM("daily", "weekly", "monthly"),
         defaultValue: "monthly"
     },
+    pickupAddress: {
+        type: DataTypes.STRING,
+        required: true
+    },
+    maximumPreparationTimeInHours: {
+        type: DataTypes.INTEGER,
+        defaultValue: 2
+    },
     paymentReportFrequency: {
         type: DataTypes.ENUM("daily", "weekly", "monthly"),
         defaultValue: "monthly"

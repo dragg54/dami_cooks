@@ -25,6 +25,7 @@ export const updateOrderStatus = async (req, res) => {
         res.json("order status updated")
     }
     catch (error) {
+        console.log(error)
         await transaction.rollback()
         res.status(error.statusCode || 500).json(error.message
             || "Internal server error"

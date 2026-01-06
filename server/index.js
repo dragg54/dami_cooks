@@ -14,7 +14,7 @@ import { cartItemRoute } from './routes/CartItemRoute.js'
 import { paymentRoute } from './routes/PaymentRoute.js'
 import http from 'http'
 import { registerUser, removeUser } from './socket/registerUser.js'
-import { sendNotification } from './socket/createNotification.js'
+import { sendBookingNotification, sendOrderNotification } from './socket/createNotification.js'
 import { init } from './socket/socket.js'
 import { notificationRoute } from './routes/NotificationRoute.js'
 import { adminSettingRoute } from './routes/AdminSettingRoute.js'
@@ -22,6 +22,7 @@ import { allergenRoute } from './routes/AllergenRoute.js';
 import morgan from 'morgan';
 import { customerRouter } from './routes/CustomerRoute.js';
 import  eventBookingRoute  from './routes/EventBookingRoute.js';
+import { shippingRoute } from './routes/ShippingRoute.js';
 
 
 
@@ -83,6 +84,8 @@ app.use("/api/v1/adminSettings", adminSettingRoute)
 app.use("/api/v1/allergens", allergenRoute)
 app.use("/api/v1/customers", customerRouter)
 app.use("/api/v1/eventBookings", eventBookingRoute)
+app.use("/api/v1/shippings", shippingRoute)
+
 
 
 
@@ -103,7 +106,11 @@ io.on('connection', (socket) => {
   });
 
   socket.on("order-placed", (userId)=>{
-    sendNotification(io, "receiveNotification")
+    sendOrderNotification()
+  })
+
+   socket.on("event-booked", (userId)=>{
+    sendBookingNotification()
   })
 
   socket.on("disconnect", () => {
