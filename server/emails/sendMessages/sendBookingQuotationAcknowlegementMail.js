@@ -10,7 +10,7 @@ export async function sendBookingQuotationAcknowlegementMail(customerName, booki
         const html = fs.readFileSync(path.join(__dirname, '../templates/BookingQuotationAknowlegementTemplate.html'), 'utf8');
         const emailHtml = html
             .replace('{{bookingLink}}', bookingLink)
-            .replace('{{customerName}}', bookingLink);
+            .replace('{{customerName}}', customerName);
         await sendEmail(recipient, "Booking Quotation", emailHtml );
     } catch (error) {
         console.error('Error sending verification email:', error);

@@ -9,7 +9,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import PaymentForm from "./PaymentForm";
 import { Button } from "../../../components/button/Button";
 
-const Payment = ({deliveryDetails, clientSecret, setClientSecret}) => {
+const Payment = ({deliveryDetails, clientSecret, setClientSecret, shippingChargeResponse}) => {
   const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
   const CARD_OPTIONS = {
     style: {
@@ -73,28 +73,6 @@ const Payment = ({deliveryDetails, clientSecret, setClientSecret}) => {
     },
   };
 
-  
-
-  useEffect(() => {
-    const cartItems = cart.cartItems?.map(cartItem => (
-      { ...cartItem.item, quantity: cartItem.quantity }
-    ))
-    mutate({ items: cartItems })
-  }, [cart, cart?.cartItems])
-
-
-  const { mutate, isLoading, isError, isSuccess } = usePostData({ onSuccess, onError, url: '/payments' })
-
-  useEffect(() => {
-    if (elements) {
-      console.log("CardNumberElement:", elements.getElement(CardNumberElement));
-    }
-  }, [elements]);
-  
-
-  if (isLoading) {
-    return <>Loading...</>
-  }
   if (!clientSecret) {
     return <div>A form needs to be here</div>
   }
@@ -103,7 +81,7 @@ const Payment = ({deliveryDetails, clientSecret, setClientSecret}) => {
       <div className="h-auto p-4 w-full border border-gray-300 bg-white shadow-md shadow-gray-300 rounded-md p-6 pb-10">
         <h2 className="font-bold text-2xl ">Payment</h2>
         <p className="border-b border-gray-300 mb-6 text-gray-500 pb-4 text-xs">Pay with stripe</p>
-        <PaymentForm {...{clientSecret, deliveryDetails}}/>
+        <PaymentForm {...{clientSecret, deliveryDetails, shippingChargeResponse}}/>
       </div>
     </Elements>
   );

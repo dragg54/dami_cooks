@@ -47,6 +47,13 @@ import Order from "./pages/admin/order/Order"
 import CustomerList from "./pages/admin/customer/CustomerList"
 import EventBookings from "./pages/admin/booking/EventBookings"
 import UpdateEventBookingChargeUI from "./pages/admin/booking/UpdateEventBookingChargeUI"
+import ShippingList from "./pages/admin/shipping/ShippingList"
+import EventBooking from "./pages/customer/booking/EventBooking"
+import PaymentSection from "./pages/customer/booking/PaymentSection"
+import EventCalendar from "./pages/admin/calendar/EventCalendar"
+import PrivacyPolicy from "./pages/customer/home/PrivacyPolicy"
+import TermsOfService from "./pages/customer/home/TermsOfService"
+import RefundPolicy from "./pages/customer/home/RefundPolicy"
 
 function App() {
   const user = useSelector(state => state.user).user
@@ -64,22 +71,28 @@ function App() {
   useEffect(() => {
     try {
       // Listen for notifications sent to this user
-      socket.on('receiveNotification', () => {
-        console.log("sending notification...")
+      socket.on('receiveOrderNotification', () => {
         dispatch(addNotification())
       });
+
+      socket.on("receiveBookingNotification", ()=>{
+        dispatch(addNotification())
+      })
 
     } catch (err) {
       console.log('Error:', err);
     }
 
     return () => {
-      socket.off('receiveNotification');
+      socket.off('receiveOrderNotification');
+      socket.off("receiveBookingNotification")
     };
   }, [message]);
 
   useEffect(() => {
-    dispatch(fetchNotifications(notifications?.data))
+    dispatch(fetchNotifications({order: notifications?.data?.filter(not => not.notificationType == "OrderNotification"), 
+     booking: notifications?.data?.filter(not => not.notificationType == "BookingNotification")}
+    ))
   }, [notifications])
 
   return (
@@ -93,11 +106,16 @@ function App() {
           <Route path="/cancel" element={<Cancel />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/services" element={<Services />} />
+          <Route path="/eventBooking/:id/quotation-acknowlegement/:userId" element={<EventBooking />} />
           <Route path="/contact-us" element={<ContactUs />} />
           <Route path='/checkout' element={<Checkout />} />
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/" element={<HomeRedirect />} />
           <Route path="/home" element={<Home />} />
+           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route path="/refund-policy" element={<RefundPolicy />} />
+          <Route path="/booking/payment" element={<PaymentSection />} />
           <Route path="/checkout/payment-intent-failed" element={<PaymentIntentFailed />} />
           <Route path="/checkout/payment-failed" element={<PaymentFailed />} />
         </Route>
@@ -107,9 +125,11 @@ function App() {
             <Route path="/customers" element={<CustomerList />} />
             <Route path="/itemlist" element={<ItemList />} />
             <Route path="/additem" element={<AddItem />} />
+            <Route path="/shippings" element={<ShippingList />} />
             <Route path="/updateItem" element={<UpdateItemUI />} />
             <Route path="/orderlist" element={<OrderList />} />
             <Route path="/allergens" element={<Allergens />} />
+             <Route path="/eventCalendar" element={<EventCalendar />} />
             <Route path="/eventBookings" element={<EventBookings />} />
             <Route path="/eventBooking" element={<UpdateEventBookingChargeUI />} />
             <Route path="/allergen" element={<AddAllergen />} />

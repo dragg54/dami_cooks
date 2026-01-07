@@ -8,7 +8,7 @@ import { clearCart } from "../../../redux/CartSlice";
 import { useState } from "react";
 import PaymentFailed from "./PaymentFailed";
 
-function PaymentForm({ clientSecret, deliveryDetails }) {
+function PaymentForm({ clientSecret, deliveryDetails, shippingChargeResponse }) {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate()
@@ -19,7 +19,6 @@ function PaymentForm({ clientSecret, deliveryDetails }) {
     setPaymentIntentLoading(true)
     const cardElement = elements.getElement(CardNumberElement);
     if (!cardElement) {
-      console.error("CardNumberElement not found!");
       return;
     }
     try {
@@ -151,7 +150,9 @@ function PaymentForm({ clientSecret, deliveryDetails }) {
         Your personal data will be used to process your order, support your experience throughout this website,
         and for other purposes described in our privacy policy.
       </p>
-      <Button className={'!rounded-full'} isLoading={paymentIntentLoading}>Place Order</Button>
+      <Button 
+       disabled={!shippingChargeResponse?.amount_with_tax}
+       className={'!rounded-full'} isLoading={paymentIntentLoading}>Place Order</Button>
     </form>
   );
 }

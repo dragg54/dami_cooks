@@ -1,9 +1,13 @@
- import { useSelector } from "react-redux"
+/* eslint-disable react/prop-types */
+import { useSelector } from "react-redux"
 import Image from "../../../components/image/Image"
 import { Euro } from "../../../constants/Currency"
 
-const OrderSummary = () => {
+const OrderSummary = ({ shippingChargeResponse, shippingChargeLoading, deliveryDetails }) => {
     const cartItems = useSelector(state => state.cart)?.cartItems
+
+    const cartTotal = cartItems?.length > 1 ? cartItems?.reduce((prevItem, nextItem) => (Number(prevItem?.item?.price || 0)
+                    * Number(prevItem?.quantity || 0)) + (Number(nextItem?.item?.price || 0) * Number(nextItem?.quantity || 0))) : cartItems?.length && (Number(cartItems[0].item.price) * (cartItems[0].quantity))
     return (
         <div className="w-full mt-10 h-auto md:mb-10 mb-5 md:mr-8 border border-gray-300 
                          shadow-md shadow-gray-300 rounded-md md:p-6 p-4 bg-white">
@@ -13,14 +17,26 @@ const OrderSummary = () => {
                     cartItems?.map((cartItem) => (
                         <li key={cartItem.id} className="inline-flex items-center border-b py-3 border-gray-300 justify-between w-full text-sm text-gray-400">
                             <span className="flex gap-2 items-center"><Image style={'!h-16 !w-16'} src={cartItem?.item.imageUrl} />{cartItem?.item.name} <span className="text-[#fdb750]">x {cartItem?.quantity}</span></span>
-                        
+
                             <span className=""><Euro />{cartItem?.item.price}</span></li>
                     ))
                 }
             </ul>
             <div>
-                <p className="text-lg font-semibold mt-4"><span>Total</span> <span><Euro />{cartItems?.length > 1 ? cartItems?.reduce((prevItem, nextItem)=> (Number(prevItem?.item?.price || 0) 
-                * Number(prevItem?.quantity || 0)) + (Number(nextItem?.item?.price || 0) * Number(nextItem?.quantity || 0))): cartItems?.length && (Number(cartItems[0].item.price) * (cartItems[0].quantity))}</span></p>
+                <div className="flex justify-between text-gray-600">
+                    <span className="">Shipping Charge</span>
+                    <span>
+                        {deliveryDetails?.deliveryMethod == "delivery"  && shippingChargeLoading && "Calculating…"}
+                        {deliveryDetails?.deliveryMethod == "delivery" && !shippingChargeLoading && shippingChargeResponse && (
+                            <>
+                                <Euro />{shippingChargeResponse?.amount_with_tax?.toFixed(2)}
+                            </>
+                        )}
+                        {(deliveryDetails?.deliveryMethod == "pickup" || (!shippingChargeLoading && !shippingChargeResponse)) && "0"}
+                    </span>
+                </div>
+                <p className="text-lg font-semibold mt-4 flex gap-4 items-center"><span>Total</span><span><Euro />{cartTotal}</span></p>
+
             </div>
         </div>
     )

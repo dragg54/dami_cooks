@@ -6,7 +6,7 @@ import Slider from "../Slider"
 const Hero = () => {
   const [activeIndex, setActiveIndex] = useState(0)
 
-  const images = ["/images/cuisine.png", "/images/jollof.png", "/images/hero3.png"]
+  const images = ["/images/semo.png", "/images/jollof.png", "/images/hero3.png"]
   const imageCont = images.map((img, index)=>
    ( <Image key={index} style={'!rounded-full'} src={img}/>
   ))

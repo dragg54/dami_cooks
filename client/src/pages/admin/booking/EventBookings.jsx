@@ -1,16 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { FetchAllEventBookings } from "./api/FetchEventBookings"
 import { format } from "date-fns"
 import CustomTable from "@/components/table/Table"
-import EventBookingItems from "./EventBookingItems"
+import EventBookingSummary from "./EventBookingSummary"
 import { useDispatch } from "react-redux"
 import { openModal } from "@/redux/GlobalModalSlice"
+import { readNotifications } from "@/redux/NotificationSlice"
+import { UpdateNotificationStatus } from "./api/UpdateNotificationStatus"
 
 const EventBookings = () => {
     const [debouncedQuery, setDebouncedQuery] = useState("")
     const [size, setSize] = useState(10)
     const [page, setPage] = useState(1)
+    const mutateNotificationStatus = UpdateNotificationStatus()
     const [fetchEnabled, setFetchEnabled] = useState(true)
     const dispatch = useDispatch()
     const [filterValues, setFilterValues] = useState({
@@ -35,9 +38,14 @@ const EventBookings = () => {
         [size, page, debouncedQuery, fetchEnabled]
     )
     const handleOpenModal = (data) => {
-        dispatch(openModal({component: <EventBookingItems {...{data}}/>}))
+        dispatch(openModal({ component: <EventBookingSummary {...{ data }} /> }))
     }
     const { data: items, refetch, isLoading } = FetchAllEventBookings({ filters })
+
+    useEffect(() => {
+        mutateNotificationStatus.mutate()
+        dispatch(readNotifications("order"))
+    }, [])
 
     // ---- PROCESS TABLE DATA ----
     const processedData = items?.rows?.map((d) => ({
@@ -56,7 +64,7 @@ const EventBookings = () => {
         ["Event Location"]: d.eventLocation,
         ["Acknowlegement Url"]: d.eventBookingAcknowlegementUrl,
         ["Event Address"]: d.eventAddress,
-         ["Booking Charge"]: d.bookingCharge,
+        ["Booking Charge"]: d.bookingCharge,
         ["Dietary Requirements"]: d.dietaryRequirements,
         ["Food Package References"]: d.foodPackageReferences,
         "Created At": format(new Date(d.createdAt), "dd-MM-yyyy HH:mm"),

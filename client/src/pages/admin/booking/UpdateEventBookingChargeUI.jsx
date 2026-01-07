@@ -58,7 +58,7 @@ const UpdateEventBookingChargeUI = () => {
   const handleSubmit = (values, resetForm) => {
     values.bookingItems = bookingItems
     values.eventBookingId = booking.id
-    mutate(values)
+    mutate({...values, bookingStatus: "quote_computed"})
   }
 
   const onSave = (charge, bookingItems) =>{

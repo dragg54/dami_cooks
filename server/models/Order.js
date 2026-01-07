@@ -16,6 +16,10 @@ export const Order = db.define("order", {
       type: DataTypes.STRING,
       unique: true
     },
+    deliveryMethod:{
+      type: DataTypes.ENUM("pickup", "delivery"),
+      defaultValue: "delivery"
+    },
     amount: {
       type: DataTypes.INTEGER
     }

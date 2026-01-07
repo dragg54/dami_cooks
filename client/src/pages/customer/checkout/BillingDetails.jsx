@@ -2,10 +2,11 @@
 import TextInput from "../../../components/input/TextInput"
 import * as Yup from 'yup'
 import { Form, Formik } from "formik"
+import { useState } from "react"
 
 const BillingDetails = ({ deliveryDetails, setDeliveryDetails }) => {
 
-   const validationSchema = Yup.object({
+  const validationSchema = Yup.object({
     firstName: Yup.string().required('First name is required'),
     lastName: Yup.string().required('Last name is required'),
     phone: Yup.string().required('Phone is required'),
@@ -16,10 +17,10 @@ const BillingDetails = ({ deliveryDetails, setDeliveryDetails }) => {
   })
 
   const handleChange = (e) => {
-    setDeliveryDetails({...deliveryDetails, [e.target.name]: e.target.value})
+    setDeliveryDetails({ ...deliveryDetails, [e.target.name]: e.target.value })
   }
 
-
+const isPickup = deliveryDetails?.deliveryMethod === 'pickup'
   return (
     <div className="w-full bg-white md:w-1/2 mt-10 h-full md:mb-40 md:mr-8 border border-gray-300 shadow-md shadow-gray-300 rounded-md p-4 md:p-6">
       <h1 className=" font-semibold text-2xl my-2 border-b w-full pb-2 mb-2">Billing Details</h1>
@@ -61,28 +62,61 @@ const BillingDetails = ({ deliveryDetails, setDeliveryDetails }) => {
                 onChange={(e) => handleChange(e)}
               />
             </div>
-            <div className="w-full mb-3">
-              <TextInput
-                label={'Postal Code'}
-                name={'postalCode'}
-                value={deliveryDetails?.postalCode}
-                onChange={(e) => handleChange(e)}
-              />
+            <div className="mb-6">
+              <p className="font-medium mb-2">Delivery Method</p>
+
+              <div className="flex gap-6">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="deliveryMethod"
+                    value="pickup"
+                    checked={deliveryDetails?.deliveryMethod === 'pickup'}
+                    onChange={handleChange}
+                  />
+                  <span>Pickup</span>
+                </label>
+
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="deliveryMethod"
+                    value="delivery"
+                    checked={deliveryDetails?.deliveryMethod === 'delivery'}
+                    onChange={handleChange}
+                  />
+                  <span>Home delivery</span>
+                </label>
+              </div>
             </div>
-            <div className="w-full mb-3">
+
+            <div className={`w-full mb-3 ${isPickup ? 'opacity-50' : ''}`}>
               <TextInput
-                label={'Delivery Address'}
-                name={'address'}
+                label="Delivery Address"
+                name="address"
                 value={deliveryDetails?.address}
-                onChange={(e) => handleChange(e)}
+                onChange={handleChange}
+                disabled={isPickup}
               />
             </div>
-            <div className="w-full mb-3">
+
+            <div className={`w-full mb-3 ${isPickup ? 'opacity-50' : ''}`}>
               <TextInput
-                label={'Town/City'}
-                name={'city'}
+                label="Postal Code"
+                name="postalCode"
+                value={deliveryDetails?.postalCode}
+                onChange={handleChange}
+                disabled={isPickup}
+              />
+            </div>
+
+            <div className={`w-full mb-3 ${isPickup ? 'opacity-50' : ''}`}>
+              <TextInput
+                label="Town / City"
+                name="city"
                 value={deliveryDetails?.city}
-                onChange={(e) => handleChange(e)}
+                onChange={handleChange}
+                disabled={isPickup}
               />
             </div>
           </Form>)

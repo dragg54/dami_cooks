@@ -63,7 +63,7 @@ const OrderList = () => {
 
   useEffect(()=>{
     mutateNotificationStatus.mutate()
-    dispatch(readNotifications())
+    dispatch(readNotifications("order"))
   },[])
 
   return (

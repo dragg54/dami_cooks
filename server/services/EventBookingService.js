@@ -17,7 +17,7 @@ class EventBookingService {
 
     static async createEventBooking(data, transaction) {
         data.bknId = generateCd("BKN")
-        await EventBooking.create(data);
+        await EventBooking.create(data, {transaction});
         await Notification.create({
             read: false,
             message: `You have a new booking`,
@@ -28,7 +28,12 @@ class EventBookingService {
     static async getAllEventBookings(req) {
         const { page, size, status, searchText, name, email } = req.query;
         const { limit, offset } = getPagination(page, size);
+        const queryOpts = {where: {}}
+        if(status){
+            queryOpts.where = {...queryOpts.where, status}
+        }
         const bookings = await EventBooking.findAndCountAll({
+            ...queryOpts,
             limit,
             offset,
         });
@@ -58,7 +63,7 @@ class EventBookingService {
         }, { where: { id }, transaction })
         const user = await User.findByPk(userId)
         const userNames = existingBooking.dataValues.firstName + " " + existingBooking.dataValues.lastName
-        const customerEventBookingLink = EventBookingService.clientUrl + `/eventBooking/${id}/quotation-acknowlegement/${existingBooking.userId}`
+        const customerEventBookingLink = EventBookingService.clientUrl + `/eventBooking/${id}/quotation-acknowlegement/${existingBooking.dataValues.userId}`
         await EventBookingItem.destroy({ where: { eventBookingId: id }, transaction })
         await EventBookingItem.bulkCreate(bookingItems, { transaction })
         await sendBookingQuotationAcknowlegementMail(userNames, customerEventBookingLink, existingBooking.dataValues.email)

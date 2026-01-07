@@ -1,0 +1,169 @@
+/* eslint-disable react/prop-types */
+import { CardCvcElement, CardExpiryElement, CardNumberElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import { useNavigate } from 'react-router-dom'
+import { FaCreditCard } from "react-icons/fa";
+import { Button } from "../../../components/button/Button";
+import { useDispatch } from "react-redux";
+import { clearCart } from "../../../redux/CartSlice";
+import { useState } from "react";
+// import PaymentFailed from "./PaymentFailed";
+
+function PaymentForm({ clientSecret, deliveryDetails, shippingChargeResponse }) {
+    const stripe = useStripe();
+    const elements = useElements();
+    const navigate = useNavigate()
+    const [paymentIntentLoading, setPaymentIntentLoading] = useState(false)
+    const dispatch = useDispatch()
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        setPaymentIntentLoading(true)
+        const cardElement = elements.getElement(CardNumberElement);
+        if (!cardElement) {
+            return;
+        }
+        try {
+            const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
+                payment_method: {
+                    card: cardElement,
+                    billing_details: {
+                        name: `${deliveryDetails?.firstName} ${deliveryDetails?.lastName}`,
+                        phone: deliveryDetails?.phone,
+                        address: {
+                            line1: deliveryDetails?.address || "",
+                            line2: "",
+                            city: deliveryDetails?.city || "",
+                            state: "",
+                            postal_code: deliveryDetails?.postalCode || "",
+                            country: "GB",
+                        },
+                    }
+                },
+                shipping: {
+                    name: `${deliveryDetails?.firstName} ${deliveryDetails?.lastName}`,
+                    phone: deliveryDetails?.phone,
+                    address: {
+                        line1: deliveryDetails?.address || "",
+                        line2: "",
+                        city: deliveryDetails?.city || "",
+                        state: "",
+                        postal_code: deliveryDetails?.postalCode || "",
+                        country: "GB",
+                    }
+                },
+            });
+
+            if (paymentIntent && paymentIntent.status == "succeeded") {
+                setPaymentIntentLoading(false)
+                navigate("/success", {
+                    state: {
+                        deliveryDetails: {
+                            phone: deliveryDetails?.phone,
+                            address: {
+                                line1: deliveryDetails?.address || "",
+                                line2: "",
+                                city: deliveryDetails?.city || "",
+                                state: "",
+                                postal_code: deliveryDetails?.postalCode || "",
+                                country: "GB",
+                            }
+                        }
+                    }
+                })
+                dispatch(clearCart())
+            }
+            else {
+                setPaymentIntentLoading(false)
+                return (
+                    navigate("payment-failed")
+                )
+            }
+        }
+        catch (err) {
+            console.log(err.message)
+        }
+    };
+
+    return (
+        <form style={{
+            maxWidth: "100%",
+            margin: "auto",
+            display: "flex",
+            flexDirection: "column",
+            gap: "20px"
+        }} onSubmit={handleSubmit}>
+            <div className="mt-1 w-full" style={{ display: "flex", justifyContent:"", flexDirection: "row", flexWrap: "wrap", gap: "0px 10px" }}>
+                <div className="relative mt-4 w-[47%] md:w-[30%]">
+                    <label className="text-medium text-gray-800">Card Details</label>
+                    <div className="border border-gray-400 p-2 mt-2 relative">
+                        <CardNumberElement
+                            options={{
+                                style: {
+                                    base: {
+                                        border: "1px solid #747474",
+                                        fontSize: "13px",
+                                        color: "#212529",
+                                        "::placeholder": { color: "#888" },
+                                    },
+                                    invalid: { color: "#dc3545" },
+                                },
+                            }}
+                        />
+                    </div>
+                    <FaCreditCard className="absolute  right-1 -top-1/4 h-full text-lg text-gray-800 translate-y-1/2" />
+                </div>
+
+                <div className="mt-4  w-[47%] md:w-[30%]">
+                    <label className="text-medium text-gray-800">Expiry Date</label>
+                    <div className="border border-gray-400 p-2 mt-2 relative">
+                        <CardExpiryElement
+                            options={{
+                                style: {
+                                    base: {
+                                        fontSize: "13px",
+                                        color: "#212529",
+                                        "::placeholder": { color: "#888" },
+                                    },
+                                    invalid: { color: "#dc3545" },
+                                },
+                            }}
+                        />
+                    </div>
+                </div>
+
+                <div className="mt-4  w-[47%] md:w-[30%]">
+                    <label className="text-medium text-gray-800">CVC</label>
+                    <div className="border border-gray-400 p-2 mt-2">
+                        <CardCvcElement
+                            options={{
+                                style: {
+                                    base: {
+                                        fontSize: "13px",
+                                        color: "#212529",
+                                        "::placeholder": { color: "#888" },
+                                    },
+                                    invalid: { color: "#dc3545" },
+                                },
+                            }}
+                        />
+                    </div>
+                </div>
+            </div>
+            <p className="text-gray-800 text-medium mt-3 w-[90%]">
+                Your personal data will be used to process your order, support your experience throughout this website,
+                and for other purposes described in our privacy policy.
+            </p>
+            <div className="w-full flex justify-end gap-3">
+                <Button
+                    className={'!rounded-lg !scroll-py-3 !w-28 !bg-gray-100 !text-gray-800 !border-gray-500'}>
+                    Cancel
+                </Button>
+                <Button
+                    className={'!rounded-lg !py-3 !w-28'} isLoading={paymentIntentLoading}>
+                    Pay
+                </Button>
+            </div>
+        </form>
+    );
+}
+
+export default PaymentForm

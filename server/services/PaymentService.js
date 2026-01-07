@@ -282,7 +282,7 @@ async function processBookingPayment(req, transaction) {
 }
 
 async function processOrderPayment(req, transaction) {
-    const { items, idempotencyKey, shipping } = req.body;
+    const { items, idempotencyKey, shipping, deliveryMethod } = req.body;
     const userCart = await Cart.findOne({ where: { userId: req.user.id } })
     if (!userCart) {
         throw new BadRequestError("Cart does not exist for this user")
@@ -338,6 +338,7 @@ async function processOrderPayment(req, transaction) {
         let newOrder = await Order.create({
             orderCd: orderCd,
             idempotencyKey,
+            deliveryMethod,
             orderedBy: req.user.id, amount: totalCartItemAmount, userId: req.user.id,
             cartId: userCart.id
         }, { transaction });
