@@ -66,7 +66,7 @@ class EventBookingService {
         const customerEventBookingLink = EventBookingService.clientUrl + `/eventBooking/${id}/quotation-acknowlegement/${existingBooking.dataValues.userId}`
         await EventBookingItem.destroy({ where: { eventBookingId: id }, transaction })
         await EventBookingItem.bulkCreate(bookingItems, { transaction })
-        await sendBookingQuotationAcknowlegementMail(userNames, customerEventBookingLink, existingBooking.dataValues.email)
+        // await sendBookingQuotationAcknowlegementMail(userNames, customerEventBookingLink, existingBooking.dataValues.email)
     }
 
     static async getEventBookingItems(req) {
