@@ -147,7 +147,7 @@ const EventForm = () => {
             className="!w-full !bg-white !border-none !outline-none"
           >
             <option value="">Select Event Type</option>
-            <option value="Marriage">Marriage</option>
+            <option value="Marriage">Wedding</option>
             <option value="Naming">Naming</option>
             <option value="Birthday">Birthday Party</option>
            <option value="Corporate">Corporate Event</option>
