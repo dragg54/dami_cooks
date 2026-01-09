@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { Router } from 'express'
 import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
 import { userRouter } from './routes/UserRoute.js'
@@ -87,7 +87,8 @@ app.use("/api/v1/customers", customerRouter)
 app.use("/api/v1/eventBookings", eventBookingRoute)
 app.use("/api/v1/shippings", shippingRoute)
 
-app.post("/sendMail", async (req, res) =>{
+const router = Router()
+router.post("/sendMail", async (req, res) =>{
    await sendEmail("ajibolasadiq@yahoo.com", "Dami Cooks", "Testing email")
 })
 
