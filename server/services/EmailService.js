@@ -10,11 +10,11 @@ export async function sendEmail(recipient, subject, message, attachment) {
   console.log(process.env.MERCHANT_GMAIL)
   console.log(process.env.GMAIL_PASSWORD)
 
-  const resend = new Resend('re_ceAdAezz_6h9NN6jC841d2CbNTRSPxVRv');
+  const resend = new Resend(process.env.RESEND_API_KEY);
 
   try{
      const { data, error } = await resend.emails.send({
-      from: 'Acme <onboarding@resend.dev>', // Use this for testing
+      from: 'DamiCooks <onboarding@resend.dev>', // Use this for testing
       to: "damicooks25@gmail.com",
       subject: "Testing Email",
       html: "<p>Hello Dami Cooks</p>",
