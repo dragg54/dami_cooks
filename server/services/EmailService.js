@@ -8,7 +8,7 @@ export async function sendEmail(recipient, subject, message, attachment) {
   console.log(process.env.MERCHANT_GMAIL)
   console.log(process.env.GMAIL_PASSWORD)
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+   host: "smtp.gmail.com",
     port: 587,
     secure: false,
     auth: {
@@ -16,8 +16,13 @@ export async function sendEmail(recipient, subject, message, attachment) {
       pass: process.env.GMAIL_PASSWORD
     },
     tls: {
-    rejectUnauthorized: false // may help with some connection issues
-  }
+      rejectUnauthorized: false,
+      minVersion: 'TLSv1.2'
+    },
+    connectionTimeout: 10000,
+    socketTimeout: 10000,
+    debug: true,
+    logger: true
   });
 
   const mailOptions = {
