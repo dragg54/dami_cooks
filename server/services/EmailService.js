@@ -5,6 +5,8 @@ import { InternalServerError } from '../exceptions/InternalServerError.js';
 dotenv.config()
 
 export async function sendEmail(recipient, subject, message, attachment) {
+  console.log(process.env.MERCHANT_GMAIL)
+  console.log(process.env.GMAIL_PASSWORD)
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {

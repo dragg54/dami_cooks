@@ -241,7 +241,7 @@ export const getTotalRevenue = async (req) => {
 
 async function processBookingPayment(req, transaction) {
     const {bookingId, idempotencyKey} = req.body
-    const existingBooking = await EventBooking.findOne({
+    let existingBooking = await EventBooking.findOne({
         where: {
             id: bookingId
         },
@@ -278,6 +278,8 @@ async function processBookingPayment(req, transaction) {
         }, { transaction })
 
     }
+    existingBooking.idempotencyKey = idempotencyKey
+    existingBooking.save()
     return { clientSecret: paymentIntent.client_secret };
 }
 

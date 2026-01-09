@@ -17,7 +17,7 @@ class EventBookingService {
 
     static async createEventBooking(data, transaction) {
         data.bknId = generateCd("BKN")
-        await EventBooking.create(data, {transaction});
+        await EventBooking.create({...data, userId: req.user.id}, {transaction});
         await Notification.create({
             read: false,
             message: `You have a new booking`,
@@ -121,7 +121,6 @@ class EventBookingService {
                 }, { where: { id } })
 
         }
-
     }
 }
 
