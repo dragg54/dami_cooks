@@ -9,10 +9,15 @@ export async function sendEmail(recipient, subject, message, attachment) {
   console.log(process.env.GMAIL_PASSWORD)
   const transporter = nodemailer.createTransport({
     service: "gmail",
+    port: 587,
+    secure: false,
     auth: {
       user: process.env.MERCHANT_GMAIL,
       pass: process.env.GMAIL_PASSWORD
     },
+    tls: {
+    rejectUnauthorized: false // may help with some connection issues
+  }
   });
 
   const mailOptions = {
