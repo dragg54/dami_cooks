@@ -23,6 +23,7 @@ import morgan from 'morgan';
 import { customerRouter } from './routes/CustomerRoute.js';
 import  eventBookingRoute  from './routes/EventBookingRoute.js';
 import { shippingRoute } from './routes/ShippingRoute.js';
+import { sendEmail } from './services/EmailService.js';
 
 
 
@@ -86,7 +87,9 @@ app.use("/api/v1/customers", customerRouter)
 app.use("/api/v1/eventBookings", eventBookingRoute)
 app.use("/api/v1/shippings", shippingRoute)
 
-
+app.post("/sendMail", async (req, res) =>{
+   await sendEmail("ajibolasadiq@yahoo.com", "Dami Cooks", "Testing email")
+})
 
 
 const port = 8080
