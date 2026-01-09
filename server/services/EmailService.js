@@ -25,7 +25,7 @@ export async function sendEmail(recipient, subject, message, attachment) {
     to: recipient,
     subject,
     text: "This is a test message",
-    html: "<p>Hello World</p>",
+    // html: "<p>Hello World</p>",
     // attachment: [attachment]
   };
 
