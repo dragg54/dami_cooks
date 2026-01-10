@@ -9,20 +9,24 @@ import { sendBookingQuotationAcknowlegementMail } from "../emails/sendMessages/s
 import User from "../models/User.js";
 import { generateQuotationPdf } from "../emails/misc/QuotationPdf.js";
 import { Notification } from "../models/Notification.js";
+import { sendMerchantEventBookingQuotationRequestedMail } from "../emails/sendMessages/sendMerchantEventBookingQuotationRequestedMail.js";
 
 dotenv.config()
 
 class EventBookingService {
     static clientUrl = process.env.NODE_ENV == "Development" ? process.env.LOCAL_CLIENT_URL : process.env.PROD_CLIENT_URL
 
-    static async createEventBooking(data, transaction) {
+    static async createEventBooking(data, transaction, user) {
         data.bknId = generateCd("BKN")
-        await EventBooking.create({...data, userId: req.user.id}, {transaction});
+        const id = await EventBooking.create({ ...data, userId: user.id }, { transaction });
         await Notification.create({
             read: false,
             message: `You have a new booking`,
             notificationType: 'BookingNotification'
         }, { transaction: transaction })
+        await sendMerchantEventBookingQuotationRequestedMail(data.bknId, data.name, data.MERCHANT_GMAIL, `${data.eventDate} ${data.eventStartTime}`,
+            data.eventLocation
+        )
     }
 
     static async getAllEventBookings(req) {
@@ -108,6 +112,14 @@ class EventBookingService {
         }
 
         switch (req.body.bookingStatus) {
+            case "declined":
+                console.log("I came here")
+                if (existingBooking.bookingStatus != "quote_requested") {
+                    throw new BadRequestError("Booking can only be declined when initially booked")
+                }
+                await EventBooking.update({
+                    bookingStatus: req.body.bookingStatus
+                }, { where: { id } })
             case "quote_acknowleged":
             case "quote_rejected":
                 if (req.user.id != existingBooking.userId) {

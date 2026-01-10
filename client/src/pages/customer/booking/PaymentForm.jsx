@@ -19,7 +19,7 @@ function PaymentForm({ clientSecret, deliveryDetails, shippingChargeResponse }) 
         setPaymentIntentLoading(true)
         const cardElement = elements.getElement(CardNumberElement);
         if (!cardElement) {
-            return;
+            return
         }
         try {
             const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {

@@ -1,22 +1,40 @@
 /* eslint-disable react/prop-types */
-import React from 'react'
-import { useLocation } from 'react-router-dom'
+import React, { useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { format, formatDate, parse } from 'date-fns'
 import { FetchAllEventBookingItems } from './api/FetchEventBookingItems'
 import { Euro } from '@/constants/Currency'
 import { RiFileList2Line } from "react-icons/ri";
+import { CopyButton } from '@/components/button/CopyButton'
+import { Button } from '@/components/button/Button'
+import { closeModal, openModal } from '@/redux/GlobalModalSlice'
+import { useDispatch } from 'react-redux'
+import { TbPlaylistX } from "react-icons/tb";
+import DeclineBooking from './DeclineBooking'
+import { PiLink } from "react-icons/pi";
 
 
 const EventBookingSummary = ({ data }) => {
   const location = useLocation()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [responseStatus, setResponseStatus ] = useState()
   const { data: items, refetch, isLoading } = FetchAllEventBookingItems({ id: data.data.id, filters: {} })
+
   if (!data) return <div className="text-center mt-10">No data selected</div>
 
   // Calculate total price of all items
   const totalPrice = items?.reduce((acc, item) => acc + item.totalPrice, 0) || 0
-
+  const handleUpdateBookingStatus = (status) =>{
+    if(status == "declined"){
+        dispatch(openModal({component: <DeclineBooking {...{id: data.data.id}}/>}))
+    }
+    else{
+      navigate("/eventBooking", {state: {data}})
+    }
+  }
   return (
-    <div className="w-4/5 mx-auto bg-white rounded-lg shadow-md shadow-gray-300 p-6 mt-6 relative"
+    <div onClick={(e) => e.stopPropagation()} className="w-4/5 mx-auto bg-white rounded-lg shadow-md shadow-gray-300 p-6 mt-6 relative"
       style={{
         backgroundImage: "url('/images/logo.png')",
         backgroundSize: "contain",
@@ -57,7 +75,9 @@ const EventBookingSummary = ({ data }) => {
 
         {/* data Items Table */}
         <h2 className="text-lg font-semibold mb-2">Booking Items</h2>
-        <div className="border border-gray-200 max-h-[200px] overflow-y-auto">
+         {
+          items && items.length > 0 ? 
+          <div className="border border-gray-200 max-h-[200px] overflow-y-auto">
           <table className="w-full table-fixed border-collapse">
             <colgroup>
               <col className="w-1/4" />
@@ -101,8 +121,33 @@ const EventBookingSummary = ({ data }) => {
               </tr>
             </tfoot>
           </table>
+        </div>:
+         <div className=''>
+          <p className='text-gray-400'>No item quotation yet.</p>
         </div>
-          <p className='mt-3 text-red-700 font-semibold'>Event Link: <span className='underline'>{items && items[0]?.eventBooking?.eventBookingAcknowlegementUrl}</span></p>
+         }
+        <div className='flex justify-between'>
+          <p className='mt-3 text-red-700 font-semibold flex items-center gap-2'>
+            Event Link <PiLink />:
+            <span className='flex gap-2 items-center'>
+              <span className={`${(items && items[0]?.eventBooking?.eventBookingAcknowlegementUrl) && 'underline'} flex gap-x-3 items-center`}>{(items && items[0]?.eventBooking?.eventBookingAcknowlegementUrl) || "No event link generated."}</span>
+              <span className='text-gray-900'>
+                {items && items[0]?.eventBooking?.eventBookingAcknowlegementUrl && <CopyButton text={items && items[0]?.eventBooking?.eventBookingAcknowlegementUrl} />}
+              </span>
+            </span>
+          </p>
+          <div className="flex gap-2 mt-6">
+            <Button
+               disabled = {data.data["Booking Status"] != "quote_requested"}
+               onClick={() => {
+               handleUpdateBookingStatus("declined")
+            }} className={'!bg-gray-100 border !border-gray-500 !text-gray-600'}>Decline</Button>
+            <Button
+             disabled = {data.data["Booking Status"] != "quote_requested"}
+              onClick={() => handleUpdateBookingStatus("accepted")}
+              className={'bg-gray-600'}>Accept</Button>
+          </div>
+        </div>
       </div>
     </div>
   )

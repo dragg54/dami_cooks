@@ -57,7 +57,7 @@ const EventBooking = sequelize.define("eventBooking", {
         allowNull: false,
     },
     bookingStatus: {
-        type: DataTypes.ENUM("quote_requested", "quote_computed", "quote_acknowleged","quote_rejected", "booked", "completed", "postponed"),
+        type: DataTypes.ENUM("quote_requested", "declined", "quote_computed", "quote_acknowleged","quote_rejected", "booked", "completed", "postponed"),
         defaultValue: "quote_requested"
       },
     eventBookingAcknowlegementUrl:{

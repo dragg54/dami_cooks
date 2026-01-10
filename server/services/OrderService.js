@@ -395,7 +395,7 @@ export const cancelOrder = async (req, transaction) => {
         }
         await refundPayment(refundPaymentRequest, transaction)
         await Order.update({ status }, { where: { id } }, { transaction })
-        // await sendMerchantOrderCancelledMail(existingOrder.dataValues.orderCd, customer.dataValues?.firstName, process.env.MERCHANT_GMAIL)
+        await sendMerchantOrderCancelledMail(existingOrder.dataValues.orderCd, customer.dataValues?.firstName, process.env.MERCHANT_GMAIL)
     }
     catch (ex) {
         console.log(ex)

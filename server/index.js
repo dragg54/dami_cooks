@@ -39,7 +39,6 @@ app.use((req, res, next) => {
     express.json()(req, res, next);
   }
 });
-
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
 app.use(morgan('dev'));
@@ -87,11 +86,6 @@ app.use("/api/v1/customers", customerRouter)
 app.use("/api/v1/eventBookings", eventBookingRoute)
 app.use("/api/v1/shippings", shippingRoute)
 
-app.post("/sendMail", async(req, res) =>{
-   await sendEmail("ajibolasadiq@yahoo.com", "Dami Cooks", "Testing email")
-   return res.json("Message sent")
-})
-   
 const port = 8080
 const io = init(server, corsOptions)
 

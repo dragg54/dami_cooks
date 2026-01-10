@@ -6,7 +6,7 @@ class EventBookingController {
     static async createBooking(req, res) {
         const transaction = await db.transaction()
         try {
-            const booking = await EventBookingService.createEventBooking(req.body);
+            const booking = await EventBookingService.createEventBooking(req.body, transaction, req.user);
             await transaction.commit()
             res.status(201).json({ message: "Booking created successfully", booking });
         } catch (error) {

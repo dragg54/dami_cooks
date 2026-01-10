@@ -37,7 +37,7 @@ export const Header = ({ setNavIsOpen, setCartOpen, setUserAccountOpen, setOpenL
       cartItemMutation.mutate({ cartItems: parsedItems })
     }
     dispatch(fetchToCart({ items: user?.isLoggedIn ? data : JSON.parse(localStorage.getItem("cartItems")) }))
-  }, [data, isLoading, user])
+  }, [data, isLoading, user.isLoggedIn])
   return (
     <div className='h-16 bg-white flex md:px-16 justify-between items-center p-4 w-full border-b shadow-gray-300'>
       <div className="md:w-[56px] w-[44px] h-[44px]  object-cover border-red-600 md:h-[56px] overflow-hidden flex justify-center items-center">

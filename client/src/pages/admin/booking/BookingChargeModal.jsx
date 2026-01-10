@@ -47,7 +47,7 @@ const BookingChargeModal = ({ onSave, booking }) => {
   if (!open) return null
 
   return (
-    <div className=" bg-white !w-[700px]  md:w-[550px] rounded-lg p-7 shadow-xl  flex items-center justify-center z-50" onClick={(e)=>e.stopPropagation()}>
+    <div onClick={(e) => e.stopPropagation()} className=" bg-white !w-[700px]  md:w-[550px] rounded-lg p-7 shadow-xl  flex items-center justify-center z-50" onClick={(e)=>e.stopPropagation()}>
       <div className="bg-white ">
         <h2 className="text-xl font-semibold">
           Booking Charges 

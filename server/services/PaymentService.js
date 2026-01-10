@@ -22,6 +22,7 @@ import { sendMerchantOrderPlacedMail } from '../emails/sendMessages/SendMerchant
 import { sendCustomerPaymentRefundedMail } from '../emails/sendMessages/SendCustomerPaymentRefundedMail.js'
 import User from '../models/User.js'
 import { sendCustomerPaymentRefundProcessingMail } from '../emails/sendMessages/SendCustomerPaymentRefundedProcessingMail.js'
+import { sendMerchantEventBookedMail } from '../emails/sendMessages/sendMerchantEventBookedMail.js'
 import { generateCd } from '../utils/generateCd.js'
 import logger from '../configs/logger.js'
 import EventBooking from '../models/EventBooking.js'
@@ -278,8 +279,7 @@ async function processBookingPayment(req, transaction) {
         }, { transaction })
 
     }
-    existingBooking.idempotencyKey = idempotencyKey
-    existingBooking.save()
+    await EventBooking.update({idempotencyKey}, { where:{id: existingBooking.id}, transaction})
     return { clientSecret: paymentIntent.client_secret };
 }
 
@@ -426,13 +426,13 @@ async function processWebhookForOrderPayment(paymentIntent, transaction) {
     //     cartId: userCart.id
     // }})
     sendOrderNotification()
-    // try {
-    //     await sendCustomerOrderPlacedMail(customer?.dataValues?.firstName, orderCd, customer?.dataValues?.email)
-    //     await sendMerchantOrderPlacedMail(orderCd, customer?.dataValues?.firstName, process.env.MERCHANT_GMAIL)
-    // }
-    // catch (exception) {
-    //     console.log(exception)
-    // }
+    try {
+        // await sendCustomerOrderPlacedMail(customer?.dataValues?.firstName, orderCd, customer?.dataValues?.email)
+        await sendMerchantOrderPlacedMail(orderCd, customer?.dataValues?.firstName, process.env.MERCHANT_GMAIL)
+    }
+    catch (exception) {
+        console.log(exception)
+    }
     await transaction.commit()
 }
 
@@ -446,4 +446,13 @@ async function processWebhookForBookingPayment(paymentIntent, transaction) {
     await Payment.update({
         status: paymentIntent.status,
     }, { where: { bookingId: existingBooking.id }, transaction })
+    const customer = await User.findOne({ where: { id: existingBooking.userId }, attributes: ['firstName', "email"] })
+    try {
+        const {bknId, eventLocation, eventDate, eventStartTime } = existingBooking
+        // await sendCustomerOrderPlacedMail(customer?.dataValues?.firstName, orderCd, customer?.dataValues?.email)
+        await sendMerchantEventBookedMail(bknId, customer?.dataValues?.firstName, process.env.MERCHANT_GMAIL, `${eventDate} ${eventStartTime}`, eventLocation)
+    }
+    catch (exception) {
+        console.log(exception)
+    }
 }

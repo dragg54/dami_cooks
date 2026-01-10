@@ -16,7 +16,7 @@ const UpdateEventBookingChargeUI = () => {
   const dispatch = useDispatch()
   const location = useLocation()
   const state = location.state
-  const booking = state?.row
+  const booking = state?.data?.data
   const { mutate, isError, isLoading } = UpdateEventBookingCharge({ setResponseStatus, id:booking.id })
   const validationSchema = Yup.object({
     name: Yup.string().required("Name is required"),

@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux"
 import { openModal } from "@/redux/GlobalModalSlice"
 import { readNotifications } from "@/redux/NotificationSlice"
 import { UpdateNotificationStatus } from "./api/UpdateNotificationStatus"
+import { openPopup } from "@/redux/PopupSlice"
 
 const EventBookings = () => {
     const [debouncedQuery, setDebouncedQuery] = useState("")
@@ -20,9 +21,11 @@ const EventBookings = () => {
         NAME: { id: "name", value: null },
         EMAIL: { id: "email", value: null },
         "EVENT TYPE": { id: "eventType", value: null },
+         "BOOKING STATUS": { id: "bookingStatus", value: null },
         "CATERING TYPE": { id: "cateringType", value: null },
         "EVENT DATE": { id: "eventDate", value: null },
     })
+
 
     const filters = useMemo(
         () => ({
@@ -34,6 +37,7 @@ const EventBookings = () => {
             eventType: filterValues["EVENT TYPE"].value,
             cateringType: filterValues["CATERING TYPE"].value,
             eventDate: filterValues["EVENT DATE"].value,
+             bookingStatus: filterValues["BOOKING STATUS"].value,
         }),
         [size, page, debouncedQuery, fetchEnabled]
     )
@@ -65,6 +69,7 @@ const EventBookings = () => {
         ["Acknowlegement Url"]: d.eventBookingAcknowlegementUrl,
         ["Event Address"]: d.eventAddress,
         ["Booking Charge"]: d.bookingCharge,
+         ["Booking Status"]: d.bookingStatus,
         ["Dietary Requirements"]: d.dietaryRequirements,
         ["Food Package References"]: d.foodPackageReferences,
         "Created At": format(new Date(d.createdAt), "dd-MM-yyyy HH:mm"),
@@ -92,7 +97,7 @@ const EventBookings = () => {
                 isLoading={isLoading}
                 setSize={setSize}
                 showTotal={true}
-                canEdit={true}
+                canEdit={false}
                 updateLink={"/eventBooking"}
                 totalPages={items?.totalPages}
                 setFilterValues={setFilterValues}
