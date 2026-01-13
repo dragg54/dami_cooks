@@ -5,4 +5,4 @@ import { getAdminSettings, updateAdminSettings } from '../controllers/AdminSetti
 export const adminSettingRoute = Router()
 
 adminSettingRoute.put("/", authMiddleware, updateAdminSettings)
-adminSettingRoute.get("/", authMiddleware, getAdminSettings)
+adminSettingRoute.get("/", getAdminSettings)

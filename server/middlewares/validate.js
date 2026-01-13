@@ -5,11 +5,9 @@ import dotenv  from 'dotenv'
 dotenv.config()
 export const authMiddleware = async (req, res, next) => {
   let token = req.cookies.token;
-  console.log("cookie token", token)
   if(!token){
     const authHeader = req.headers['authorization'];
     token = authHeader && authHeader.split(' ')[1];
-    console.log("header token", token)
   }
   if (!token) {
     return res.status(401).json({ error: 'Unauthorized' });
