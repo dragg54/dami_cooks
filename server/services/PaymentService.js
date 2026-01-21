@@ -340,7 +340,7 @@ async function processOrderPayment(req, transaction) {
                         amount: Math.round(totalCartItemAmount) +
                             Math.round((deliveryMethod === "pickup" ? 0 : (shipping?.amount_with_tax || 0)))
                     },
-                    { where: { id: existingPayment.id } }
+                    { where: { id: existingPayment.id }, transaction }
                 )
                 return {
                     clientSecret: paymentIntent.client_secret,
@@ -417,7 +417,7 @@ async function processOrderPayment(req, transaction) {
                                 amount: Math.round(totalCartItemAmount * 100) +
                                     Math.round((deliveryMethod === "pickup" ? 0 : (shipping?.amount_with_tax || 0)) * 100)
                             },
-                            { where: { id: existingPayment.id } }
+                            { where: { id: existingPayment.id }, transaction }
                         )
                         return {
                             clientSecret: paymentIntent.client_secret,
