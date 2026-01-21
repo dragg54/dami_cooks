@@ -24,6 +24,9 @@ const Orders = ({ userOrdersOpened, setUserOrdersOpened }) => {
     const [userOrderView, setUserOrderView] = useState("ORDERS")
     const user = useSelector(state => state.user)?.user
     const { data: orders, refetch, isLoading } = FetchUserOrder({ filters: { customerId: user.id, size } })
+    useEffect(() =>{
+        refetch()
+    }, [])
     useEffect(() => {
         setSize(5)
         setUserOrderView("ORDERS")
@@ -77,7 +80,7 @@ const Orders = ({ userOrdersOpened, setUserOrdersOpened }) => {
                                                 {format(new Date(order.createdAt), 'dd-MMM-yyyy')}</div>
 
                                             <div className={`py-1 rounded-lg `}>
-                                            <span className={`text-sm ${order?.status == "PENDING" ?
+                                            <span className={`text-sm ${order?.status == "PLACED" ?
                                                  'text-orange-500' : order?.status == "CONFIRMED" || order?.status == "SHIPPED" ?
                                                   "text-green-700" : "text-red-700"}`}>{order?.status}</span>                                           
                                             </div>

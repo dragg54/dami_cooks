@@ -84,7 +84,6 @@ export const loginUser = async (req) => {
 }
 
 export const updateUser = async (req) => {
-    console.log(req.body)
     const { id } = req.params
     const user = await User.findOne({ where: { id } })
     if (!user) {

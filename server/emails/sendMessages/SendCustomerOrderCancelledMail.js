@@ -6,11 +6,12 @@ const __dirname = path.dirname(__filename);
 import { sendEmail } from '../../services/EmailService.js';
 
 
-export async function sendCustomerOrderCancelledMail(orderId, customerName, recipient){
-    const html = fs.readFileSync(path.join(__dirname, '../templates/CustomerOrderCANCELLED.html'), 'utf8');
+export async function sendCustomerOrderCancelledMail(orderId, customerName, recipient, cancellationTime){
+    const html = fs.readFileSync(path.join(__dirname, '../templates/CustomerOrderCancelled.html'), 'utf8');
     const emailHtml = html
       .replace('{{customerName}}', customerName)
       .replace('{{orderId}}', orderId)
+      .replaceAll('{{cancellationTime}}', cancellationTime)
    await sendEmail(recipient, "Order Cancelled", emailHtml)
 }
 

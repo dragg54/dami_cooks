@@ -12,5 +12,5 @@ export async function sendCustomerPaymentRefundedMail(customerName, paymentId, a
           .replace('{{paymentId}}', paymentId)
           .replace('{{cardInfo}}', cardInfo)
           .replace('{{amount}}', amount)
-        await sendEmail(recipient, "Payment Refunded", emailHtml)
+        await sendEmail(recipient, "Payment Refunded", emailHtml, null)
 }

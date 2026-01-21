@@ -76,7 +76,6 @@ export const paymentWebhook = async (req, res) => {
         const event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
         const paymentIntent = event.data.object;
         const { orderCd, bookingCd } = paymentIntent.metadata
-        console.log("bookingCd", bookingCd)
         if (event.type === "payment_intent.succeeded") {
             if (orderCd) {
                 await processWebhookForOrderPayment(paymentIntent, transaction)
@@ -87,12 +86,24 @@ export const paymentWebhook = async (req, res) => {
 
         }
         if (event.type == "charge.refunded") {
-            await sendCustomerPaymentRefundedMail(paymentIntent.billing_details.name, paymentIntent.payment_intent, paymentIntent.amount, `XXXXXXXXXXXXX${paymentIntent.payment_method_details?.card?.last4, paymentIntent}`)
+            const { orderedBy } = paymentIntent.metadata
+            const order = await Order.findOne({
+                where: { userId: orderedBy },
+                include: [
+                    {
+                        model: User,
+                        attributes: ["firstName", "lastName", "email"]
+                    }
+                ]
+            })
+            if(!order){
+                throw new Error("Process charge refund failed: Order not found")
+            }
+            await sendCustomerPaymentRefundedMail(`${order.dataValues.user.firstName} ${order.dataValues.user.lastName}`, paymentIntent.payment_intent, paymentIntent.amount/100, `XXXXXXXXXXXXX${paymentIntent.payment_method_details?.card?.last4}`, order.dataValues.user.email)
             await Payment.update({
                 status: "refunded"
             }, { where: { gatewayPaymentId: paymentIntent.payment_intent } }, { transaction });
         }
-
         await transaction.commit()
     }
     catch (err) {
@@ -311,11 +322,12 @@ async function processOrderPayment(req, transaction) {
                 const paymentIntent = await stripe.paymentIntents.retrieve(
                     existingPayment.gatewayPaymentId);
                 await stripe.paymentIntents.update(existingPayment.gatewayPaymentId, {
-                    amount: ((totalCartItemAmount) + (shipping?.amount_with_tax || 0)) * 100,
+                    amount: Math.round(totalCartItemAmount * 100) +
+                        Math.round((deliveryMethod === "pickup" ? 0 : (shipping?.amount_with_tax || 0)) * 100),
                     metadata: {
                         orderCd: existingOrder.orderCd,
                         orderedBy: req.user.id,
-                        shippingAmount: shipping?.amount_with_tax || 0,
+                        shippingAmount: (deliveryMethod=="pickup" ? 0 : (shipping?.amount_with_tax || 0)),
                         cartId: userCart.dataValues.id,
                         cartItems: JSON.stringify(paymentItem),
                         shippingId: shipping.id,
@@ -325,7 +337,8 @@ async function processOrderPayment(req, transaction) {
 
                 await Payment.update(
                     {
-                        amount: (totalCartItemAmount) + (shipping?.amount_with_tax || 0)
+                        amount: Math.round(totalCartItemAmount) +
+                            Math.round((deliveryMethod === "pickup" ? 0 : (shipping?.amount_with_tax || 0)))
                     },
                     { where: { id: existingPayment.id } }
                 )
@@ -337,7 +350,8 @@ async function processOrderPayment(req, transaction) {
         }
 
         const orderCd = generateCd("ORD")
-        let newOrder = await Order.create({
+        try{
+            let newOrder = await Order.create({
             orderCd: orderCd,
             idempotencyKey,
             deliveryMethod,
@@ -346,14 +360,15 @@ async function processOrderPayment(req, transaction) {
         }, { transaction });
 
 
-        newOrder = newOrder?.toJSON()
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount: ((totalCartItemAmount) + (shipping?.amount_with_tax || 0)) * 100,
-            currency: "eur",
-            metadata: {
+            newOrder = newOrder?.toJSON()
+            const paymentIntent = await stripe.paymentIntents.create({
+                amount: Math.round(totalCartItemAmount * 100) +
+                    Math.round((deliveryMethod === "pickup" ? 0 : (shipping?.amount_with_tax || 0)) * 100),
+                currency: "eur",
+                metadata: {
                 orderCd: newOrder.orderCd,
                 orderedBy: req.user.id,
-                shippingAmount: shipping?.amount_with_tax || 0,
+                shippingAmount: deliveryMethod=="pickup" ? 0 : shipping?.amount_with_tax ,
                 cartId: userCart.dataValues.id,
                 cartItems: JSON.stringify(paymentItem),
                 paymentReason: "order"
@@ -365,12 +380,56 @@ async function processOrderPayment(req, transaction) {
             orderId: newOrder.id,
             status: "initialized",
             paymentReason: "order",
-            amount: (totalCartItemAmount) + (shipping?.amount_with_tax || 0),
+            amount: Math.round(totalCartItemAmount) +
+                Math.round((deliveryMethod === "pickup" ? 0 : (shipping?.amount_with_tax || 0))),
             paymentGateway: "STRIPE",
             paymentType: "Card"
         }, { transaction })
 
         return { clientSecret: paymentIntent.client_secret };
+        }
+        catch (err) {
+            if (err.name == "SequelizeUniqueConstraintError") {
+                let existingOrder = await Order.findOne({
+                    where: { idempotencyKey }
+                });
+                if (existingOrder) {
+                    const existingPayment = await Payment.findOne({ where: { orderId: existingOrder.id, paymentReason: "order" }, raw: true })
+                    if (existingPayment && existingPayment.gatewayPaymentId) {
+                        const paymentIntent = await stripe.paymentIntents.retrieve(
+                            existingPayment.gatewayPaymentId);
+                        await stripe.paymentIntents.update(existingPayment.gatewayPaymentId, {
+                            amount: Math.round(totalCartItemAmount * 100) +
+                                Math.round((deliveryMethod === "pickup" ? 0 : (shipping?.amount_with_tax || 0)) * 100),
+                            metadata: {
+                                orderCd: existingOrder.orderCd,
+                                orderedBy: req.user.id,
+                                shippingAmount: (deliveryMethod == "pickup" ? 0 : (shipping?.amount_with_tax || 0)),
+                                cartId: userCart.dataValues.id,
+                                cartItems: JSON.stringify(paymentItem),
+                                shippingId: shipping.id,
+                                paymentReason: "order"
+                            }
+                        });
+
+                        await Payment.update(
+                            {
+                                amount: Math.round(totalCartItemAmount * 100) +
+                                    Math.round((deliveryMethod === "pickup" ? 0 : (shipping?.amount_with_tax || 0)) * 100)
+                            },
+                            { where: { id: existingPayment.id } }
+                        )
+                        return {
+                            clientSecret: paymentIntent.client_secret,
+                        };
+                    }
+
+                }
+            }
+            else{
+                throw err
+            }
+        }
         // }
     }
     return { clientSecret: null }
@@ -427,7 +486,7 @@ async function processWebhookForOrderPayment(paymentIntent, transaction) {
     // }})
     sendOrderNotification()
     try {
-        // await sendCustomerOrderPlacedMail(customer?.dataValues?.firstName, orderCd, customer?.dataValues?.email)
+        await sendCustomerOrderPlacedMail(customer?.dataValues?.firstName, orderCd, customer?.dataValues?.email)
         await sendMerchantOrderPlacedMail(orderCd, customer?.dataValues?.firstName, process.env.MERCHANT_GMAIL)
     }
     catch (exception) {
@@ -449,7 +508,6 @@ async function processWebhookForBookingPayment(paymentIntent, transaction) {
     const customer = await User.findOne({ where: { id: existingBooking.userId }, attributes: ['firstName', "email"] })
     try {
         const {bknId, eventLocation, eventDate, eventStartTime } = existingBooking
-        // await sendCustomerOrderPlacedMail(customer?.dataValues?.firstName, orderCd, customer?.dataValues?.email)
         await sendMerchantEventBookedMail(bknId, customer?.dataValues?.firstName, process.env.MERCHANT_GMAIL, `${eventDate} ${eventStartTime}`, eventLocation)
     }
     catch (exception) {

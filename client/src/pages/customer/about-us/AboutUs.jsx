@@ -36,7 +36,7 @@ Every dish we prepare reflects our passion for Nigerian food and our commitment 
             </ScrollFadeIn>
             <ScrollFadeIn className="md:absolute  w-full  gap-x-5 mb-0 flex md:justify-between md:pr-[1px] items-center flex-col md:flex-row h-[900px]
                   md:h-[400px] bg-[#fdb750] text-red-700 left-0 md:px-10 py-3 mt-[60px] md:-bottom-[42rem] ">
-                <ScrollFadeIn className="md:w-[350px] md:ml-20 ml-32 flex justify-center md:justify-start items-center w-[300px] mx-auto object-cover md:-mt-4  h-[350px] md:h-[350px] ">
+                <ScrollFadeIn className="md:w-[350px] md:ml-20  flex justify-center md:justify-start items-center w-[300px] mx-auto object-cover md:-mt-4  h-[350px] md:h-[350px] ">
                     <img className="flex justify-center mx-auto md:justify-start md:mr-0 w-full h-full" src={'/images/jollof.png'} />
                 </ScrollFadeIn>
                 <ScrollFadeIn className="h-[200px]  p-3 md:w-[500px] md:absolute md:left-[500px] md:mr-20  md:mt-0 w-full  flex flex-col items-center">

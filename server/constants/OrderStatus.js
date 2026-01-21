@@ -4,5 +4,6 @@ export const orderStatus = {
     CANCELLED: 'CANCELLED',
     CANCELLED: 'cancelled',
     DELIVERED: 'delivered',
-    SHIPPED: 'SHIPPED'
+    SHIPPED: 'SHIPPED',
+    MERCHANT_CANCELLED: 'MERCHANT_CANCELLED'
 }

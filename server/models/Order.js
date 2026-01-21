@@ -9,7 +9,7 @@ export const Order = db.define("order", {
     type: DataTypes.STRING
   },
     status: {
-        type: DataTypes.ENUM('PENDING','PLACED','CONFIRMED', 'REJECTED', 'FAILED', 'CANCELLED', 'SHIPPED', 'DELIVERED'),
+        type: DataTypes.ENUM('PENDING','PLACED','CONFIRMED','MERCHANT_CANCELLED', 'REJECTED', 'FAILED', 'CANCELLED', 'SHIPPED', 'DELIVERED'),
         defaultValue: 'PENDING'
     },
     idempotencyKey:{

@@ -19,6 +19,7 @@ import { Payment } from "../models/Payment.js"
 import { createDeliveryJob } from "./ShippingService.js"
 import { InternalServerError } from "../exceptions/InternalServerError.js"
 import { AdminSetting } from "../models/AdminSettings.js"
+import { format } from "date-fns"
 
 dotenv.config()
 
@@ -264,6 +265,7 @@ export const updateOrderStatus = async (req, transaction) => {
             || existingOrder.status == orderStatus.CONFIRMED
             || existingOrder.status == orderStatus.CANCELLED
             || existingOrder.status == orderStatus.SHIPPED
+            || existingOrder.status == orderStatus.MERCHANT_CANCELLED
         ) && (
             status == orderStatus.CONFIRMED
             || status == orderStatus.CANCELLED
@@ -339,7 +341,7 @@ export const updateOrderStatus = async (req, transaction) => {
         }
     }
     if (status == orderStatus.CANCELLED) {
-        const customer = await User.findOne({ where: { id: existingOrder.createdBy } })
+        const customer = await User.findOne({ where: { id: existingOrder.userId } })
         if (!customer) {
             throw new NotFoundError("Registered Customer does not exist")
         }
@@ -351,8 +353,27 @@ export const updateOrderStatus = async (req, transaction) => {
                 email: customer.dataValues.email
             }
         }
-        await refundPayment(refundPaymentRequest, customer.dataValues.firstName, transaction)
+        await refundPayment(refundPaymentRequest,  transaction)
+        await sendMerchantOrderCancelledMail(existingOrder.orderCd, customer.dataValues?.firstName, process.env.MERCHANT_GMAIL, new Date().toISOString)
         await sendCustomerOrderCancelledMail(existingOrder.orderCd, customer.dataValues.firstName, customer.dataValues.email)
+    }
+
+    if (status == orderStatus.MERCHANT_CANCELLED) {
+        const customer = await User.findOne({ where: { id: existingOrder.userId } })
+        if (!customer) {
+            throw new NotFoundError("Registered Customer does not exist")
+        }
+        const refundPaymentRequest = {
+            orderId: id,
+            orderCd: existingOrder.orderCd,
+            customer: {
+                name: customer.dataValues.firstName,
+                email: customer.dataValues.email
+            }
+        }
+        await refundPayment(refundPaymentRequest,  transaction)
+        const date = new Date()
+        await sendCustomerOrderCancelledMail(existingOrder.orderCd, customer.dataValues.firstName, customer.dataValues.email, format(date, "dd-MMM-yyyy HH:mm"))
     }
 
     await Order.update({ status }, { where: { id } }, { transaction })
@@ -363,8 +384,8 @@ export const cancelOrder = async (req, transaction) => {
     const user = req.user
     const { status } = req.body
     const { id } = req.params
-    const existingOrder = await Order.findByPk(id)
-    if (status != orderStatus.CANCELLED && status != orderStatus.CANCELLED) {
+    const existingOrder = await Order.findByPk(id, {raw: true})
+    if (status != orderStatus.CANCELLED) {
         return
     }
     if (!existingOrder) {
@@ -382,20 +403,22 @@ export const cancelOrder = async (req, transaction) => {
         throw new BadRequestError(errMsg)
     }
     try {
-        const customer = await User.findOne({ where: { id: existingOrder?.dataValues?.userId } })
+        const customer = await User.findOne({ where: { id: existingOrder?.userId } })
         if (!customer) {
             throw new NotFoundError("Registered Customer does not exist")
         }
         const refundPaymentRequest = {
             orderId: id,
+            orderCd: existingOrder.orderCd,
             customer: {
                 name: customer.dataValues.firstName,
                 email: customer.dataValues.email
              }
         }
+        const date = new Date()
+        await sendMerchantOrderCancelledMail(existingOrder.orderCd, customer.dataValues?.firstName, process.env.MERCHANT_GMAIL, format(date, "dd-MMM-yyyy HH:mm"))
         await refundPayment(refundPaymentRequest, transaction)
         await Order.update({ status }, { where: { id } }, { transaction })
-        await sendMerchantOrderCancelledMail(existingOrder.dataValues.orderCd, customer.dataValues?.firstName, process.env.MERCHANT_GMAIL)
     }
     catch (ex) {
         console.log(ex)

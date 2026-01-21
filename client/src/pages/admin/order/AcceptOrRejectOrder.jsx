@@ -11,7 +11,7 @@ const AcceptOrRejectOrder = ({status, id}) => {
     const dispatch = useDispatch()
 
     const handleUpdateStatus = () =>{
-        mutateOrderStatus.mutate({status: status == 'CONFIRMED'? 'CONFIRMED': status == 'SHIP'? 'SHIPPED' : 'CANCELLED', id})
+        mutateOrderStatus.mutate({status: status == 'CONFIRMED'? 'CONFIRMED': status == 'SHIP'? 'SHIPPED' : 'MERCHANT_CANCELLED', id})
     }
   return (
     <div className="w-[300px] p-6 flex flex-col items-center h-[250px] bg-white rounded-md shadow-md shadow-gray-400]">
@@ -19,10 +19,10 @@ const AcceptOrRejectOrder = ({status, id}) => {
       <div className="flex gap-2 mt-6">
         <Button onClick={()=>{
             dispatch(closeModal())
-        }} className={'!bg-gray-600'}>Cancel</Button>
+        }} className={'!bg-red-600'}>Cancel</Button>
         <Button 
            onClick={()=> handleUpdateStatus()}
-        className={'bg-gray-600'}>Continue</Button>
+        className={'!bg-gray-600'}>Continue</Button>
       </div>
     </div>
   )

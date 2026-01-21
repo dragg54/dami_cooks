@@ -9,6 +9,7 @@ import MerchantEmptyState from '../../../components/MerchantEmptyState'
 import { UpdateNotificationStatus } from './api/UpdateNotificationStatus'
 import { useDispatch } from 'react-redux'
 import { readNotifications } from '../../../redux/NotificationSlice'
+import { removeSpecialChars } from '@/utils/removeSpecialCharacters'
 
 const OrderList = () => {
   const [size, setSize] = useState(10)
@@ -45,7 +46,7 @@ const OrderList = () => {
       orderId: dta.id,
       "Order Number": dta.orderCd,
       "Customer Name": dta.user?.firstName + " " + dta.user?.lastName,
-      status: dta.status,
+      status: removeSpecialChars(dta.status),
       "city": dta.shipping?.city,
       amount: dta.amount,
        "Ordered At": format(new Date(dta.createdAt), 'dd-MM-yyy HH:mm')

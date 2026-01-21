@@ -151,7 +151,7 @@ function PaymentForm({ clientSecret, deliveryDetails, shippingChargeResponse }) 
         and for other purposes described in our privacy policy.
       </p>
       <Button 
-       disabled={!shippingChargeResponse?.amount_with_tax}
+       disabled={deliveryDetails?.deliveryMethod != "pickup" && !shippingChargeResponse?.amount_with_tax}
        className={'!rounded-full'} isLoading={paymentIntentLoading}>Place Order</Button>
     </form>
   );

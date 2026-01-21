@@ -21,7 +21,7 @@ const Checkout = () => {
     lastName: user?.user?.lastName,
     email: user?.user?.email,
     address: user?.user?.address,
-    deliveryMethod: "delivery"
+    deliveryMethod: "pickup"
   }
   const cart = useSelector(state => state.cart)
   const [clientSecret, setClientSecret] = useState("");
@@ -57,9 +57,9 @@ const Checkout = () => {
     ))
     if (user?.isLoggedIn) {
      
-      mutate({ items: cartItems, idempotencyKey, shipping: shippingChargeResponse })
+      mutate({ items: cartItems, idempotencyKey, shipping: shippingChargeResponse, deliveryMethod: deliveryDetails?.deliveryMethod || "pickup" })
     }
-  }, [shippingChargeResponse])
+  }, [shippingChargeResponse, deliveryDetails])
  
   if(!user || !user.user || !user?.isLoggedIn){
     return(

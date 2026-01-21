@@ -11,8 +11,8 @@ export async function sendEmail(recipient, subject, message, attachment) {
 
   try{
      const { data, error } = await resend.emails.send({
-      from: 'DamiCooks <onboarding@resend.dev>', // Use this for testing
-      to: "damicooks25@gmail.com",
+      from: 'support@damicooks.com',
+      to: recipient,
       subject: subject,
       html: message,
     });

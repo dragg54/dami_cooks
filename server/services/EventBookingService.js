@@ -70,7 +70,7 @@ class EventBookingService {
         const customerEventBookingLink = EventBookingService.clientUrl + `/eventBooking/${id}/quotation-acknowlegement/${existingBooking.dataValues.userId}`
         await EventBookingItem.destroy({ where: { eventBookingId: id }, transaction })
         await EventBookingItem.bulkCreate(bookingItems, { transaction })
-        // await sendBookingQuotationAcknowlegementMail(userNames, customerEventBookingLink, existingBooking.dataValues.email)
+        await sendBookingQuotationAcknowlegementMail(userNames, customerEventBookingLink, existingBooking.dataValues.email)
     }
 
     static async getEventBookingItems(req) {
@@ -113,7 +113,6 @@ class EventBookingService {
 
         switch (req.body.bookingStatus) {
             case "declined":
-                console.log("I came here")
                 if (existingBooking.bookingStatus != "quote_requested") {
                     throw new BadRequestError("Booking can only be declined when initially booked")
                 }
@@ -121,6 +120,7 @@ class EventBookingService {
                     bookingStatus: req.body.bookingStatus
                 }, { where: { id } })
             case "quote_acknowleged":
+                  
             case "quote_rejected":
                 if (req.user.id != existingBooking.userId) {
                     throw new BadRequestError("User cannot acknowleged by another user")

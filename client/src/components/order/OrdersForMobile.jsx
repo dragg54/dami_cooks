@@ -66,7 +66,7 @@ const OrdersForMobile = ({ userOrdersOpened, setUserOrdersOpened }) => {
                                                 {format(new Date(order.createdAt), 'dd-MMM-yyyy')}</div>
 
                                             <div className={`py-1 rounded-lg `}>
-                                            <span className={`text-sm ${order?.status == "PENDING" ? 'text-orange-500' : order?.status == "CONFIRMED" ? "text-green-700" : "text-red-700"}`}>{order?.status}</span>                                            </div>
+                                            <span className={`text-sm ${order?.status == "PLACED" ? 'text-orange-500' : order?.status == "CONFIRMED" ? "text-green-700" : "text-red-700"}`}>{order?.status}</span>                                            </div>
                                             <div className="text-[1.2rem] font-bold">
                                                 <Euro />{order.amount}
                                             </div>

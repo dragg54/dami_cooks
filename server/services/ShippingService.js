@@ -85,7 +85,6 @@ export async function getDeliveryQuote({
 }
 
 export async function createDeliveryJob(request) {
-    console.log("I came here")
     const token = await getStuartToken();
 
     const response = await axios.post(

@@ -9,7 +9,6 @@ const fetchData = async ({ queryKey }) => {
 
 export const useFetchAllData = (url, params = {}, queryKey = "data") => {
   return useQuery([queryKey, url, params], fetchData, {
-    staleTime: 5 * 60 * 1000, 
     enabled: (params.enabled != null || params.enabled != undefined) ? params.enabled : true
   });
 };

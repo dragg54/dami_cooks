@@ -86,6 +86,12 @@ app.use("/api/v1/customers", customerRouter)
 app.use("/api/v1/eventBookings", eventBookingRoute)
 app.use("/api/v1/shippings", shippingRoute)
 
+
+app.post("/mail", async(req, res) =>{
+ await sendEmail("ajibolasadiq@yahoo.com", "Testing Email", "Email Tested")
+  res.json("Sent")
+})
+
 const port = 8080
 const io = init(server, corsOptions)
 

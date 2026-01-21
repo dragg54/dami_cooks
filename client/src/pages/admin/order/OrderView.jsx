@@ -34,8 +34,8 @@ const OrderView = () => {
       orderItemData?.status == "PLACED" ? 
       <div className="mt-6 ml-auto gap-2 flex">
         <Button onClick={() => {
-          dispatch(openModal({ component: <AcceptOrRejectOrder {...{ status: 'REJECT',  id: orderItemData.id }} /> }))
-        }} className={'!bg-gray-400 !rounded-full !w-[100px]'}>Cancel</Button>
+          dispatch(openModal({ component: <AcceptOrRejectOrder {...{ status: 'DECLINE',  id: orderItemData.id }} /> }))
+        }} className={'!bg-red-600 !rounded-full !w-[100px]'}>Decline</Button>
         <Button onClick={() => {
           dispatch(openModal({ component: <AcceptOrRejectOrder {...{ status: 'CONFIRMED', id: orderItemData.id }} /> }))
         }} className={'!bg-green-600 !rounded-full !w-[100px]'}>Confirm</Button>
