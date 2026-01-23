@@ -42,7 +42,7 @@ const User = db.define('user', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  emailVerificationToken: DataTypes.STRING,
+  emailVerificationToken: DataTypes.TEXT,
   emailTokenExpiresAt: DataTypes.DATE,
 });
 
