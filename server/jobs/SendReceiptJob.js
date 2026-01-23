@@ -19,7 +19,7 @@ export const startReceiptCron = () => {
 
     try {
       const twoHoursAgo = new Date();
-      twoHoursAgo.setHours(twoHoursAgo.getHours() - 2);
+      twoHoursAgo.setHours(twoHoursAgo.getMinutes() - 10);
 
       const ordersToSend = await Order.findAll({
         where: {
@@ -46,7 +46,8 @@ export const startReceiptCron = () => {
 
       for (const order of ordersToSend) {
         try {
-            if(order.dataValues.receipt == null && order.dataValues.orderItems && order.dataValues.orderItems.length > 0){
+          if(order.dataValues.receipt == null && order.dataValues.orderItems && order.dataValues.orderItems.length > 0){
+              console.log("Found orders pending receipts")
               const pdfBuffer = await generateReceiptPDF(order.dataValues);
           const attachments = [{
                 filename: `receipt-${order.dataValues.orderCd}.pdf`,

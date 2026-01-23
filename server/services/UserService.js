@@ -7,6 +7,7 @@ import { generateToken } from '../utils/generateToken.js';
 import { NotFoundError } from '../exceptions/NotFoundError.js';
 import crypto from 'crypto'
 import { sendCustomerEmailVerificationMail } from '../emails/sendMessages/SendCustomerEmailVerificationMail.js';
+import { differenceInMinutes } from 'date-fns';
 
 export const createUser = async (req, trans) => {
     const { email, isAdmin, phone, password, firstName, lastName } = req.body;
@@ -115,12 +116,12 @@ export async function verifyEmail(req) {
     const { email, token } = req.body;
     const user = await User.findOne({ where: { email }, raw: true });
     if (!user) throw new BadRequestError("User not found");
-
     const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+    console.log(user.emailVerificationToken !== tokenHash)
     if (
         !user.emailVerificationToken ||
         user.emailVerificationToken !== tokenHash ||
-        user.emailTokenExpiresAt > new Date()
+        differenceInMinutes(user.emailTokenExpiresAt, new Date()) > 15
     ) {
         throw new BadRequestError("invalid token")
     }
