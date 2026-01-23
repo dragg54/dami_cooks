@@ -6,9 +6,11 @@ import { Euro } from "../../../constants/Currency"
 const OrderSummary = ({ shippingChargeResponse, shippingChargeLoading, deliveryDetails }) => {
     const cartItems = useSelector(state => state.cart)?.cartItems
 
-    const cartTotal = cartItems?.length > 1 ? cartItems?.reduce((prevItem, nextItem) => (Number(prevItem?.item?.price || 0)
-                    * Number(prevItem?.quantity || 0)) + (Number(nextItem?.item?.price || 0) * Number(nextItem?.quantity || 0))) : cartItems?.length && (Number(cartItems[0].item.price) * (cartItems[0].quantity))
-    return (
+     const cartTotal = cartItems?.reduce((total, cartItem) => {
+    const price = Number(cartItem?.item?.price || 0);
+    const quantity = Number(cartItem?.quantity || 0);
+    return total + price * quantity;
+  }, 0);    return (
         <div className="w-full mt-10 h-auto md:mb-10 mb-5 md:mr-8 border border-gray-300 
                          shadow-md shadow-gray-300 rounded-md md:p-6 p-4 bg-white">
             <h1 className=" font-semibold text-2xl my-4">Cart History</h1>

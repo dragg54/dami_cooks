@@ -26,6 +26,12 @@ const Cart = ({ cartOpen, setCartOpen }) => {
     dispatch(removeFromCart({ id }))
     deleteCartItemMutation.mutate(id)
   }
+  const total = cart?.cartItems?.reduce((total, cartItem) => {
+    const price = Number(cartItem?.item?.price || 0);
+    const quantity = Number(cartItem?.quantity || 0);
+    return total + price * quantity;
+  }, 0);
+
   return (
     <div className="relative">
       {cartOpen && (
@@ -74,9 +80,7 @@ const Cart = ({ cartOpen, setCartOpen }) => {
               ))
             }
              <div className="mb-10">
-            <span>Sub Total: <Euro />{cart?.cartItems?.length > 1 ? cart?.cartItems?.reduce((prevItem, nextItem) =>
-              (Number(prevItem?.item?.price || 0) * Number(prevItem?.quantity || 0)) + (Number(nextItem?.item?.price || 0) * Number(nextItem?.quantity || 0))) :
-              cart?.cartItems?.length && (Number(cart?.cartItems[0].item.price) * Number(cart?.cartItems[0].quantity))}
+             <span>Sub Total: <Euro />{total}
             </span>
           </div>
           <CheckoutButton 
