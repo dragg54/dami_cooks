@@ -17,11 +17,11 @@ function PaymentForm({ clientSecret, deliveryDetails, shippingChargeResponse }) 
   const dispatch = useDispatch()
    useEffect(() => {
     //validate uk phone
-     const phoneValue = deliveryDetails?.phone.replace(/\s/g, "");
+     const phoneValue = deliveryDetails?.phone?.replace(/\s/g, "");
      const ukPhoneRegex = /^(\+44|0)7\d{9}$/;
 
      //validate email
-     const emailValue = deliveryDetails?.email.replace(/\s/g, "");
+     const emailValue = deliveryDetails?.email?.replace(/\s/g, "");
      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       
      const isValid =
@@ -29,7 +29,7 @@ function PaymentForm({ clientSecret, deliveryDetails, shippingChargeResponse }) 
        && deliveryDetails?.lastName?.length > 0
        && (deliveryDetails?.phone?.length > 0 || !ukPhoneRegex.test(phoneValue))
        && (deliveryDetails?.email?.length > 0 || !emailRegex.test(emailValue))
-       && ((deliveryDetails.deliveryMethod == "pickup") || (deliveryDetails.deliveryMethod != "pickup"
+       && ((deliveryDetails.deliveryMethod == "pickup") || (deliveryDetails?.deliveryMethod != "pickup"
          && (
            deliveryDetails?.postalCode?.length > 4
            && deliveryDetails?.address?.length > 5)))
