@@ -120,7 +120,7 @@ export async function verifyEmail(req) {
     if (
         !user.emailVerificationToken ||
         user.emailVerificationToken !== tokenHash ||
-        user.emailTokenExpiresAt < new Date()
+        user.emailTokenExpiresAt > new Date()
     ) {
         throw new BadRequestError("invalid token")
     }

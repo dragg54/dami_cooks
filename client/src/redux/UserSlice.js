@@ -14,7 +14,6 @@ const userSlice = createSlice({
             localStorage.setItem("authToken", action.payload.token)
             state.user = action.payload.user
             state.token = action.payload.token
-            state.isVerifiedEmail = action.payload.isVerifiedEmail
             state.isLoggedIn = true
         },
         clearUser: (state) =>{

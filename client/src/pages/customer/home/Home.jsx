@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Item from '../../../components/Item/Item'
 import Hero from '../../../components/layout/Hero'
 import { FetchItems } from './api/fetchItems'
@@ -9,15 +9,24 @@ import { motion } from "framer-motion";
 import Pagination from '../../../components/Pagination'
 import SearchItem from './SearchItem'
 import Spinner from '@/components/Spinner'
+import { useDispatch } from 'react-redux'
+import { fetchItems } from '@/redux/ItemSlice'
 
 const Home = () => {
   const [debouncedQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("Mains")
   const filters = { page: 1, size: 10, status: "ONLINE", debouncedQuery, itemCategory: selectedCategory }
   const { data: itemData, isLoading, refetch } = FetchItems({ filters })
+  const dispatch = useDispatch()
+
+  console.log("isLoading", isLoading)
+  useEffect(() =>{
+    dispatch(fetchItems({isLoading, items: itemData}))
+  }, [isLoading, itemData])
+
+
   return (
     <section>
-      {(isLoading || !itemData) ? <Spinner isLoading={isLoading || !itemData} isLogo={true}/> :
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -58,7 +67,6 @@ const Home = () => {
           <ShortDetails />
           <Reviews />
         </motion.div>
-      }
     </section>
   )
 }

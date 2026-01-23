@@ -10,16 +10,20 @@ export const PostLogin = (email) =>{
     const onSuccess = (res, variables) =>{
         dispatch(clearUser())
         if(res.data && !res.data.userDetails.isVerifiedEmail){
+            console.log("yesss")
              dispatch(fetchUser({user: res.data?.userDetails, isVerifiedEmail: false, token: res.data?.token}))
             navigate("/verify-email", {state:{email: variables.email}})
+            return
         }
         if(res.data && res.data.userDetails.isAdmin){
             dispatch(fetchUser({user: res.data?.userDetails, isVerifiedEmail: true, token: res.data?.token}))
             navigate("/dashboard")
+            return
         }
         else if(res.data && !res.data.userDetails.isAdmin){
-            dispatch(fetchUser({user: res.data?.userDetails, isVerifiedEmail: true, token: res.data?.token}))
+            dispatch(fetchUser({user: res.data?.userDetails, token: res.data?.token}))
             navigate("/")
+            return
         }
         else{
             return

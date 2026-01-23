@@ -3,7 +3,7 @@ const Spinner = ({ style, isLoading, isLogo }) => {
     return (
         <div className="flex items-center justify-center w-full h-full">
             {isLogo ? (
-                <div className="w-screen h-[55vh] flex justify-center items-center">
+                <div className="w-screen h-screen bg-white flex justify-center items-center">
                     <img
                     src="/images/logo.png"
                     alt="Loading"

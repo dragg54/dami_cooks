@@ -23,6 +23,7 @@ Axios.interceptors.response.use(
       console.log("A server error ocurred")
       toast.error("A server error occurred. Please try again later.");
     }
+    console.log(error)
     return Promise.reject(error);
   }
 );

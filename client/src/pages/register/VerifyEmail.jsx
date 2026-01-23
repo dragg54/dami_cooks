@@ -33,6 +33,10 @@ const VerifyEmail = () => {
         }
     };
 
+    const handleSubmitToken = () =>{
+       const finalTokenValues = values.join('')
+       verifyTokenMutation.mutate({email, token: finalTokenValues})
+    }
     useEffect(()=>{
         if(user?.user){
             resendVerificationToken.mutate({email})
@@ -76,8 +80,8 @@ const VerifyEmail = () => {
                     />
                 ))}
             </div>
-            <small>{"Didn't"} receive code? <strong className="text-red-600" onClick={() => handleResendToken()}>Resend</strong></small>
-            <Button isLoading={verifyTokenMutation.isLoading} className={'mt-8 !py-3 !font-semibold'}>Verify Email</Button>
+            <small>{"Didn't"} receive code? <strong className="text-red-600 hover:cursor-pointer" onClick={() => handleResendToken()}>Resend</strong></small>
+            <Button disabled={values.length < 6 || values.some(x => x == '')} onClick={() => handleSubmitToken()} isLoading={verifyTokenMutation.isLoading} className={'mt-8 !py-3 !font-semibold'}>Verify Email</Button>
         </div>
     )
 }

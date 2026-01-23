@@ -13,29 +13,35 @@ import Orders from '../order/Orders';
 import MobileNavigation from './MobileNavigation';
 import ChatBox from './ChatBox';
 import { ToastContainer } from 'react-toastify';
+import { useSelector } from 'react-redux';
+import Spinner from '../Spinner';
 
 const Layout = () => {
   const [navIsOpen, setNavIsOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false)
   const [userAccountOpen, setUserAccountOpen] = useState(false)
   const [userOrdersOpened, setUserOrdersOpened] = useState(false)
+  const items = useSelector(state => state.item)
   return (
-    <div className='w-full h-screen relative '>
-      <GlobalModal />
-      <NavigationMenu {...{ navIsOpen, setNavIsOpen }} />
-      <Cart {...{ cartOpen, setCartOpen }} />
-      <Orders {...{ userOrdersOpened, setUserOrdersOpened }} />
-      <Header {...{ navIsOpen, setNavIsOpen, cartOpen, setCartOpen, setUserAccountOpen }} />
-      <UserAccount {...{ userAccountOpen, setUserAccountOpen, setUserOrdersOpened }} />
-      <Search />
-      <div className='w-full overflow-hidden  md:w-2/3 mx-auto md:p-3  md:mt-6'>
-        <Outlet />
-      </div>
-      <PopUp />
-      <Footer />
-      <ChatBox />
-      <MobileNavigation {...{ setCartOpen, setNavIsOpen }} />
-    </div>
+    <>
+      {items?.isLoading ? <Spinner isLoading={items?.isLoading} isLogo={true} /> :
+        <div className='w-full h-screen relative '>
+          <GlobalModal />
+          <NavigationMenu {...{ navIsOpen, setNavIsOpen }} />
+          <Cart {...{ cartOpen, setCartOpen }} />
+          <Orders {...{ userOrdersOpened, setUserOrdersOpened }} />
+          <Header {...{ navIsOpen, setNavIsOpen, cartOpen, setCartOpen, setUserAccountOpen }} />
+          <UserAccount {...{ userAccountOpen, setUserAccountOpen, setUserOrdersOpened }} />
+          <Search />
+          <div className='w-full overflow-hidden  md:w-2/3 mx-auto md:p-3  md:mt-6'>
+            <Outlet />
+          </div>
+          <PopUp />
+          <Footer />
+          <ChatBox />
+          <MobileNavigation {...{ setCartOpen, setNavIsOpen }} />
+        </div>}
+    </>
   )
 }
 
