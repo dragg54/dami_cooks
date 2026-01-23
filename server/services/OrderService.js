@@ -335,7 +335,8 @@ export const updateOrderStatus = async (req, transaction) => {
             }
         }
         try{
-           await createDeliveryJob(createDeliveryJobRequest)
+            console.log("create delivery job")
+        //    await createDeliveryJob(createDeliveryJobRequest)
         }
         catch(err){
             console.log(err)
