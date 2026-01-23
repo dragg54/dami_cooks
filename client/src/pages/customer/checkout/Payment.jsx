@@ -11,6 +11,7 @@ import { Button } from "../../../components/button/Button";
 
 const Payment = ({deliveryDetails, clientSecret, setClientSecret, shippingChargeResponse}) => {
   const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+  const [ isValidForm, setIsValidForm ] = useState()
   const CARD_OPTIONS = {
     style: {
       base: {
@@ -39,7 +40,7 @@ const Payment = ({deliveryDetails, clientSecret, setClientSecret, shippingCharge
 
   const onSuccess = (data) => {
     setClientSecret(data.data.clientSecret)
-  }
+  }  
 
   const onError = (err) => {
     console.log(err.message)

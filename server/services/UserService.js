@@ -10,7 +10,7 @@ import { sendCustomerEmailVerificationMail } from '../emails/sendMessages/SendCu
 
 export const createUser = async (req, trans) => {
     const { email, isAdmin, phone, password, firstName, lastName } = req.body;
-    const rawToken = generateEmailToken();
+    const rawToken = crypto.randomBytes(3).toString('hex').toUpperCase();
     const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
     const expires = new Date(Date.now() + 15 * 60 * 1000);
 
@@ -149,7 +149,7 @@ export async function resentVerificationEmail(req) {
 
     user.emailVerificationToken = tokenHash;
     user.emailVerificationExpiresAt = tokenExpiry;
-    await user.save();
+    await User.update({...user}, {where: {id: user.id}});
      const customerName = `${user.firstName} ${user.lastName}`
     await sendCustomerEmailVerificationMail(customerName, verificationToken, email)
 }

@@ -39,6 +39,10 @@ const VerifyEmail = () => {
         }
     },[])
 
+    const handleResendToken = () =>{
+         resendVerificationToken.mutate({email})
+    }
+
     const handleKeyDown = (e, index) => {
         if (e.key === 'Backspace') {
             if (values[index] === '' && index > 0) {
@@ -72,7 +76,7 @@ const VerifyEmail = () => {
                     />
                 ))}
             </div>
-            <small>{"Didn't"} receive code? <strong className="text-red-600">Resend</strong></small>
+            <small>{"Didn't"} receive code? <strong className="text-red-600" onClick={() => handleResendToken()}>Resend</strong></small>
             <Button isLoading={verifyTokenMutation.isLoading} className={'mt-8 !py-3 !font-semibold'}>Verify Email</Button>
         </div>
     )

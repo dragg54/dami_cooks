@@ -5,15 +5,38 @@ import { FaCreditCard } from "react-icons/fa";
 import { Button } from "../../../components/button/Button";
 import { useDispatch } from "react-redux";
 import { clearCart } from "../../../redux/CartSlice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PaymentFailed from "./PaymentFailed";
 
 function PaymentForm({ clientSecret, deliveryDetails, shippingChargeResponse }) {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate()
+  const [isValidForm, setIsValidForm] = useState(false)
   const [paymentIntentLoading, setPaymentIntentLoading] = useState(false)
   const dispatch = useDispatch()
+   useEffect(() => {
+    //validate uk phone
+     const phoneValue = deliveryDetails?.phone.replace(/\s/g, "");
+     const ukPhoneRegex = /^(\+44|0)7\d{9}$/;
+
+     //validate email
+     const emailValue = deliveryDetails?.email.replace(/\s/g, "");
+     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      
+     const isValid =
+       deliveryDetails?.firstName?.length > 0
+       && deliveryDetails?.lastName?.length > 0
+       && (deliveryDetails?.phone?.length > 0 || !ukPhoneRegex.test(phoneValue))
+       && (deliveryDetails?.email?.length > 0 || !emailRegex.test(emailValue))
+       && ((deliveryDetails.deliveryMethod == "pickup") || (deliveryDetails.deliveryMethod != "pickup"
+         && (
+           deliveryDetails?.postalCode?.length > 4
+           && deliveryDetails?.address?.length > 5)))
+     setIsValidForm(isValid)
+
+   }, [deliveryDetails])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setPaymentIntentLoading(true)
@@ -151,7 +174,7 @@ function PaymentForm({ clientSecret, deliveryDetails, shippingChargeResponse }) 
         and for other purposes described in our privacy policy.
       </p>
       <Button 
-       disabled={deliveryDetails?.deliveryMethod != "pickup" && !shippingChargeResponse?.amount_with_tax}
+       disabled={(deliveryDetails?.deliveryMethod != "pickup" && !shippingChargeResponse?.amount_with_tax) || !isValidForm}
        className={'!rounded-full'} isLoading={paymentIntentLoading}>Place Order</Button>
     </form>
   );

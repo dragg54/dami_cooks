@@ -12,6 +12,7 @@ import UserAccount from './UserAccount';
 import Orders from '../order/Orders';
 import MobileNavigation from './MobileNavigation';
 import ChatBox from './ChatBox';
+import { ToastContainer } from 'react-toastify';
 
 const Layout = () => {
   const [navIsOpen, setNavIsOpen] = useState(false);
@@ -33,7 +34,7 @@ const Layout = () => {
       <PopUp />
       <Footer />
       <ChatBox />
-      <MobileNavigation {...{setCartOpen, setNavIsOpen}}/>
+      <MobileNavigation {...{ setCartOpen, setNavIsOpen }} />
     </div>
   )
 }

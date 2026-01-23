@@ -5,7 +5,10 @@ import { Form, Formik } from "formik"
 import { useState } from "react"
 
 const BillingDetails = ({ deliveryDetails, setDeliveryDetails }) => {
+const [phoneError, setPhoneError] = useState("");
+const [emailError, setEmailError ] = useState("")
 
+const ukPhoneRegex = /^(\+44|0)7\d{9}$/;
   const validationSchema = Yup.object({
     firstName: Yup.string().required('First name is required'),
     lastName: Yup.string().required('Last name is required'),
@@ -18,6 +21,23 @@ const BillingDetails = ({ deliveryDetails, setDeliveryDetails }) => {
 
   const handleChange = (e) => {
     setDeliveryDetails({ ...deliveryDetails, [e.target.name]: e.target.value })
+     if (e.target.name == "phone") {
+      const value = e.target.value.replace(/\s/g, ""); 
+       if (!ukPhoneRegex.test(value)) {
+        setPhoneError("Enter a valid UK phone number");
+      } else {
+        setPhoneError("");
+      }
+    }
+    if(e.target.name == "email"){
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const value = e.target.value.replace(/\s/g, ""); 
+       if (!emailRegex.test(value)) {
+        setEmailError("Enter a valid email address");
+      } else {
+        setEmailError("");
+      }
+    }
   }
 
 const isPickup = deliveryDetails?.deliveryMethod === 'pickup'
@@ -50,6 +70,7 @@ const isPickup = deliveryDetails?.deliveryMethod === 'pickup'
               <TextInput
                 label={'Email'}
                 name={'email'}
+                errMsg={emailError}
                 value={deliveryDetails?.email}
                 onChange={(e) => handleChange(e)}
               />
@@ -58,7 +79,9 @@ const isPickup = deliveryDetails?.deliveryMethod === 'pickup'
               <TextInput
                 label={'Phone'}
                 name={'phone'}
+                placeholder="+447XXXXXXXXX or 07XXXXXXXXX"
                 value={deliveryDetails?.phone}
+                errMsg={phoneError}
                 onChange={(e) => handleChange(e)}
               />
             </div>
@@ -119,7 +142,8 @@ const isPickup = deliveryDetails?.deliveryMethod === 'pickup'
                 disabled={isPickup}
               />
             </div>
-          </Form>)
+          </Form>
+      )
         }
       </Formik>
     </div>)

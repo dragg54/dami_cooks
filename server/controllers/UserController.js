@@ -9,7 +9,7 @@ export const createUser = async (req, res) => {
         res.status(201).json("user created");
     } catch (error) {
       await transaction.rollback()
-      console.log(error.message)
+      console.log(error)
         res.status(error.statusCode || 500).json(error.message
                 || "Internal server error"
         );
@@ -81,7 +81,7 @@ export const resendEmailVerification = async (req, res) => {
     await userService.resentVerificationEmail(req)
     res.json("Verification email resent")
   }
-  catch (error) {
+  catch(error) {
     console.log(error)
     res.status(error.statusCode || 500).json(error.message || "Internal server error")
   }

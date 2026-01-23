@@ -15,6 +15,7 @@ export async function sendEmail(recipient, subject, message, attachment) {
       to: recipient,
       subject: subject,
       html: message,
+      attachments: attachment
     });
   }
   catch(err){

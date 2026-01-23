@@ -16,13 +16,15 @@ const Checkout = () => {
   const [ shippingChargeResponse, setShippingChargeResponse ] = useState({})
   const { mutate: mutateShippingCharge, isError, isLoading: shippingChargeLoading } = GetShippingCharge({ setResponseStatus: setShippingChargeResponse })
   const navigate = useNavigate()
-  const initialValues = {
+  const userDetails = {
     firstName: user?.user?.firstName,
     lastName: user?.user?.lastName,
     email: user?.user?.email,
+    phone: user?.user?.phone,
     address: user?.user?.address,
     deliveryMethod: "pickup"
   }
+
   const cart = useSelector(state => state.cart)
   const [clientSecret, setClientSecret] = useState("");
   const [deliveryDetails, setDeliveryDetails] = useState()
@@ -38,7 +40,7 @@ const Checkout = () => {
 
 
   useEffect(() => {
-    setDeliveryDetails(initialValues)
+    setDeliveryDetails(userDetails)
   }, [user])
 
   useEffect(() => {
@@ -51,6 +53,12 @@ const Checkout = () => {
   return () => clearTimeout(timeout);
 }, [deliveryDetails?.address]);
 
+useEffect(() => {
+  if(deliveryDetails?.deliveryMethod == "delivery" && deliveryDetails?.address?.length > 1){
+      mutateShippingCharge({address: deliveryDetails.address});
+    }
+}, [deliveryDetails?.deliveryMethod])
+
   useEffect(() => {
     const cartItems = cart.cartItems?.map(cartItem => (
       { ...cartItem.item, quantity: cartItem.quantity }
@@ -59,7 +67,7 @@ const Checkout = () => {
      
       mutate({ items: cartItems, idempotencyKey, shipping: shippingChargeResponse, deliveryMethod: deliveryDetails?.deliveryMethod || "pickup" })
     }
-  }, [shippingChargeResponse, deliveryDetails])
+  }, [shippingChargeResponse, deliveryDetails?.deliveryMethod, deliveryDetails?.address])
  
   if(!user || !user.user || !user?.isLoggedIn){
     return(

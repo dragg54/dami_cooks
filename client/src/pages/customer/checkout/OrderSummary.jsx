@@ -29,10 +29,13 @@ const OrderSummary = ({ shippingChargeResponse, shippingChargeLoading, deliveryD
                         {deliveryDetails?.deliveryMethod == "delivery"  && shippingChargeLoading && "Calculating…"}
                         {deliveryDetails?.deliveryMethod == "delivery" && !shippingChargeLoading && shippingChargeResponse && (
                             <>
-                                <Euro />{shippingChargeResponse?.amount_with_tax?.toFixed(2)}
+                                <Euro />{shippingChargeResponse?.amount_with_tax?.toFixed(2) || 0}
                             </>
                         )}
-                        {(deliveryDetails?.deliveryMethod == "pickup" || (!shippingChargeLoading && !shippingChargeResponse)) && "0"}
+                        {(deliveryDetails?.deliveryMethod == "pickup" || (!shippingChargeLoading && !shippingChargeResponse)) &&
+                            <>
+                                <Euro />0
+                            </>}
                     </span>
                 </div>
                 <p className="text-lg font-semibold mt-4 flex gap-4 items-center"><span>Total</span><span><Euro />{cartTotal}</span></p>

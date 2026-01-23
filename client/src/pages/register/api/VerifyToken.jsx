@@ -13,7 +13,7 @@ export const VerifyToken = () =>{
 
     const onError = (error) =>{
         if(error.status == 400){
-            dispatch(openPopup({message: "Token has already been used", success: false}))
+            dispatch(openPopup({message: "Invalid Token", success: false}))
         }
     }
     return usePostData({onSuccess, onError, url: "/users/tokenVerification"})

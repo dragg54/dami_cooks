@@ -17,7 +17,7 @@ const AdminLayout = () => {
     return (
         <div className={`admin w-full overflow-y-hidden  h-screen ${globalModal.opened && 'overflow-y-hidden'}`}>
          <GlobalModal />
-         <ToastContainer className={"border-red-700"} position="top-right" autoClose={5000} />
+            <ToastContainer className={"border-red-600 text-xs p-3"} position="top-right" autoClose={5000} />
          <PopUp />
             <NavigationMenu {...{ navIsOpen, setNavIsOpen }} />
             <Header {...{ navIsOpen, setNavIsOpen, setOpenLogout}} />

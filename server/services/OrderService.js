@@ -20,6 +20,8 @@ import { createDeliveryJob } from "./ShippingService.js"
 import { InternalServerError } from "../exceptions/InternalServerError.js"
 import { AdminSetting } from "../models/AdminSettings.js"
 import { format } from "date-fns"
+import { generateReceiptHTML } from "../emails/templates/CustomerReceiptTemplate.js"
+import puppeteer from "puppeteer"
 
 dotenv.config()
 
@@ -448,6 +450,27 @@ export const getOrderAggregates = async(req) =>{
       };
 }
 
+export const generateReceiptPDF = async (order) => {
+  const browser = await puppeteer.launch({
+    headless: 'new',
+    args: ['--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu']
+  });
+   
+  const page = await browser.newPage();
+   await page.setViewport({
+      width: 1200,
+      height: 1600,
+      deviceScaleFactor: 2
+    }); 
+  await page.emulateMediaType('screen');
+  await page.setContent(generateReceiptHTML(order), { waitUntil: ['load', 'domcontentloaded', 'networkidle0'] });
+    // await page.evaluateHandle('document.fonts.ready');
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  const pdfBuffer = await page.pdf({ format: 'A4', printBackground: true });
 
-
-  
+  await browser.close();
+  return pdfBuffer;
+};

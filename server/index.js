@@ -24,6 +24,7 @@ import { customerRouter } from './routes/CustomerRoute.js';
 import  eventBookingRoute  from './routes/EventBookingRoute.js';
 import { shippingRoute } from './routes/ShippingRoute.js';
 import { sendEmail } from './services/EmailService.js';
+import { startReceiptCron } from './jobs/SendReceiptJob.js';
 
 
 
@@ -91,6 +92,9 @@ app.post("/mail", async(req, res) =>{
  await sendEmail("ajibolasadiq@yahoo.com", "Testing Email", "Email Tested")
   res.json("Sent")
 })
+
+//Jobs
+startReceiptCron()
 
 const port = 8080
 const io = init(server, corsOptions)
