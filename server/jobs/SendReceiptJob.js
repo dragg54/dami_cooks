@@ -13,7 +13,7 @@ import { Receipt } from '../models/OrderReceipt.js';
 dotenv.config()
 
 export const startReceiptCron = () => {
-  const cronInterval = process.env.RECEIPT_CRON_INTERVAL || "* * * * *"
+  const cronInterval = process.env.RECEIPT_CRON_INTERVAL || "0 * * * *"
   cron.schedule(cronInterval, async () => {
     console.log(`[${new Date().toISOString()}] Running receipt cron...`);
 

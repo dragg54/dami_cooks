@@ -45,7 +45,6 @@ export const initializePayment = async (req, transaction) => {
     }
 
     return client_secret
-
 }
 
 export const refundPayment = async (req, transaction) => {

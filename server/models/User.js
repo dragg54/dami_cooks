@@ -44,6 +44,8 @@ const User = db.define('user', {
   },
   emailVerificationToken: DataTypes.TEXT,
   emailTokenExpiresAt: DataTypes.DATE,
+  resetPasswordToken: DataTypes.TEXT,
+  resetPasswordTokenExpiresAt: DataTypes.DATE
 });
 
 db.sync()

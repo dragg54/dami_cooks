@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer'
 import dotenv from 'dotenv'
 import { InternalServerError } from '../exceptions/InternalServerError.js';
 import { Resend } from 'resend';
+import { canSendEmailMemory } from '../utils/canSendEmail.js';
 
 
 dotenv.config()
@@ -17,6 +18,7 @@ export async function sendEmail(recipient, subject, message, attachment) {
       html: message,
       attachments: attachment
     });
+    console.log("Email Error", error)
   }
   catch(err){
     console.log(err)

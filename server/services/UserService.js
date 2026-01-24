@@ -8,6 +8,11 @@ import { NotFoundError } from '../exceptions/NotFoundError.js';
 import crypto from 'crypto'
 import { sendCustomerEmailVerificationMail } from '../emails/sendMessages/SendCustomerEmailVerificationMail.js';
 import { differenceInMinutes } from 'date-fns';
+import { Op } from 'sequelize';
+import dotenv from "dotenv"
+import { sendResetPasswordLink } from '../emails/sendMessages/sendResetPasswordLink.js';
+
+dotenv.config()
 
 export const createUser = async (req, trans) => {
     const { email, isAdmin, phone, password, firstName, lastName } = req.body;
@@ -117,7 +122,6 @@ export async function verifyEmail(req) {
     const user = await User.findOne({ where: { email }, raw: true });
     if (!user) throw new BadRequestError("User not found");
     const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
-    console.log(user.emailVerificationToken !== tokenHash)
     if (
         !user.emailVerificationToken ||
         user.emailVerificationToken !== tokenHash ||
@@ -153,6 +157,49 @@ export async function resentVerificationEmail(req) {
     await User.update({...user}, {where: {id: user.id}});
      const customerName = `${user.firstName} ${user.lastName}`
     await sendCustomerEmailVerificationMail(customerName, verificationToken, email)
+}
+
+export const resetPassword = async (req) => {
+  const { token, newPassword } = req.body;
+
+  const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+  const user = await User.findOne({
+    where: {
+      resetPasswordToken: tokenHash,
+      resetPasswordTokenExpiresAt: { [Op.gt]: Date.now() }
+    }
+  });
+
+  if (!user) {
+    throw new BadRequestError("Invalid or expired token")
+  }
+
+  await User.update({
+    password: await hashPassword(newPassword),
+    resetPasswordToken: null,
+    resetPasswordTokenExpiresAt: null
+  }, {where:{id: user.id}});
+};
+
+export const forgotPassword = async (req) => {
+const clientUrl = process.env.NODE_ENV == "Development" ? process.env.LOCAL_CLIENT_URL : process.env.PROD_CLIENT_URL
+  const { email } = req.body;
+
+  const user = await User.findOne({ where: { email }, raw: true });
+  if (!user) {
+    throw new BadRequestError("Invalid or expired token")
+  }
+
+  const token = crypto.randomBytes(32).toString('hex');
+  const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+  user.resetPasswordToken = tokenHash;
+  user.resetPasswordTokenExpiresAt = new Date(Date.now() + 60 * 60 * 1000); 
+  await User.update(user, {where: {id: user.id}});
+
+  const resetLink = `${clientUrl}/reset-password?token=${token}&userId=${user.id}`;
+  await sendResetPasswordLink(email, resetLink)
 }
 
 

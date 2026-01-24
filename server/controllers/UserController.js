@@ -87,4 +87,26 @@ export const resendEmailVerification = async (req, res) => {
   }
 }
 
+export const forgotPassword = async (req, res) => {
+  try {
+    await userService.forgotPassword(req)
+    res.json("Reset password link email resent")
+  }
+  catch(error) {
+    console.log(error)
+    res.status(error.statusCode || 500).json(error.message || "Internal server error")
+  }
+}
+
+export const resetPassword = async (req, res) => {
+  try {
+    await userService.resetPassword(req)
+    res.json("Reset password successful")
+  }
+  catch(error) {
+    console.log(error)
+    res.status(error.statusCode || 500).json(error.message || "Internal server error")
+  }
+}
+
 

@@ -54,6 +54,8 @@ import EventCalendar from "./pages/admin/calendar/EventCalendar"
 import PrivacyPolicy from "./pages/customer/home/PrivacyPolicy"
 import TermsOfService from "./pages/customer/home/TermsOfService"
 import RefundPolicy from "./pages/customer/home/RefundPolicy"
+import ForgotPassword from "./pages/login/ForgotPassword"
+import ResetPassword from "./pages/login/ResetPassword"
 
 function App() {
   const user = useSelector(state => state.user).user
@@ -75,7 +77,7 @@ function App() {
         dispatch(addNotification())
       });
 
-      socket.on("receiveBookingNotification", ()=>{
+      socket.on("receiveBookingNotification", () => {
         dispatch(addNotification())
       })
 
@@ -90,8 +92,10 @@ function App() {
   }, [message]);
 
   useEffect(() => {
-    dispatch(fetchNotifications({order: notifications?.data?.filter(not => not.notificationType == "OrderNotification"), 
-     booking: notifications?.data?.filter(not => not.notificationType == "BookingNotification")}
+    dispatch(fetchNotifications({
+      order: notifications?.data?.filter(not => not.notificationType == "OrderNotification"),
+      booking: notifications?.data?.filter(not => not.notificationType == "BookingNotification")
+    }
     ))
   }, [notifications])
 
@@ -112,7 +116,7 @@ function App() {
           <Route path="*" element={<NotFoundPage />} />
           <Route path="/" element={<HomeRedirect />} />
           <Route path="/home" element={<Home />} />
-           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/refund-policy" element={<RefundPolicy />} />
           <Route path="/booking/payment" element={<PaymentSection />} />
@@ -129,7 +133,7 @@ function App() {
             <Route path="/updateItem" element={<UpdateItemUI />} />
             <Route path="/orderlist" element={<OrderList />} />
             <Route path="/allergens" element={<Allergens />} />
-             <Route path="/eventCalendar" element={<EventCalendar />} />
+            <Route path="/eventCalendar" element={<EventCalendar />} />
             <Route path="/eventBookings" element={<EventBookings />} />
             <Route path="/eventBooking" element={<UpdateEventBookingChargeUI />} />
             <Route path="/allergen" element={<AddAllergen />} />
@@ -151,6 +155,10 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/send-password-reset-link-success" element={<ForgotPassword />} />
+
         </Route>
         <Route element={<Layout />}>
           <Route path="/not-found" element={<NotFoundPage />} />

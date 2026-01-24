@@ -22,6 +22,8 @@ import { AdminSetting } from "../models/AdminSettings.js"
 import { format } from "date-fns"
 import { generateReceiptHTML } from "../emails/templates/CustomerReceiptTemplate.js"
 import puppeteer from "puppeteer"
+import { sendCustomerPickupEmail } from "../emails/sendMessages/sendCustomerPickupEmail.js"
+import { sendCustomerOrderReadyForPickup } from "../emails/sendMessages/sendCustomerOrderReadyForShipmentEmail.js"
 
 dotenv.config()
 
@@ -256,7 +258,19 @@ export const updateOrderStatus = async (req, transaction) => {
     // }
     const { status } = req.body
     const { id } = req.params
-    const existingOrder = await Order.findByPk(id, {raw: true})
+    const existingOrder = await Order.findByPk(id, {
+        raw: true,
+        include: [
+            {
+                model: User,
+                attributes: ["firstName", "lastName", "email"]
+            },
+            {
+                model: Shipping,
+                attributes: ["address"]
+            }
+        ]
+    })
     if (!existingOrder) {
         const errMsg = `Order ${id} not found`
         throw new BadRequestError(errMsg)
@@ -337,6 +351,12 @@ export const updateOrderStatus = async (req, transaction) => {
         try{
             console.log("create delivery job")
         //    await createDeliveryJob(createDeliveryJobRequest)
+           if(existingOrder.deliveryMethod == "pickup"){
+             await sendCustomerPickupEmail(existingOrder)
+           }
+           else{
+            await sendCustomerOrderReadyForPickup(existingOrder)
+           }
         }
         catch(err){
             console.log(err)

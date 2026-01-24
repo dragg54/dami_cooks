@@ -6,7 +6,7 @@ import CheckBoxInput from "../../components/input/CheckBoxInput"
 import Image from "../../components/image/Image"
 import { PostLogin } from "./api/PostLogin"
 import Spinner from "../../components/Spinner"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import * as Yup from 'yup'
 
 
@@ -58,7 +58,7 @@ const Login = () => {
                         <Button disabled={!isValid || isSubmitting} className={'w-full md:py-3 !rounded-full mt-1 !bg-[#d01110]'}>
                             {isLoading ? <Spinner style={'!border-t-white !border-gray-200 !mx-auto !h-5 !w-5'} isLoading={isLoading}/> : "Log in"}
                         </Button>
-                        <p className="underline text-gray-600 -mt-1">Forgot password? </p>
+                        <Link to="/forgot-password" className="underline text-gray-600 hover:text-gray-800 -mt-1">Forgot password? </Link>
                     </Form>
                          )}
                 </Formik>
