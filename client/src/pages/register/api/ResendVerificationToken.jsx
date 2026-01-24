@@ -1,10 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { usePostData } from "../../../hooks/api/usePostData";
+import { useDispatch } from "react-redux";
+import { openPopup } from "@/redux/PopupSlice";
 
 export const ResendVerificationToken = () =>{
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     const onSuccess = () =>{
-            console.log("Verification token resent")
+            dispatch(openPopup({message: "Email verification sent"}))
         }
 
     const onError = (error) =>{
