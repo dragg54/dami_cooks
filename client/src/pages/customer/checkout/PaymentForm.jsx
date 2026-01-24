@@ -23,12 +23,12 @@ function PaymentForm({ clientSecret, deliveryDetails, shippingChargeResponse }) 
      //validate email
      const emailValue = deliveryDetails?.email?.replace(/\s/g, "");
      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      
+
      const isValid =
        deliveryDetails?.firstName?.length > 0
        && deliveryDetails?.lastName?.length > 0
-       && (deliveryDetails?.phone?.length > 0 || !ukPhoneRegex.test(phoneValue))
-       && (deliveryDetails?.email?.length > 0 || !emailRegex.test(emailValue))
+       && (deliveryDetails?.phone?.length > 0 && ukPhoneRegex.test(phoneValue))
+       && (deliveryDetails?.email?.length > 0 && emailRegex.test(emailValue))
        && ((deliveryDetails.deliveryMethod == "pickup") || (deliveryDetails?.deliveryMethod != "pickup"
          && (
            deliveryDetails?.postalCode?.length > 4
@@ -36,7 +36,6 @@ function PaymentForm({ clientSecret, deliveryDetails, shippingChargeResponse }) 
      setIsValidForm(isValid)
 
    }, [deliveryDetails])
-
   const handleSubmit = async (e) => {
     e.preventDefault()
     setPaymentIntentLoading(true)
