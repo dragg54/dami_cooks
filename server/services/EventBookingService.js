@@ -24,7 +24,7 @@ class EventBookingService {
             message: `You have a new booking`,
             notificationType: 'BookingNotification'
         }, { transaction: transaction })
-        await sendMerchantEventBookingQuotationRequestedMail(data.bknId, data.name, data.MERCHANT_GMAIL, `${data.eventDate} ${data.eventStartTime}`,
+        await sendMerchantEventBookingQuotationRequestedMail(data.bknId, data.name, process.env.MERCHANT_GMAIL, `${data.eventDate} ${data.eventStartTime}`,
             data.eventLocation
         )
     }
@@ -40,6 +40,7 @@ class EventBookingService {
             ...queryOpts,
             limit,
             offset,
+            order: [["createdAt", "DESC"]],
         });
         return getPagingData(bookings, page, limit)
     }
@@ -66,7 +67,7 @@ class EventBookingService {
                 EventBookingService.clientUrl + `/eventBooking/${id}/quotation-acknowlegement/${existingBooking.userId}`
         }, { where: { id }, transaction })
         const user = await User.findByPk(userId)
-        const userNames = existingBooking.dataValues.firstName + " " + existingBooking.dataValues.lastName
+        const userNames = existingBooking.dataValues.name
         const customerEventBookingLink = EventBookingService.clientUrl + `/eventBooking/${id}/quotation-acknowlegement/${existingBooking.dataValues.userId}`
         await EventBookingItem.destroy({ where: { eventBookingId: id }, transaction })
         await EventBookingItem.bulkCreate(bookingItems, { transaction })
