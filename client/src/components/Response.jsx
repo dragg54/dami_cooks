@@ -9,9 +9,9 @@ import Spinner from "./Spinner";
 const Response = ({ style, responseStatus, isLoading }) => {
   if(isLoading){
     return(
-      <div className={style + ` md:mt-6 gap-6 w-full px-4 items-center py-3 flex`}>
+      <div className={style + ` md:mt-6 gap-6 w-full bg-gray-50 px-4 items-center py-3 flex`}>
        <div className="w-6 h-6">
-          <Spinner {...{isLoading}}/>
+          <Spinner {...{isLoading, style: "w-6 h-6"}}/>
        </div>
           <p className="text-gray-600">Process request...</p>
     </div>

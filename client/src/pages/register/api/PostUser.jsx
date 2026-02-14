@@ -15,6 +15,12 @@ export const PostUser = () =>{
        if(error.status == 409){
         dispatch(openPopup({message: "User already exists", success: false}))
        }
+       if(error.status == 400){
+        dispatch(openPopup({message: "Invalid input data ", success: false}))
+       }
+       else{
+        dispatch(openPopup({message: "An error occurred. Please try again", success: false}))
+       }
     }
     return usePostData({onSuccess, onError, url: "/users"})
 }

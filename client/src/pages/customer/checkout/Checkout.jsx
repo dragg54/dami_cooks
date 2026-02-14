@@ -65,7 +65,7 @@ useEffect(() => {
     ))
     if (user?.isLoggedIn) {
      
-      mutate({ items: cartItems, idempotencyKey, shipping: shippingChargeResponse, deliveryMethod: deliveryDetails?.deliveryMethod || "pickup" })
+      mutate({ items: cartItems, idempotencyKey, shipping: (!deliveryDetails || deliveryDetails?.deliveryMethod == "pickup") ? null : shippingChargeResponse, deliveryMethod: deliveryDetails?.deliveryMethod || "pickup" })
     }
   }, [shippingChargeResponse, deliveryDetails?.deliveryMethod, deliveryDetails?.address])
  
