@@ -279,7 +279,6 @@ export const updateOrderStatus = async (req, transaction) => {
         (existingOrder.status == orderStatus.DELIVERED
             || existingOrder.status == orderStatus.CANCELLED
             || existingOrder.status == orderStatus.CONFIRMED
-            || existingOrder.status == orderStatus.CANCELLED
             || existingOrder.status == orderStatus.SHIPPED
             || existingOrder.status == orderStatus.MERCHANT_CANCELLED
         ) && (

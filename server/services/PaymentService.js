@@ -406,7 +406,7 @@ async function processOrderPayment(req, transaction) {
                                 shippingAmount: (deliveryMethod == "pickup" ? 0 : (shipping?.amount_with_tax || 0)),
                                 cartId: userCart.dataValues.id,
                                 cartItems: JSON.stringify(paymentItem),
-                                shippingId: shipping.id,
+                                shippingId: shipping?.id,
                                 paymentReason: "order"
                             }
                         });

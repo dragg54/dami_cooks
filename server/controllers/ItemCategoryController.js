@@ -6,6 +6,7 @@ export const getItemCategories = async (req, res) => {
         res.json(itemCategories)
     }
     catch (error) {
+        console.log(error)
         res.status(error.statusCode || 500).json(error.message
             || "Internal server error"
         );

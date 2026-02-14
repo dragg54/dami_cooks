@@ -27,7 +27,7 @@ export const loginUser = async (req, res) => {
       }).send(user)
     }
     catch (error) {
-      console.log(error.message)
+      console.log(error)
       res.status(error.statusCode || 500).json(error.message || "Internal server error")
     }
   }
