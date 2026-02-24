@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import { userRouter } from './routes/UserRoute.js'
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs'
 import cors from 'cors'
 import { itemRoute } from './routes/ItemRoute.js'
 import { subItemRoute } from './routes/SubItemRoute.js'
@@ -26,7 +27,7 @@ import { shippingRoute } from './routes/ShippingRoute.js';
 import { sendEmail } from './services/EmailService.js';
 import { startReceiptCron } from './jobs/SendReceiptJob.js';
 import helmet from 'helmet'
-
+import https from "https"
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -59,7 +60,14 @@ const corsOptions = {
   },
 };
 
-const server = http.createServer(app, { cors: corsOptions });
+let server =  http.createServer(app, { cors: corsOptions });
+if(NODE_ENV == "Production"){
+  const options = {
+  key: fs.readFileSync(process.env.KEY_PATH),
+  cert: fs.readFileSync(process.env.CERT_PATH),
+};
+  server = https.createServer(options, app);
+}
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors(corsOptions))
@@ -129,7 +137,7 @@ io.on('connection', (socket) => {
 }
 )
 
-server.listen(port, () => {
+server.listen(process.env.PORT || port, () => {
   console.log(process.env.NODE_ENV)
   console.log(`Listening to port ${port}`)
 })
