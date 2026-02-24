@@ -61,7 +61,7 @@ const corsOptions = {
 };
 
 let server =  http.createServer(app, { cors: corsOptions });
-if(NODE_ENV == "Production"){
+if(process.env.NODE_ENV == "Production"){
   const options = {
   key: fs.readFileSync(process.env.KEY_PATH),
   cert: fs.readFileSync(process.env.CERT_PATH),
