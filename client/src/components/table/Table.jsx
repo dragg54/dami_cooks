@@ -49,7 +49,7 @@ const CustomTable = ({
   const [sorting, setSorting] = useState([]);
   const columns =tableData && tableData.length && Object.keys(tableData[0]).map((dataKey) => ({
      accessorKey: dataKey,
-     header: capitalizeString(removeSpecialChars(dataKey)),
+     header: capitalizeString((dataKey)),
      sortingKeyFn: 'auto',
      cell: info => {
       const value = info.getValue();

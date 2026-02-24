@@ -24,6 +24,7 @@ import { generateReceiptHTML } from "../emails/templates/CustomerReceiptTemplate
 import puppeteer from "puppeteer"
 import { sendCustomerPickupEmail } from "../emails/sendMessages/sendCustomerPickupEmail.js"
 import { sendCustomerOrderReadyForPickup } from "../emails/sendMessages/sendCustomerOrderReadyForShipmentEmail.js"
+import { sendMerchantOrdeDeliveryJobAccepted } from "../emails/sendMessages/SendMerchantOrderDeliveryJobAccepted.js"
 
 dotenv.config()
 
@@ -319,7 +320,7 @@ export const updateOrderStatus = async (req, transaction) => {
             "job": {
                 "pickups": [
                     {
-                    address: "32 Coombe Ln, Raynes Park, London SW20 0LA",
+                    address: adminUser.address,
                     // address: adminSettings.pickupAddress,
                     firstName: adminUser.firstName,
                     lastName: adminUser.lastName,
@@ -332,8 +333,8 @@ export const updateOrderStatus = async (req, transaction) => {
                     {
                         "package_type": "small",
                         "package_description": "Food item",
-                        "client_reference": "{{client_reference}}",
-                        "address": "23 Ethelbert Rd, London SW20 8QD",
+                        "client_reference": existingOrder.orderCd,
+                        "address": initializedShipping.address,
                         "comment": "Delivery of food item",
                         "contact": {
                             "firstname": customer.firstName,
@@ -347,15 +348,21 @@ export const updateOrderStatus = async (req, transaction) => {
                 ]
             }
         }
-        try{
-            console.log("create delivery job")
-        //    await createDeliveryJob(createDeliveryJobRequest)
-           if(existingOrder.deliveryMethod == "pickup"){
-             await sendCustomerPickupEmail(existingOrder)
-           }
-           else{
-            await sendCustomerOrderReadyForPickup(existingOrder)
-           }
+        try {
+            if (existingOrder.deliveryMethod == "pickup") {
+                await sendCustomerPickupEmail(existingOrder)
+            }
+            else {
+                const deliveryJobData = await createDeliveryJob(createDeliveryJobRequest)
+                if(deliveryJobData){
+                    await Shipping.update({
+                    status: "PENDING",
+                    stuartTrackingUrl: deliveryJobData.deliveries[0].client_tracking_url,
+                    stuartJobId: deliveryJobData.id,
+                    deliveryFee: deliveryJobData.pricing?.price_tax_included
+                }, {where: {id: initializedShipping.id}})
+                }
+            }
         }
         catch(err){
             console.log(err)
@@ -494,3 +501,4 @@ export const generateReceiptPDF = async (order) => {
   await browser.close();
   return pdfBuffer;
 };
+

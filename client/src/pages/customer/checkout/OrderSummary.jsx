@@ -40,7 +40,7 @@ const OrderSummary = ({ shippingChargeResponse, shippingChargeLoading, deliveryD
                             </>}
                     </span>
                 </div>
-                <p className="text-lg font-semibold mt-4 flex gap-4 items-center"><span>Total</span><span><Euro />{cartTotal}</span></p>
+                <p className="text-lg font-semibold mt-4 flex gap-4 items-center"><span>Total</span><span><Euro />{cartTotal + Number(shippingChargeResponse?.amount_with_tax?.toFixed(2) || 0)}</span></p>
 
             </div>
         </div>

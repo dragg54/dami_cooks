@@ -19,7 +19,6 @@ export async function sendEmail(recipient, subject, message, attachment) {
       html: message,
       attachments: attachment
     });
-    console.log("Email Error", error)
   }
   catch(err){
     console.log(err)

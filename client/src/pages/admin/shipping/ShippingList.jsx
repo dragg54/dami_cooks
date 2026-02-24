@@ -35,8 +35,10 @@ const ShippingList = () => {
   const processedData = shippingData?.rows?.map((dta) => ({
     shippingId: dta.id,
     "Order Number": dta.order?.orderCd,
-    "Customer Name": `${dta.order?.user?.firstName || ""} ${dta.Order?.User?.lastName || ""}`,
+    "Delivery Job Id": dta.stuartJobId,
+    "Customer Name": `${dta.order?.user?.firstName || ""} ${dta.Order?.user?.lastName || ""}`,
     status: dta.status || "NA",
+    trackingUrl: dta.stuartTrackingUrl,
     city: dta.city,
     courier: dta.provider || "—",
     eta: dta.etaMinutes ? `${dta.etaMinutes} mins` : "—",

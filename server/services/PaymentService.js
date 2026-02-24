@@ -322,14 +322,14 @@ async function processOrderPayment(req, transaction) {
                     existingPayment.gatewayPaymentId);
                 await stripe.paymentIntents.update(existingPayment.gatewayPaymentId, {
                     amount: Math.round(totalCartItemAmount * 100) +
-                        Math.round((deliveryMethod === "pickup" ? 0 : (shipping?.amount_with_tax || 0)) * 100),
+                        Math.round((deliveryMethod === "pickup" ? 0 : (shipping?.shippingCharge || 0)) * 100),
                     metadata: {
                         orderCd: existingOrder.orderCd,
                         orderedBy: req.user.id,
-                        shippingAmount: (deliveryMethod=="pickup" ? 0 : (shipping?.amount_with_tax || 0)),
+                        shippingAmount: (deliveryMethod=="pickup" ? 0 : (shipping?.shippingCharge || 0)),
                         cartId: userCart.dataValues.id,
+                        shipping: JSON.stringify(shipping),
                         cartItems: JSON.stringify(paymentItem),
-                        shippingId: shipping.id,
                         paymentReason: "order"
                     }
                 });
@@ -337,10 +337,14 @@ async function processOrderPayment(req, transaction) {
                 await Payment.update(
                     {
                         amount: Math.round(totalCartItemAmount) +
-                            Math.round((deliveryMethod === "pickup" ? 0 : (shipping?.amount_with_tax || 0)))
+                            Math.round((deliveryMethod === "pickup" ? 0 : (shipping?.shippingCharge || 0)))
                     },
                     { where: { id: existingPayment.id }, transaction }
                 )
+
+                await Order.update({
+                    deliveryMethod
+                }, {where: {id: existingOrder.id}})
                 return {
                     clientSecret: paymentIntent.client_secret,
                 };
@@ -362,12 +366,13 @@ async function processOrderPayment(req, transaction) {
             newOrder = newOrder?.toJSON()
             const paymentIntent = await stripe.paymentIntents.create({
                 amount: Math.round(totalCartItemAmount * 100) +
-                    Math.round((deliveryMethod === "pickup" ? 0 : (shipping?.amount_with_tax || 0)) * 100),
+                    Math.round((deliveryMethod === "pickup" ? 0 : (shipping?.shippingCharge || 0)) * 100),
                 currency: "eur",
                 metadata: {
                 orderCd: newOrder.orderCd,
                 orderedBy: req.user.id,
-                shippingAmount: deliveryMethod=="pickup" ? 0 : shipping?.amount_with_tax ,
+                shipping: JSON.stringify(shipping),
+                shippingAmount: deliveryMethod=="pickup" ? 0 : shipping?.shippingCharge ,
                 cartId: userCart.dataValues.id,
                 cartItems: JSON.stringify(paymentItem),
                 paymentReason: "order"
@@ -380,7 +385,7 @@ async function processOrderPayment(req, transaction) {
             status: "initialized",
             paymentReason: "order",
             amount: Math.round(totalCartItemAmount) +
-                Math.round((deliveryMethod === "pickup" ? 0 : (shipping?.amount_with_tax || 0))),
+                Math.round((deliveryMethod === "pickup" ? 0 : (shipping?.shippingCharge || 0))),
             paymentGateway: "STRIPE",
             paymentType: "Card"
         }, { transaction })
@@ -399,11 +404,12 @@ async function processOrderPayment(req, transaction) {
                             existingPayment.gatewayPaymentId);
                         await stripe.paymentIntents.update(existingPayment.gatewayPaymentId, {
                             amount: Math.round(totalCartItemAmount * 100) +
-                                Math.round((deliveryMethod === "pickup" ? 0 : (shipping?.amount_with_tax || 0)) * 100),
+                                Math.round((deliveryMethod === "pickup" ? 0 : (shipping?.shippingCharge || 0)) * 100),
                             metadata: {
                                 orderCd: existingOrder.orderCd,
                                 orderedBy: req.user.id,
-                                shippingAmount: (deliveryMethod == "pickup" ? 0 : (shipping?.amount_with_tax || 0)),
+                                shipping: JSON.stringify(shipping),
+                                shippingAmount: (deliveryMethod == "pickup" ? 0 : (shipping?.shippingCharge || 0)),
                                 cartId: userCart.dataValues.id,
                                 cartItems: JSON.stringify(paymentItem),
                                 shippingId: shipping?.id,
@@ -414,7 +420,7 @@ async function processOrderPayment(req, transaction) {
                         await Payment.update(
                             {
                                 amount: Math.round(totalCartItemAmount * 100) +
-                                    Math.round((deliveryMethod === "pickup" ? 0 : (shipping?.amount_with_tax || 0)) * 100)
+                                    Math.round((deliveryMethod === "pickup" ? 0 : (shipping?.shippingCharge || 0)) * 100)
                             },
                             { where: { id: existingPayment.id }, transaction }
                         )
@@ -435,7 +441,7 @@ async function processOrderPayment(req, transaction) {
 }
 
 async function processWebhookForOrderPayment(paymentIntent, transaction) {
-    const { orderedBy, cartItems, cartId, orderCd } = paymentIntent.metadata
+    const { orderedBy, cartItems, cartId, orderCd, shipping } = paymentIntent.metadata
     const customer = await User.findOne({ where: { id: orderedBy }, attributes: ['firstName', "email"] })
     const existingOrder = await Order.findOne({ where: { orderCd } })
     if (!existingOrder) {
@@ -458,16 +464,21 @@ async function processWebhookForOrderPayment(paymentIntent, transaction) {
     }, { where: { orderId: existingOrder.dataValues.id }, transaction })
 
     //Create shipping
-    await Shipping.create({
+    const shippingDetails = JSON.parse(shipping)
+    if(shippingDetails.deliveryMethod == "delivery"){
+     await Shipping.create({
         userId: orderedBy,
         orderId: existingOrder.dataValues.id,
-        address: paymentIntent.shipping.address.line1,
-        city: paymentIntent.shipping.address.city,
-        phone: paymentIntent.shipping.phone,
+        address: shippingDetails.address,
+        city: shippingDetails.city,
+        phone: shippingDetails.phone,
         email: customer.dataValues.email,
-        postalCode: paymentIntent.shipping.address.postal_code,
-        state: paymentIntent.shipping.state
+        postalCode: shippingDetails.postalCode,
+        state: shippingDetails.state,
+        deliveryFee: shippingDetails.shippingCharge,
     }, { transaction })
+    }
+   
     await CartItem.destroy({
         where: {
             cartId

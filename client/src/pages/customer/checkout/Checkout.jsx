@@ -17,11 +17,11 @@ const Checkout = () => {
   const { mutate: mutateShippingCharge, isError, isLoading: shippingChargeLoading } = GetShippingCharge({ setResponseStatus: setShippingChargeResponse })
   const navigate = useNavigate()
   const userDetails = {
-    firstName: user?.user?.firstName,
-    lastName: user?.user?.lastName,
-    email: user?.user?.email,
-    phone: user?.user?.phone,
-    address: user?.user?.address,
+    firstName: user?.user?.firstName || "",
+    lastName: user?.user?.lastName || "",
+    email: user?.user?.email || "",
+    phone: user?.user?.phone || "",
+    address: user?.user?.address || "",
     deliveryMethod: "pickup"
   }
 
@@ -64,10 +64,18 @@ useEffect(() => {
       { ...cartItem.item, quantity: cartItem.quantity }
     ))
     if (user?.isLoggedIn) {
-     
-      mutate({ items: cartItems, idempotencyKey, shipping: (!deliveryDetails || deliveryDetails?.deliveryMethod == "pickup") ? null : shippingChargeResponse, deliveryMethod: deliveryDetails?.deliveryMethod || "pickup" })
+      if(deliveryDetails){
+        if(deliveryDetails.deliveryMethod == "pickup"){
+                mutate({ items: cartItems, idempotencyKey, shipping: null, deliveryMethod: "pickup" })
+        }
+        else{
+          if(deliveryDetails?.address && deliveryDetails?.phone){
+            mutate({ items: cartItems, idempotencyKey, shipping: deliveryDetails, deliveryMethod: "delivery" })
+          }
+        }
+      }
     }
-  }, [shippingChargeResponse, deliveryDetails?.deliveryMethod, deliveryDetails?.address])
+  }, [shippingChargeResponse, deliveryDetails])
  
   if(!user || !user.user || !user?.isLoggedIn){
     return(
@@ -84,7 +92,7 @@ useEffect(() => {
 
   return (
     <div className="w-full flex flex-col md:flex-row px-4 md:px-0 mb-20">
-      <BillingDetails {...{ deliveryDetails, setDeliveryDetails }} />
+      <BillingDetails {...{ deliveryDetails, setDeliveryDetails, shippingChargeResponse }} />
       <div className="md:w-1/2 w-full">
         <OrderSummary {...{shippingChargeResponse, shippingChargeLoading, deliveryDetails}}/>
         <Payment {...{ deliveryDetails, clientSecret, setClientSecret, shippingChargeResponse }} />

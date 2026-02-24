@@ -10,6 +10,7 @@ import { UpdateNotificationStatus } from './api/UpdateNotificationStatus'
 import { useDispatch } from 'react-redux'
 import { readNotifications } from '../../../redux/NotificationSlice'
 import { removeSpecialChars } from '@/utils/removeSpecialCharacters'
+import { Euro } from '@/constants/Currency'
 
 const OrderList = () => {
   const [size, setSize] = useState(10)
@@ -37,7 +38,6 @@ const OrderList = () => {
     orderCd: filterValues['ORDER NUMBER'].value
   }), [size, page, debouncedQuery, fetchEnabled]);
 
-
   const {data:orderData, refetch, isLoading} = FetchOrders({filters})
   const dispatch = useDispatch()
 
@@ -48,7 +48,7 @@ const OrderList = () => {
       "Customer Name": dta.user?.firstName + " " + dta.user?.lastName,
       status: removeSpecialChars(dta.status),
       "city": dta.shipping?.city,
-      amount: dta.amount,
+      "Amount £": dta.amount,
        "Ordered At": format(new Date(dta.createdAt), 'dd-MM-yyy HH:mm')
     }
   ))

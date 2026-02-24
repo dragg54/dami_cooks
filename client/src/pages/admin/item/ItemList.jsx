@@ -4,6 +4,7 @@ import CustomTable from "../../../components/table/Table"
 import { FetchAllItems } from "./api/FetchAllItems"
 import UpdateItemUI from "./UpdateItemUI"
 import { format } from "date-fns"
+import { removeSpecialChars } from "@/utils/removeSpecialCharacters"
 
 const ItemList = () => {
   const [debouncedQuery, setDebouncedQuery] = useState("")
@@ -38,13 +39,13 @@ const ItemList = () => {
       "Item Number": dta.itemCd,
       name: dta.name,
       description: dta.description,
-      itemType: dta.itemType,
+      itemType: removeSpecialChars(dta.itemType),
       imageUrl: dta.imageUrl,
       uom: dta?.uom,
       status: dta.status,
       allergens: dta.allergens,
       "Item Category": { id: dta.itemCategory.id, name: dta.itemCategory?.name },
-      price: dta.price,
+      "Price £": dta.price,
       "Created At": format(new Date(dta.createdAt), 'dd-MM-yyy HH:mm'),
       "Updated At": format(new Date(dta.updatedAt), 'dd-MM-yyy HH:mm')
     }

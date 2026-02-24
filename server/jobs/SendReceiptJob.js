@@ -15,15 +15,13 @@ dotenv.config()
 export const startReceiptCron = () => {
   const cronInterval = process.env.RECEIPT_CRON_INTERVAL || "0 * * * *"
   cron.schedule(cronInterval, async () => {
-    console.log(`[${new Date().toISOString()}] Running receipt cron...`);
-
     try {
       const twoHoursAgo = new Date();
       twoHoursAgo.setHours(twoHoursAgo.getMinutes() - 10);
 
       const ordersToSend = await Order.findAll({
         where: {
-          status: 'SHIPPED',
+          status: 'DELIVERED',
           updatedAt: { [Op.lte]: twoHoursAgo },
         }, include: [{
             model: User,

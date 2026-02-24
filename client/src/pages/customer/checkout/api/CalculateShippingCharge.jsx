@@ -2,11 +2,12 @@ import { usePostData } from "@/hooks/api/usePostData"
 
 export const GetShippingCharge = ({ setResponseStatus }) => {
     const onSuccess = (res) => {
+        console.log("res", res)
         setResponseStatus(res.data)
     }
 
     const onError = (error) => {
-        setResponseStatus(error.response.status)
+        setResponseStatus(error.status)
 
     }
     return usePostData({

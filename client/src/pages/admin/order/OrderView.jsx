@@ -10,13 +10,13 @@ import { CiDeliveryTruck } from "react-icons/ci";
 
 const OrderView = () => {
   const dispatch = useDispatch()
-  const orderId = useSelector(state => state.globalModal).props.orderId
-  
+  const order = useSelector(state => state.globalModal).props
+  const orderId = order?.orderId
+
   const orderItemData = FetchOrder(orderId)
   if (!orderItemData) {
     return <>Loading...</>
   }
-  console.log(orderItemData)
   return (
     <div onClick={(e) => e.stopPropagation()} className='md:w-[550px] max-h-[600px] overflow-hidden -mt-10  text-gray-500 w-[95%] md:p-6 p-4 min-h-[300px] bg-white rounded-md shadow-md shadow-gray-400'>
       <p className='font-semibold text-xl bg-gray-300 p-2 text-gray-900 pb-3 w-full border-b border-gray-300'>Customer Order</p>
@@ -30,22 +30,23 @@ const OrderView = () => {
       <div className="w-full  border border-gray-300 my-5"></div>
       <p className=' text-base font-bold  text-gray-900'>Order Items</p>
       <OrderItemTable {...{ orderItems: orderItemData.orderItems }} />
-    {
-      orderItemData?.status == "PLACED" ? 
-      <div className="mt-6 ml-auto gap-2 flex">
-        <Button onClick={() => {
-          dispatch(openModal({ component: <AcceptOrRejectOrder {...{ status: 'DECLINE',  id: orderItemData.id }} /> }))
-        }} className={'!bg-red-600 !rounded-full !w-[100px]'}>Decline</Button>
-        <Button onClick={() => {
-          dispatch(openModal({ component: <AcceptOrRejectOrder {...{ status: 'CONFIRMED', id: orderItemData.id }} /> }))
-        }} className={'!bg-green-600 !rounded-full !w-[100px]'}>Confirm</Button>
-      </div>
-      : <Button
-        className={'flex !w-[120px] !rounded-full !ml-auto justify-center items-center gap-2'}
-         onClick={() => {
-        dispatch(openModal({ component: <AcceptOrRejectOrder {...{ status: 'SHIP', id: orderItemData.id }} /> }))
-      }}><CiDeliveryTruck className="text-2xl"/> Ship</Button>
-    }
+      {
+        orderItemData?.status == "PLACED" ?
+          <div className="mt-6 ml-auto gap-2 flex">
+            <Button onClick={() => {
+              dispatch(openModal({ component: <AcceptOrRejectOrder {...{ status: 'DECLINE', id: orderItemData.id }} /> }))
+            }} className={'!bg-red-600 !rounded-full !w-[100px]'}>Decline</Button>
+            <Button onClick={() => {
+              dispatch(openModal({ component: <AcceptOrRejectOrder {...{ status: 'CONFIRMED', id: orderItemData.id }} /> }))
+            }} className={'!bg-green-600 !rounded-full !w-[100px]'}>Confirm</Button>
+          </div>
+          : <Button
+            disabled={order?.status == "DELIVERED"}
+            className={'flex !w-[120px] !rounded-full !ml-auto justify-center items-center gap-2'}
+            onClick={() => {
+              dispatch(openModal({ component: <AcceptOrRejectOrder {...{ status: 'SHIP', id: orderItemData.id }} /> }))
+            }}><CiDeliveryTruck className="text-2xl" /> Ship</Button>
+      }
     </div>
   )
 }

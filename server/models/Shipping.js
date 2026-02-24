@@ -46,6 +46,7 @@ export const Shipping = db.define('shipping', {
       "PICKUP_STARTED",
       "PICKED_UP",
       "DROP_OFF_STARTED",
+      "COURIER_WAITING_AT_DROPOFF",
       "DELIVERED",
       "CANCELLED",
       "FAILED"
@@ -55,7 +56,7 @@ export const Shipping = db.define('shipping', {
     type: DataTypes.DECIMAL(10, 2)
   },
   etaMinutes: {
-    type: DataTypes.INTEGER
+    type: DataTypes.STRING
   },
   distanceKm: {
     type: DataTypes.DECIMAL(10, 2)

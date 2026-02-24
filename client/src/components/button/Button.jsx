@@ -4,12 +4,11 @@ import Spinner  from "../Spinner"
 
 // eslint-disable-next-line react/prop-types
 const Button = ({ className, children, ...props }) => {
-  console.log("disabled", props.disabled)
   return (
     <button
      disabled = {props.disabled || false}
       className={cn(
-        `${props.disabled && 'opacity-50 cursor-not-allowed'} cursor-pointer px-4 py-2 bg-primary z-10  w-full text-xs md:text-sm text-white rounded-md hover:shadow-lg shadow-gray-600`,
+        `${props.disabled && 'opacity-50 !cursor-not-allowed'} cursor-pointer px-4 py-2 bg-primary z-10  w-full text-xs md:text-sm text-white rounded-md hover:shadow-lg shadow-gray-600`,
         className
       )}
       {...props}

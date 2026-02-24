@@ -4,7 +4,7 @@ import * as Yup from 'yup'
 import { Form, Formik } from "formik"
 import { useState } from "react"
 
-const BillingDetails = ({ deliveryDetails, setDeliveryDetails }) => {
+const BillingDetails = ({ deliveryDetails, setDeliveryDetails, shippingChargeResponse }) => {
 const [phoneError, setPhoneError] = useState("");
 const [emailError, setEmailError ] = useState("")
 
@@ -54,7 +54,7 @@ const isPickup = deliveryDetails?.deliveryMethod === 'pickup'
               <TextInput
                 label={'First Name'}
                 name={'firstName'}
-                value={deliveryDetails?.firstName}
+                value={deliveryDetails?.firstName || ""}
                 onChange={(e) => handleChange(e)}
               />
             </div>
@@ -62,7 +62,7 @@ const isPickup = deliveryDetails?.deliveryMethod === 'pickup'
               <TextInput
                 label={'Last Name'}
                 name={'lastName'}
-                value={deliveryDetails?.lastName}
+                value={deliveryDetails?.lastName || ""}
                 onChange={(e) => handleChange(e)}
               />
             </div>
@@ -71,7 +71,7 @@ const isPickup = deliveryDetails?.deliveryMethod === 'pickup'
                 label={'Email'}
                 name={'email'}
                 errMsg={emailError}
-                value={deliveryDetails?.email}
+                value={deliveryDetails?.email || ""}
                 onChange={(e) => handleChange(e)}
               />
             </div>
@@ -80,7 +80,7 @@ const isPickup = deliveryDetails?.deliveryMethod === 'pickup'
                 label={'Phone'}
                 name={'phone'}
                 placeholder="+447XXXXXXXXX or 07XXXXXXXXX"
-                value={deliveryDetails?.phone}
+                value={deliveryDetails?.phone || ""}
                 errMsg={phoneError}
                 onChange={(e) => handleChange(e)}
               />
@@ -114,12 +114,14 @@ const isPickup = deliveryDetails?.deliveryMethod === 'pickup'
             </div>
 
             <div className={`w-full mb-3 ${isPickup ? 'opacity-50' : ''}`}>
+              {console.log(shippingChargeResponse)}
               <TextInput
                 label="Delivery Address"
                 name="address"
-                value={deliveryDetails?.address}
+                value={deliveryDetails?.address || ""}
                 onChange={handleChange}
                 disabled={isPickup}
+                errMsg={shippingChargeResponse == 500 && "Invalid address"}
               />
             </div>
 

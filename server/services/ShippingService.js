@@ -8,6 +8,11 @@ import { UnauthorizedError } from "../exceptions/UnauthorizedError.js";
 import { Order } from "../models/Order.js";
 import { Shipping } from "../models/Shipping.js";
 import { getPagination, getPagingData } from "../utils/pagination.js";
+import { sendMerchantOrdeDeliveryJobAccepted } from "../emails/sendMessages/SendMerchantOrderDeliveryJobAccepted.js";
+import { sendCustomerOrderPickedUp } from "../emails/sendMessages/SendCustomerOrderPickedUp.js";
+import { sendMerchantOrderDelivered } from "../emails/sendMessages/SendMerchantOrderDelivered.js";
+import { sendMerchantCourierWaitingEmail } from "../emails/sendMessages/SendMerchantCourierWaitingEmail.js";
+import { sendCustomerCourierWaitingAtDropOff } from "../emails/sendMessages/sendCustomerCourierWaitingAtDropOff.js";
 
 
 dotenv.config()
@@ -59,8 +64,7 @@ export async function getDeliveryQuote({
             job: {
                 "pickup_at": addHours(new Date(), adminSettings.maximumPreparationTimeInHours),
                 pickups: [{
-                    address: "32 Coombe Ln, Raynes Park, London SW20 0LA",
-                    // address: adminSettings.pickupAddress,
+                    address: adminSettings.pickupAddress,
                     firstName: adminUser.firstName,
                     lastName: adminUser.lastName,
                     phone: adminUser.phone,
@@ -68,7 +72,7 @@ export async function getDeliveryQuote({
                     company: process.env.COMPANY_NAME
                 }],
                 dropoffs: [{
-                    address: "23 Ethelbert Rd, London SW20 8QD",
+                    address,
                     package_type: packageSize
                 }],
 
@@ -80,12 +84,12 @@ export async function getDeliveryQuote({
             }
         }
     );
-
     return response.data;
 }
 
 export async function createDeliveryJob(request) {
-    const token = await getStuartToken();
+    try{
+      const token = await getStuartToken();
 
     const response = await axios.post(
         `${STUART_BASE_URL}/v2/jobs`,
@@ -96,10 +100,12 @@ export async function createDeliveryJob(request) {
             }
         }
     );
-
-    console.log("Job delivery creation response", response)
-
     return response.data;
+    }
+    catch(exception){
+      console.log(exception)
+      throw exception;
+    }
 }
 
 
@@ -138,7 +144,12 @@ export async function getShippings(req){
     include: [
       {
         model: Order,
-        attributes: ["id", "orderCd", "status", "amount"]
+        attributes: ["id", "orderCd", "status", "amount"
+        ],
+        include:[{
+          model: User,
+          attributes: ["firstName", "lastName"]
+        }]
       }
     ],
     order: [[sortBy, order]],
@@ -151,61 +162,92 @@ export async function getShippings(req){
 
 }
 
-export async function processShippingWebhook(request){
- if(process.env.NODE_ENV != "Development"){
-   const isValid =  verifySignature(request)
-   if(!isValid){
-    console.log("Failed to validate request")
-    throw UnauthorizedError("Invalid webhook secret")
-   }
-   const event = req.body;
+export const processShippingWebhookEvents = async(req) =>{
+    const event = req.body
+      const jobId = event.data.id;
+      const shippingData = await Shipping.findOne({
+        include:[{
+            model: Order,
+            attributes: ["id", "orderCd"],
+            where:{orderCd: event.data.jobReference || event.data.clientReference},
+            include: [{
+                model: User,
+                attributes: ["firstName", "email"]
+            }]
+        }]})
+      if(!shippingData){
+        throw new BadRequestError(`Shipping with job id ${jobId} not found`)
+      }
+    switch (event.data.status) {            
+        case 'picking':
+            if (shippingData.dataValues.status == "ACCEPTED") {
+                return
+            }
+            await Shipping.update({
+                etaMinutes: event.data.etaToDestination,
+                status: "ACCEPTED",
+                stuartTrackingUrl: event.data.trackingUrl
+            }, { where: { id: shippingData.id } })
+            await sendMerchantOrdeDeliveryJobAccepted(shippingData.dataValues.order.orderCd, jobId, shippingData.dataValues.order.user.firstName + " " +
+                shippingData.dataValues.order.user.lastName,  process.env.MERCHANT_GMAIL)
+            break;
 
-    const shipping = await Shipping.findOne({
-      where: { stuartJobId: event.id }, raw: true
-    });
+        case 'waiting_at_pickup':
+             if (shippingData.dataValues.status == "PICK_UP_STARTED") {
+                return
+            }
+            await Shipping.update({
+                status: "PICK_UP_STARTED",
+            }, { where: { id: shippingData.id } })
+            await sendMerchantCourierWaitingEmail(shippingData.dataValues.order.orderCd, process.env.MERCHANT_GMAIL)
+            break;
 
-    // Always acknowledge webhook
-    if (!shipping) return res.sendStatus(200);
+        case 'delivering':
+        // case 'almost_picking':
+            if (shippingData.dataValues.status == "DROP_OFF_STARTED") {
+                return
+            }
+            await sendCustomerOrderPickedUp(shippingData.dataValues.order.user.firstName + " " +
+                shippingData.dataValues.order.user.lastName, shippingData.dataValues.order.orderCd, shippingData.dataValues.email, jobId);
+                 await Shipping.update({
+              status: "DROP_OFF_STARTED",
+            }, {where:{id: shippingData.id}})
+            break;
+        
+        case 'waiting_at_dropoff':
+            if (shippingData.dataValues.status == "COURIER_WAITING_AT_DROPOFF") {
+                return
+            }
+            await sendCustomerCourierWaitingAtDropOff(shippingData.dataValues.order.orderCd, shippingData.dataValues.email, shippingData.dataValues.order.user.firstName + " " +
+                shippingData.dataValues.order.user.lastName);
+            await Shipping.update({
+                status: "COURIER_WAITING_AT_DROPOFF",
+            }, { where: { id: shippingData.id } })
+            break;
 
-    switch (event.status) {
-      case "job.created":
-        shipping.status = "PENDING";
-        break;
+        case 'finished':
+        case 'delivered':
+            if (shippingData.dataValues.status == "DELIVERED") {
+                return
+            }
+            await sendMerchantOrderDelivered(shippingData.dataValues.order.id, shippingData.dataValues.order.user.firstName + " " +
+                shippingData.dataValues.order.user.lastName, process.env.MERCHANT_GMAIL, jobId);
+            await Shipping.update({
+                status: "DELIVERED",
+            }, { where: { id: shippingData.id } })
 
-      case "job.pickup.en_route":
-        shipping.status = "PICKUP_STARTED";
-        break;
+            await Order.update({
+                status: "DELIVERED"
+            }, { where: { id: shippingData.dataValues.order.id } })
+            break;
 
-      case "job.pickup.completed":
-        shipping.status = "PICKED_UP";
-        shipping.pickedUpAt = new Date();
-        break;
+        case 'failed':
+            await onFailed(event);
+            break;
 
-      case "job.delivery.completed":
-        shipping.status = "DELIVERED";
-        shipping.deliveredAt = new Date();
-
-        await Order.update(
-          { status: "DELIVERED" },
-          { where: { id: shipping.orderId } }
-        );
-        break;
-
-      case "job.failed":
-        shipping.status = "FAILED";
-        break;
-
-      case "job.cancelled":
-        shipping.status = "CANCELLED";
-        break;
+        default:
+            console.log('Unhandled event:', event.data.status);
     }
-
-    if (event.eta) shipping.etaMinutes = event.eta;
-    if (event.price) shipping.deliveryFee = event.price;
-
-    await shipping.save();
- }
-
 }
 
 function verifySignature(req) {
