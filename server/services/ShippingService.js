@@ -17,7 +17,7 @@ import { sendCustomerCourierWaitingAtDropOff } from "../emails/sendMessages/send
 
 dotenv.config()
 
-const STUART_BASE_URL = process.env.NODE_ENV == "Development" ? process.env.STUART_TEST_BASE_URL : process.env.START_PRD_BASE_URL
+const STUART_BASE_URL = process.env.NODE_ENV == "Development" ? process.env.STUART_TEST_BASE_URL : process.env.STUART_PRD_BASE_URL
 const STUART_CLIENT_ID = process.env.NODE_ENV == "Development" ? process.env.STUART_TEST_CLIENT_ID : process.env.STUART_PRD_CLIENT_ID
 const STUART_CLIENT_SECRET = process.env.NODE_ENV == "Development" ? process.env.STUART_TEST_CLIENT_SECRET : process.env.STUART_PRD_CLIENT_SECRET
 
