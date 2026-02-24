@@ -204,7 +204,8 @@ export const getAllOrders = async (req) => {
             },
             {
                 model: Shipping,
-                ...shippingQueryOpts,
+                where: shippingQueryOpts ? shippingQueryOpts.where: {},
+                required: false,
                 attributes: ["address", "city", "phone", "postalCode", "email"],
             }
         ],
