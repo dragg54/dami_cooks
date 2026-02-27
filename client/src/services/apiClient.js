@@ -18,9 +18,7 @@ Axios.interceptors.request.use((config) => {
 Axios.interceptors.response.use(
   response => response,
   error => {
-    console.log(error.code)
     if (error.code === "ERR_NETWORK" || error.code == "ERR_BAD_RESPONSE") {
-      console.log("A server error ocurred")
       toast.error("A server error occurred. Please try again later.");
     }
     console.log(error)

@@ -114,7 +114,6 @@ const isPickup = deliveryDetails?.deliveryMethod === 'pickup'
             </div>
 
             <div className={`w-full mb-3 ${isPickup ? 'opacity-50' : ''}`}>
-              {console.log(shippingChargeResponse)}
               <TextInput
                 label="Delivery Address"
                 name="address"

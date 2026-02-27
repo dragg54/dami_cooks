@@ -19,7 +19,6 @@ const Home = () => {
   const { data: itemData, isLoading, refetch } = FetchItems({ filters })
   const dispatch = useDispatch()
 
-  console.log("isLoading", isLoading)
   useEffect(() =>{
     dispatch(fetchItems({isLoading, items: itemData}))
   }, [isLoading, itemData])

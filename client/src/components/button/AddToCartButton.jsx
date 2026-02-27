@@ -30,7 +30,6 @@ const AddToCartButton = ({ item, style }) => {
     const handleAddToCart = () => {
         if (settings?.isOnline) {
             if (user.isLoggedIn) {
-                console.log("yes")
                 addToCartMutation.mutate({ itemId: item.id })
             }
             else {

@@ -6,7 +6,6 @@ const Switch = ({ orderId, status, setStatus, leftLabel, rightLabel, buttonStyle
     const newStatus = status === rightLabel ? leftLabel : rightLabel;
     setStatus(newStatus);
   };
- console.log(status == rightLabel)
   return (
     <div className="flex items-center space-x-3 mt-3">
       <span className={`text-sm font-medium `}>

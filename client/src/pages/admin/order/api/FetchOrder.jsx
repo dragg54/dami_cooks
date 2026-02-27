@@ -6,6 +6,5 @@ export const FetchOrder = (id) =>{
 
   if (isLoading) return <p>Loading orders...</p>;
   if (isError) return <p>Error: {error.message}</p>;
-  console.log("data", data)
   return data;
 }

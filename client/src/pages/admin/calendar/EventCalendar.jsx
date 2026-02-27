@@ -42,7 +42,6 @@ const EventCalendar = () => {
 //       setError(err?.response?.message)
 //     }
 //   })
- console.log(eventBookings)
   function getEventsForDay(events, dateStr) {
     return events?.filter((e) => format(e.eventDate, "yyyy-MM-dd") === dateStr);
   }
