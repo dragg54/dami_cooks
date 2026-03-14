@@ -8,7 +8,6 @@ import { canSendEmailMemory } from '../utils/canSendEmail.js';
 dotenv.config()
 
 export async function sendEmail(recipient, subject, message, attachment) {
-  console.log(recipient)
   const resend = new Resend(process.env.RESEND_API_KEY);
 
   try{

@@ -266,7 +266,7 @@ async function processBookingPayment(req, transaction) {
     }
     const paymentIntent = await stripe.paymentIntents.create({
         amount: existingBooking.bookingCharge * 100,
-        currency: "eur",
+        currency: "gbp",
         metadata: {
             bookingCd: existingBooking.bknId,
             orderedBy: req.user.id,
@@ -367,7 +367,7 @@ async function processOrderPayment(req, transaction) {
             const paymentIntent = await stripe.paymentIntents.create({
                 amount: Math.round(totalCartItemAmount * 100) +
                     Math.round((deliveryMethod === "pickup" ? 0 : (shipping?.shippingCharge || 0)) * 100),
-                currency: "eur",
+                currency: "gbp",
                 metadata: {
                 orderCd: newOrder.orderCd,
                 orderedBy: req.user.id,
