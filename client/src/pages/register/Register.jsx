@@ -8,12 +8,13 @@ import * as Yup from 'yup'
 import { useState } from "react"
 
 const Register = () => {
-    const [userEmail, setUserEmail] = useState('')
+    const [agreementAcknowledged, setAgreementAcknowleged] = useState(false)
     const initialValues = {
         firstName: "",
         lastName: "",
         email: "",
-        password: ""
+        password: "",
+        agreementAcknowleged: false
     }
     
     const SignupSchema = Yup.object({
@@ -69,7 +70,7 @@ const Register = () => {
                             <TextInput type="password" name='password' label='Password' />
                         </div>
                         <div className="w-full">
-                            <CheckBoxInput {...{ name: "termsAndCondition", label: <>By signing up, you agreed to the <span className="text-yellow-600">Terms of use</span> and <span className="text-yellow-600">Privacy Policy</span></> }} />
+                            <CheckBoxInput checked={agreementAcknowledged} onChange={()=>setAgreementAcknowleged(!agreementAcknowledged)} {...{ name: "termsAndCondition", label: <>By signing up, you agreed to the <span className="text-yellow-600">Terms of use</span> and <span className="text-yellow-600">Privacy Policy</span></> }} />
                         </div>
                         <Button disabled={isSubmitting || !isValid} isLoading={isLoading} type="submit" className={'w-full md:py-3 !bg-[#d01110] !rounded-full mt-6'}>
                             Register
