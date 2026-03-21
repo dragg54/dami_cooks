@@ -14,7 +14,6 @@ const Register = () => {
         lastName: "",
         email: "",
         password: "",
-        agreementAcknowleged: false
     }
     
     const SignupSchema = Yup.object({
