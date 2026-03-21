@@ -57,3 +57,14 @@
 2026-02-21 06:28:33 [INFO]: Order status updated
 2026-02-21 07:06:51 [INFO]: Order status updated
 2026-02-21 09:25:13 [INFO]: Order status updated
+2026-03-21 13:04:55 [INFO]: Webhook started
+2026-03-21 13:05:06 [INFO]: Webhook started
+2026-03-21 13:05:06 [INFO]: Order webhook started
+2026-03-21 13:05:07 [INFO]: Webhook started
+2026-03-21 13:05:07 [INFO]: Order status updated
+2026-03-21 13:05:09 [INFO]: Webhook started
+2026-03-21 13:05:14 [ERROR]: Error: Transaction cannot be committed because it has been finished with state: commit
+    at Transaction.commit (C:\Users\HP 840 G5\personal_projects\dami_cooks\server\node_modules\sequelize\lib\transaction.js:41:13)
+    at Module.paymentWebhook (file:///C:/Users/HP%20840%20G5/personal_projects/dami_cooks/server/services/PaymentService.js:107:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async paymentWebhook (file:///C:/Users/HP%20840%20G5/personal_projects/dami_cooks/server/controllers/PaymentController.js:23:10)

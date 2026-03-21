@@ -6,6 +6,7 @@ import { sendEmail } from '../../services/EmailService.js';
 import path from 'path'
 
 export async function sendCustomerPickupEmail(order){
+    console.log(order)
      try {
             const html = fs.readFileSync(path.join(__dirname, '../templates/CustomerPickUpOrderEmail.html'), 'utf8');
             const emailHtml = html

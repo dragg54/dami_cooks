@@ -25,6 +25,7 @@ import puppeteer from "puppeteer"
 import { sendCustomerPickupEmail } from "../emails/sendMessages/sendCustomerPickupEmail.js"
 import { sendCustomerOrderReadyForPickup } from "../emails/sendMessages/sendCustomerOrderReadyForShipmentEmail.js"
 import { sendMerchantOrdeDeliveryJobAccepted } from "../emails/sendMessages/SendMerchantOrderDeliveryJobAccepted.js"
+import logger from "../configs/logger.js"
 
 dotenv.config()
 
@@ -304,7 +305,7 @@ export const updateOrderStatus = async (req, transaction) => {
         const initializedShipping = await Shipping.findOne({
             where:{orderId: id}, raw: true
         })
-        if(!initializedShipping){
+        if(!initializedShipping && existingOrder.deliveryMethod == "delivery"){
             throw new BadRequestError("Shipping has not been initialized for this order")
         }
 
@@ -317,7 +318,12 @@ export const updateOrderStatus = async (req, transaction) => {
         if(!customer){
             throw new BadRequestError("Customer not found for this order")
         }
-        const createDeliveryJobRequest = {
+        try {
+            if (existingOrder.deliveryMethod == "pickup") {
+                await sendCustomerPickupEmail(existingOrder)
+            }
+            else {
+                 const createDeliveryJobRequest = {
             "job": {
                 "pickups": [
                     {
@@ -349,11 +355,6 @@ export const updateOrderStatus = async (req, transaction) => {
                 ]
             }
         }
-        try {
-            if (existingOrder.deliveryMethod == "pickup") {
-                await sendCustomerPickupEmail(existingOrder)
-            }
-            else {
                 const deliveryJobData = await createDeliveryJob(createDeliveryJobRequest)
                 if(deliveryJobData){
                     await Shipping.update({
@@ -367,6 +368,7 @@ export const updateOrderStatus = async (req, transaction) => {
         }
         catch(err){
             console.log(err)
+            logger.error(err.Message, err)
             throw new InternalServerError(err)
         }
     }

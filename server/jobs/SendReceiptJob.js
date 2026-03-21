@@ -17,11 +17,13 @@ export const startReceiptCron = () => {
   cron.schedule(cronInterval, async () => {
     try {
       const twoHoursAgo = new Date();
-      twoHoursAgo.setHours(twoHoursAgo.getMinutes() - 10);
+      twoHoursAgo.setHours(twoHoursAgo.getHours() - 2);
 
       const ordersToSend = await Order.findAll({
         where: {
-          status: 'DELIVERED',
+          status: {
+            [Op.or]: ["DELIVERED", "SHIPPED"]
+          },
           updatedAt: { [Op.lte]: twoHoursAgo },
         }, include: [{
             model: User,
@@ -44,19 +46,22 @@ export const startReceiptCron = () => {
 
       for (const order of ordersToSend) {
         try {
-          if(order.dataValues.receipt == null && order.dataValues.orderItems && order.dataValues.orderItems.length > 0){
-              console.log("Found orders pending receipts")
-              const pdfBuffer = await generateReceiptPDF(order.dataValues);
-          const attachments = [{
-                filename: `receipt-${order.dataValues.orderCd}.pdf`,
-            content: Buffer.isBuffer(pdfBuffer)
-              ? pdfBuffer
-              : Buffer.from(pdfBuffer)
+          if(order.dataValues.deliveryMethod == "delivery" && order.dataValues.status == "SHIPPED"){
+             continue
+          }
+          if (order.dataValues.receipt == null && order.dataValues.orderItems && order.dataValues.orderItems.length > 0) {
+            console.log("Found orders pending receipts")
+            const pdfBuffer = await generateReceiptPDF(order.dataValues);
+            const attachments = [{
+              filename: `receipt-${order.dataValues.orderCd}.pdf`,
+              content: Buffer.isBuffer(pdfBuffer)
+                ? pdfBuffer
+                : Buffer.from(pdfBuffer)
             }]
-          await sendEmail(order.dataValues.user.email, "Order Receipt","<h1>Receipt</h1>", attachments);
-          await Receipt.create({status: "sent", orderId: order.id})
-          console.log(`Receipt sent to ${order.dataValues.user.email} for order ${order.id}`);
-            }
+            await sendEmail(order.dataValues.user.email, "Order Receipt", "<h1>Receipt</h1>", attachments);
+            await Receipt.create({ status: "sent", orderId: order.id })
+            console.log(`Receipt sent to ${order.dataValues.user.email} for order ${order.id}`);
+          }
         } catch (err) {
           await Receipt.create({ status: "failed", orderId: order.id })
           console.error(`Failed to send receipt for order ${order.id}:`, err.message);

@@ -75,6 +75,7 @@ export const paymentWebhook = async (req, res) => {
         const event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
         const paymentIntent = event.data.object;
         const { orderCd, bookingCd } = paymentIntent.metadata
+        logger.info("Webhook started")
         if (event.type === "payment_intent.succeeded") {
             if (orderCd) {
                 await processWebhookForOrderPayment(paymentIntent, transaction)
@@ -106,6 +107,7 @@ export const paymentWebhook = async (req, res) => {
         await transaction.commit()
     }
     catch (err) {
+        logger.error("Webhook processing failed ", err)
         await transaction.rollback()
         console.log(err)
         throw new InternalServerError(err)
@@ -300,8 +302,9 @@ async function processOrderPayment(req, transaction) {
         throw new BadRequestError("Cart does not exist for this user")
     }
     if (items && items.length > 0) {
-        const totalCartItemAmount = items.length > 1 ? items.reduce((prevItem, nextItem) => ((Number(prevItem.price || 0) * Number(prevItem.quantity || 0))
-            + (Number(nextItem.price || 0) * Number(nextItem.quantity || 0)))) : Number(items[0]?.price) * Number(items[0].quantity)
+        const totalCartItemAmount = items.reduce((total, item) => {
+            return total + (Number(item.price || 0) * Number(item.quantity || 0));
+        }, 0);
         const paymentItem = items.map((item) => (
             {
                 id: item.id,
@@ -441,11 +444,16 @@ async function processOrderPayment(req, transaction) {
 }
 
 async function processWebhookForOrderPayment(paymentIntent, transaction) {
+    logger.info("Order webhook started")
     const { orderedBy, cartItems, cartId, orderCd, shipping } = paymentIntent.metadata
     const customer = await User.findOne({ where: { id: orderedBy }, attributes: ['firstName', "email"] })
     const existingOrder = await Order.findOne({ where: { orderCd } })
     if (!existingOrder) {
         logger.error("Update order failed: Existing order not found for " + orderCd)
+    }
+    if(existingOrder.dataValues.status == "PLACED"){
+        logger.warn("Invalid process order webhook event: Order not in a valid state")
+        return
     }
     const order = await Order.update({ status: "PLACED" }, { where: { orderCd }, transaction });
     logger.info("Order status updated")
@@ -465,7 +473,7 @@ async function processWebhookForOrderPayment(paymentIntent, transaction) {
 
     //Create shipping
     const shippingDetails = JSON.parse(shipping)
-    if(shippingDetails.deliveryMethod == "delivery"){
+    if(shippingDetails && shippingDetails.deliveryMethod == "delivery"){
      await Shipping.create({
         userId: orderedBy,
         orderId: existingOrder.dataValues.id,
@@ -500,6 +508,7 @@ async function processWebhookForOrderPayment(paymentIntent, transaction) {
         await sendMerchantOrderPlacedMail(orderCd, customer?.dataValues?.firstName, process.env.MERCHANT_GMAIL)
     }
     catch (exception) {
+        logger.error("Order notification failed", exception)
         console.log(exception)
     }
     await transaction.commit()
@@ -510,6 +519,10 @@ async function processWebhookForBookingPayment(paymentIntent, transaction) {
     const existingBooking = await EventBooking.findOne({ where: {bknId: bookingCd }, raw: true })
     if (!existingBooking) {
         logger.error("Booking does not exist for " + bookingCd)
+    }
+    if(existingBooking.bookingStatus == "booked"){
+        logger.warn("Invalid process booking webhook event: Booking not in a valid state")
+        return
     }
     await EventBooking.update({ bookingStatus: "booked" }, { where: { bknId: bookingCd }, transaction })
     await Payment.update({
