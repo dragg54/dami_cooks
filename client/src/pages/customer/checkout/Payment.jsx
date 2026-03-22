@@ -10,7 +10,6 @@ import PaymentForm from "./PaymentForm";
 import { Button } from "../../../components/button/Button";
 
 const Payment = ({deliveryDetails, clientSecret, setClientSecret, shippingChargeResponse}) => {
-  console.log("stripe apiiii", import.meta.env.VITE_STRIPE_PUBLIC_KEY)
   const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
   const [ isValidForm, setIsValidForm ] = useState()
   const CARD_OPTIONS = {
