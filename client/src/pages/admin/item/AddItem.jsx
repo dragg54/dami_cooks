@@ -41,6 +41,7 @@ const AddItem = () => {
         formData.append('description', updatedValues.description);
         formData.append('price', updatedValues.price);
         formData.append('itemType', updatedValues.itemType);
+        formData.append('unitQuantity', updatedValues.unitQuantity);
         formData.append('uom', updatedValues.uom);
         formData.append('itemCategoryId', updatedValues.itemCategoryId);
         formData.append('status', status)
@@ -75,7 +76,7 @@ const AddItem = () => {
     
 
     return (
-        <div className="w-[100%] md:w-4/5 md:h-[550px] overflow-y-hidden p-4 md:p-8 bg-white">
+        <div className="w-[100%] -mt-10 md:w-4/5 md:h-[550px] overflow-y-hidden p-4 md:p-8 bg-white">
             <FormContainer
                 formStyle={'grid md:grid-cols-3 grid-cols-2 gap-x-3 gap-y-3'}
                 {...{
@@ -112,6 +113,10 @@ const AddItem = () => {
                      Item Image
                     </p>
                     <FileInput onFileSelect={setFile} file={file} />
+                </div>
+                <div className="w-full  md:mb-0">
+                    Unit Quantity
+                    <NumberInput name={'unitQuantity'} />
                 </div>
                 <div className="w-full  md:mb-0">
                     Price

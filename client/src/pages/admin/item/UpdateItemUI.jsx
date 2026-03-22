@@ -19,7 +19,7 @@ const UpdateItemUI = () => {
     const state = useLocation().state
     const { data: allergens, refetch, allergenLoading } = FetchAllAllergens({})
     const [selectValues, setSelectValues] = useState({
-        itemType: { label: "", value: "" },
+        itemType: { label: "Main Item", value: "MAIN_ITEM" },
         itemCategory: { label: state?.row["Item Category"]?.name || "", value: state?.row["Item Category"]?.id || null },
         allergens: state?.row?.allergens?.map((allergen)=> (allergen.itemAllergen?.allergenId?.toString())) || []
     })
@@ -29,11 +29,12 @@ const UpdateItemUI = () => {
         name: state?.row["name"],
         uom: state?.row["uom"],
         description: state?.row.description,
-        price: state?.row.price,
         imageUrl: state?.row.imageUrl,
         status: state?.row.status,
+        price: state?.row["Price £"],
         itemType: state?.row.itemType,
-        itemCategory: state?.row["Item Category"]
+        itemCategory: state?.row["Item Category"],
+        unitQuantity: state?.row["Unit Quantity"]
 
         // itemCategoryId: state?.row["name"]
     }
@@ -49,15 +50,16 @@ const UpdateItemUI = () => {
         setAllergenOptions(options)
     }, [allergens])
 
-
     const handleSubmit = (values, resetForm) => {
+        console.log(values)
         setResponseStatus(null)
-        const updatedValues = { ...values, itemCategoryId: selectValues.itemCategory.value, itemType: selectValues.itemType.value }
+        const updatedValues = { ...values, itemCategoryId: selectValues?.itemCategory?.value, itemType: selectValues.itemType.value }
         const formData = new FormData()
         const { row } = state
         formData.append('image', file);
         formData.append('imageUrl', row.imageUrl)
         formData.append('name', updatedValues.name || row.name);
+        formData.append('unitQuantity', updatedValues.unitQuantity || row.unitQuantity);
         formData.append('description', updatedValues.description || row.description);
         formData.append('price', updatedValues.price || row.price);
         formData.append('itemType', updatedValues.itemType || row.itemType);
@@ -97,8 +99,20 @@ const UpdateItemUI = () => {
     ]
     const itemTypes = [{ label: "Main Item", value: "MAIN_ITEM" }, { label: "Sub Item", value: "SUB_ITEM" }]
 
+    useEffect(()=>{
+        const selValues = {}
+        if(itemCategory){
+            selValues.itemCategory = itemCategory?.find(x => x.value == initialValues?.itemCategory?.id) || selectValues.itemCategory
+        }
+         if(itemTypes){
+            selValues.itemType = itemTypes?.find(x => x.value == initialValues?.itemType?.id) || "MAIN_ITEM"
+        }
+        setSelectValues({...selectValues, ...selValues})
+    }, [])
+
+
     return (
-        <div className="w-[100%] md:w-4/5 md:h-[550px] overflow-y-hidden p-4 md:p-8 bg-white">
+        <div className="w-[100%] -mt-10 md:w-4/5 md:h-[580px] overflow-y-hidden p-4 md:p-8 bg-white">
             <FormContainer
                 isUpdate={true}
                 formStyle={'grid md:grid-cols-3 grid-cols-2 gap-x-3 gap-y-3'}
@@ -111,7 +125,7 @@ const UpdateItemUI = () => {
                 </div>
                 <div className="w-full  md:mb-0">
                     <Select name="itemCategory" label={'Select Category'} options={[{ label: "Meal", value: "1" }, { label: "Pastry", value: "2" }]}
-                        selectedValues={{ itemCategory: itemCategory?.find(x => x.value == initialValues?.itemCategory?.id) || selectValues }}
+                        selectedValues={selectValues }
                         onChange={setSelectValues} />
                 </div>
                 <div className="w-full  md:mb-0">
@@ -121,7 +135,7 @@ const UpdateItemUI = () => {
                     <TextInput name='description' label='Description' />
                 </div>
                 <div className="w-full  md:mb-0">
-                    <Select name="itemType" label={'Select Item Type'} options={[{ label: "Main Item", value: "MAIN_ITEM" }, { label: "Sub Item", value: "SUB_ITEM" }]} selectedValues={{ itemType: itemTypes?.find(x => x.value == state?.row?.itemType) || selectValues }} onChange={setSelectValues} />
+                    <Select name="itemType" label={'Select Item Type'} options={[{ label: "Main Item", value: "MAIN_ITEM" }, { label: "Sub Item", value: "SUB_ITEM" }]} selectedValues={selectValues} onChange={setSelectValues} />
                 </div>
                 <div className="w-full  md:mb-0">
                     <Select
@@ -138,6 +152,10 @@ const UpdateItemUI = () => {
                         Item Image
                     </p>
                     <FileInput imageName={extractFileNameFromFileURL(state?.row?.imageUrl)} onFileSelect={setFile} file={file} />
+                </div>
+                <div className="w-full  md:mb-0">
+                    Unit Quantity
+                    <NumberInput name={'unitQuantity'} />
                 </div>
                 <div className="w-full  md:mb-0">
                     Price

@@ -41,6 +41,7 @@ const SelectInput = ({ options, selectedValues, onChange, label, name, isMultipl
 }
 
 const SelectOptions = ({ open, options, setOpen, onChange, selectedValues, name }) => {
+    console.log(selectedValues)
     return (
         <>
             {open && (
@@ -49,7 +50,8 @@ const SelectOptions = ({ open, options, setOpen, onChange, selectedValues, name 
                         <li
                             key={option.value}
                             onClick={() => {
-                                onChange({ ...selectedValues, [name]: option });
+                                console.log(selectedValues)
+                                onChange((prev) => ({...prev, [name]: {label: option.label, value: option.value}}));
                                 setOpen(false);
                             }}
                             className="px-4 py-2 cursor-pointer hover:bg-gray-300  "

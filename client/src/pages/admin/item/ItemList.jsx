@@ -42,6 +42,7 @@ const ItemList = () => {
       itemType: removeSpecialChars(dta.itemType),
       imageUrl: dta.imageUrl,
       uom: dta?.uom,
+      "Unit Quantity": dta?.unitQuantity,
       status: dta.status,
       allergens: dta.allergens,
       "Item Category": { id: dta.itemCategory.id, name: dta.itemCategory?.name },
