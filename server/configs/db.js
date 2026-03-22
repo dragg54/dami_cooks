@@ -7,13 +7,12 @@ const environment = process.env.NODE_ENV || "Development";
 
 const dbName = process.env.NODE_ENV == "Local" ? process.env.LOCAL_DB_NAME : process.env.PROD_DB_NAME;
 const dbUserName = process.env.NODE_ENV == "Local" ? process.env.LOCAL_DB_USERNAME : process.env.PROD_DB_USERNAME;
-const dbPassword = process.env.NODE_ENV == "Development" ? process.env.LOCAL_DB_PASSWORD : process.env.PROD_DB_PASSWORD;
-const dbHost = process.env.NODE_ENV == "Development" ? process.env.LOCAL_DB_HOST : process.env.PROD_DB_HOST;
+const dbPassword = process.env.NODE_ENV == "Local" ? process.env.LOCAL_DB_PASSWORD : process.env.PROD_DB_PASSWORD;
+const dbHost = process.env.NODE_ENV == "Local" ? process.env.LOCAL_DB_HOST : process.env.PROD_DB_HOST;
 
 if (!dbName || !dbUserName || !dbPassword) {
   throw new Error("Database environment variables are missing.");
 }
-
 const db = new Sequelize(dbName, dbUserName, dbPassword, {
   host: dbHost,
   dialect: "mysql",

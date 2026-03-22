@@ -26,6 +26,10 @@ export const Item = db.define("item", {
     type: DataTypes.ENUM("MAIN_ITEM", "SUB_ITEM"),
     defaultValue: "MAIN_ITEM"
   },
+  unitQuantity:{
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
   uom:{
     type: DataTypes.STRING,
     allowNull: false
