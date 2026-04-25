@@ -44,7 +44,7 @@ app.use((req, res, next) => {
 });
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
-app.use(morgan('combined'));
+app.use(morgan('dev'));
 app.use(helmet())
 const whitelist = ['http://localhost:5173', 'https://localhost:5173', 'https://damicooks.com', 'https://dami-cooks-1.onrender.com', 'http://localhost:5000', 'http://127.0.0.1:5173']
 

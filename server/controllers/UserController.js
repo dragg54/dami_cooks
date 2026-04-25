@@ -109,4 +109,14 @@ export const resetPassword = async (req, res) => {
   }
 }
 
+export const refreshToken = async (req, res) => {
+  try {
+    const token = await userService.refreshToken(req, res)
+    res.json(token)
+  }
+  catch(error) {
+    console.log(error)
+    res.status(error.statusCode || 500).json(error.message || "Internal server error")
+  } 
+}
 

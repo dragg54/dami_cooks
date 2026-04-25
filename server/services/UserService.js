@@ -11,6 +11,7 @@ import { differenceInMinutes } from 'date-fns';
 import { Op } from 'sequelize';
 import dotenv from "dotenv"
 import { sendResetPasswordLink } from '../emails/sendMessages/sendResetPasswordLink.js';
+import { RefreshTokens } from '../models/RefreshToken.js';
 
 dotenv.config()
 
@@ -75,8 +76,9 @@ export const loginUser = async (req) => {
     //     throw new UnauthorizedError(errMsg)
     // }
     const token = generateToken(existingUser)
+    const refreshToken = await processRefreshToken(existingUser.id) 
     return {
-        token, userDetails: {
+        token, refreshToken, userDetails: {
             id: existingUser.id,
             email: existingUser.email,
             firstName: existingUser.firstName,
@@ -209,3 +211,37 @@ export const hashPassword = async (password) => {
     return hashedPassword
 }
 
+export const processRefreshToken = async (userId) => {
+    const token = generateRefreshToken()
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    await RefreshTokens.create({ userId, token, expiresAt })
+    return token
+}
+
+export const refreshToken = async (req, res) => {
+    const { refreshToken: token } = req.body
+    const existingToken = await RefreshTokens.findOne({ where: { token}, raw: true })
+    if (!existingToken || existingToken.expiresAt < new Date()) {
+        await RefreshTokens.destroy({ where: { token }});
+        throw new BadRequestError("Invalid or expired refresh token")
+    }
+    const user = await User.findOne({ where: { id: existingToken.userId }, raw: true })
+    if (!user) {
+        throw new BadRequestError("User not found")
+    }
+    const newToken = generateToken(user)
+    const newRefreshToken = generateRefreshToken()
+    const newExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    await RefreshTokens.update({ token: newRefreshToken, expiresAt: newExpiresAt }, { where: { token } })
+    res.cookie('token', newToken, {
+        sameSite: 'None',
+        secure: true,
+        httpOnly: true,
+      })
+    return { accessToken: newToken, refreshToken: newRefreshToken }
+}
+
+const generateRefreshToken = () => {
+  return crypto.randomBytes(64).toString("hex");
+};
+ 

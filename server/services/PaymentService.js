@@ -308,7 +308,6 @@ async function processOrderPayment(req, transaction) {
         const paymentItem = items.map((item) => (
             {
                 id: item.id,
-                name: item.name,
                 price: item.price,
                 quantity: item.quantity
             }

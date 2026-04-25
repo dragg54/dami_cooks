@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { changePassword, createUser, forgotPassword, getAdmin, loginUser, resendEmailVerification, resetPassword, updateUser, verifyEmail } from '../controllers/UserController.js'
+import { changePassword, createUser, forgotPassword, getAdmin, loginUser, refreshToken, resendEmailVerification, resetPassword, updateUser, verifyEmail } from '../controllers/UserController.js'
 import { authMiddleware } from '../middlewares/validate.js'
 import { validateRequest } from '../middlewares/validateRequest.js'
 import { createUserSchema, loginUserSchema } from '../schemas/UserSchema.js'
@@ -15,4 +15,5 @@ userRouter.post('/tokenVerification', verifyEmail)
 userRouter.post('/tokenVerification/resend', resendEmailVerification)
 userRouter.post('/sendResetPasswordLink', forgotPassword)
 userRouter.post('/resetPassword', resetPassword)
+userRouter.post('/refreshToken', refreshToken)
 
