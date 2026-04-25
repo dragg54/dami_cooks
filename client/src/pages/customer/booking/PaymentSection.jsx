@@ -16,7 +16,6 @@ const PaymentSection = () => {
   const navigate = useNavigate()
   const [clientSecret, setClientSecret] = useState("");
   const onSuccess = (data) => {
-    console.log(data)
     setClientSecret(data.data.clientSecret)
   }
   const onError = () => {

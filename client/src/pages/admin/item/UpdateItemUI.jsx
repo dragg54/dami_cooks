@@ -51,7 +51,6 @@ const UpdateItemUI = () => {
     }, [allergens])
 
     const handleSubmit = (values, resetForm) => {
-        console.log(values)
         setResponseStatus(null)
         const updatedValues = { ...values, itemCategoryId: selectValues?.itemCategory?.value, itemType: selectValues.itemType.value }
         const formData = new FormData()

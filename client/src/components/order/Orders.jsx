@@ -25,7 +25,7 @@ const Orders = ({ userOrdersOpened, setUserOrdersOpened }) => {
     const user = useSelector(state => state.user)?.user
     const { data: orders, refetch, isLoading } = FetchUserOrder({ filters: { customerId: user.id, size } })
     useEffect(() =>{
-        refetch()
+        refetch
     }, [])
     useEffect(() => {
         setSize(5)

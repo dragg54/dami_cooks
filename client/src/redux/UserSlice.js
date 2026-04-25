@@ -12,15 +12,19 @@ const userSlice = createSlice({
     reducers: {
         fetchUser: (state, action) => {
             localStorage.setItem("authToken", action.payload.token)
+            localStorage.setItem("refreshToken", action.payload.refreshToken)
             state.user = action.payload.user
             state.token = action.payload.token
+            state.refreshToken = action.payload.refreshToken    
             state.isLoggedIn = true
         },
         clearUser: (state) =>{
             state.user ={}
             state.token = null
+            state.refreshToken = null
             state.isLoggedIn = false
             localStorage.removeItem("authToken")
+            localStorage.removeItem("refreshToken")
         },
 
     }
