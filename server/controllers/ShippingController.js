@@ -3,7 +3,6 @@ import * as shippingService from "../services/ShippingService.js"
 export const getDeliveryQuote = async(req, res) =>{
      try {
             const shippingQuote = await shippingService.getDeliveryQuote(req.body)
-            console.log(shippingQuote)
             res.json(shippingQuote)
         }
         catch (error) {

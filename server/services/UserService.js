@@ -1,164 +1,181 @@
-import bcrypt from 'bcryptjs'
+import bcrypt from 'bcryptjs';
 import User from '../models/User.js';
-import { DuplicateError } from '../exceptions/DuplicateError.js'
+import { DuplicateError } from '../exceptions/DuplicateError.js';
 import { BadRequestError } from '../exceptions/BadRequestError.js';
-import * as cartService from './CartService.js'
+import * as cartService from './CartService.js';
 import { generateToken } from '../utils/generateToken.js';
 import { NotFoundError } from '../exceptions/NotFoundError.js';
-import crypto from 'crypto'
+import crypto from 'crypto';
 import { sendCustomerEmailVerificationMail } from '../emails/sendMessages/SendCustomerEmailVerificationMail.js';
 import { differenceInMinutes } from 'date-fns';
 import { Op } from 'sequelize';
-import dotenv from "dotenv"
+import dotenv from 'dotenv';
 import { sendResetPasswordLink } from '../emails/sendMessages/sendResetPasswordLink.js';
 import { RefreshTokens } from '../models/RefreshToken.js';
 
-dotenv.config()
+dotenv.config();
 
 export const createUser = async (req, trans) => {
-    const { email, isAdmin, phone, password, firstName, lastName } = req.body;
-    const rawToken = crypto.randomBytes(3).toString('hex').toUpperCase();
-    const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
-    const expires = new Date(Date.now() + 15 * 60 * 1000);
+  const { email, isAdmin, phone, password, firstName, lastName } = req.body;
+  const rawToken = crypto.randomBytes(3).toString('hex').toUpperCase();
+  const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
+  const expires = new Date(Date.now() + 15 * 60 * 1000);
 
-    const existingUser = await User.findOne({ where: { email } })
-    if (existingUser) {
-        const errMsg = "User already exist"
-        throw new DuplicateError(errMsg)
-    }
-    const hashedPassword = await hashPassword(password)
-    const user = await User.create({
-        firstName, lastName, phone, email, isAdmin,
-        password: hashedPassword, emailVerificationToken: tokenHash, emailTokenExpiresAt: expires
-    }, { transaction: trans });
-    if (!isAdmin) {
-        const createCartRequest = {
-            userId: user.dataValues.id
-        }
-        await cartService.createCart(createCartRequest, trans)
-    }
+  const existingUser = await User.findOne({ where: { email } });
+  if (existingUser) {
+    const errMsg = 'User already exist';
+    throw new DuplicateError(errMsg);
+  }
+  const hashedPassword = await hashPassword(password);
+  const user = await User.create(
+    {
+      firstName,
+      lastName,
+      phone,
+      email,
+      isAdmin,
+      password: hashedPassword,
+      emailVerificationToken: tokenHash,
+      emailTokenExpiresAt: expires,
+    },
+    { transaction: trans }
+  );
+  if (!isAdmin) {
+    const createCartRequest = {
+      userId: user.dataValues.id,
+    };
+    await cartService.createCart(createCartRequest, trans);
+  }
 
-    const customerName = `${firstName} ${lastName}`
-    await sendCustomerEmailVerificationMail(customerName, rawToken, email)
-    return user.id
-}
+  const customerName = `${firstName} ${lastName}`;
+  await sendCustomerEmailVerificationMail(customerName, rawToken, email);
+  return user.id;
+};
 
 export const getAdmin = async (req) => {
-    const admin = User.findOne({ where: { isAdmin: true }, attributes: { exclude: ["password", "createdAt", "updatedAt"] } })
-    if (!admin) {
-        throw new NotFoundError("No admin can be found")
-    }
-    return admin
-}
+  const admin = User.findOne({
+    where: { isAdmin: true },
+    attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+  });
+  if (!admin) {
+    throw new NotFoundError('No admin can be found');
+  }
+  return admin;
+};
 
 export const loginUser = async (req) => {
-    const { email, password } = req.body
-    const existingUser = await User.findOne({
-        where: {
-            email
-        }
+  const { email, password } = req.body;
+  const existingUser = await User.findOne(
+    {
+      where: {
+        email,
+      },
     },
-        {
-            attributes: ["id", "email", "password", "firstName", "lastName", "phone", "address"]
-        }
-
-    )
-    if (!existingUser) {
-        const errMsg = `User does not exist`
-        throw new BadRequestError(errMsg)
+    {
+      attributes: ['id', 'email', 'password', 'firstName', 'lastName', 'phone', 'address'],
     }
-    const isPasswordValid = await bcrypt.compare(password, existingUser.password);
-    if (!isPasswordValid) {
-        throw new BadRequestError('Invalid email or password');
-    }
-    // if (!existingUser.isVerifiedEmail) {
-    //     const errMsg = 'User email is not yet verified'
-    //     throw new UnauthorizedError(errMsg)
-    // }
-    const token = generateToken(existingUser)
-    const refreshToken = await processRefreshToken(existingUser.id) 
-    return {
-        token, refreshToken, userDetails: {
-            id: existingUser.id,
-            email: existingUser.email,
-            firstName: existingUser.firstName,
-            lastName: existingUser.lastName,
-            isAdmin: existingUser.isAdmin,
-            address: existingUser.address,
-            isVerifiedEmail: existingUser.emailVerified,
-            phone: existingUser.phone
-        }
-    }
-}
+  );
+  if (!existingUser) {
+    const errMsg = `User does not exist`;
+    throw new BadRequestError(errMsg);
+  }
+  const isPasswordValid = await bcrypt.compare(password, existingUser.password);
+  if (!isPasswordValid) {
+    throw new BadRequestError('Invalid email or password');
+  }
+  // if (!existingUser.isVerifiedEmail) {
+  //     const errMsg = 'User email is not yet verified'
+  //     throw new UnauthorizedError(errMsg)
+  // }
+  const token = generateToken(existingUser);
+  const refreshToken = await processRefreshToken(existingUser.id);
+  return {
+    token,
+    refreshToken,
+    userDetails: {
+      id: existingUser.id,
+      email: existingUser.email,
+      firstName: existingUser.firstName,
+      lastName: existingUser.lastName,
+      isAdmin: existingUser.isAdmin,
+      address: existingUser.address,
+      isVerifiedEmail: existingUser.emailVerified,
+      phone: existingUser.phone,
+    },
+  };
+};
 
 export const updateUser = async (req) => {
-    const { id } = req.params
-    const user = await User.findOne({ where: { id } })
-    if (!user) {
-        throw BadRequestError("User not found")
-    }
-    await User.update({ ...req.body }, { where: { id } })
-}
+  const { id } = req.params;
+  const user = await User.findOne({ where: { id } });
+  if (!user) {
+    throw BadRequestError('User not found');
+  }
+  await User.update({ ...req.body }, { where: { id } });
+};
 
 export const changePassword = async (req) => {
-    const { id } = req.params
-    const { oldPassword, newPassword } = req.body
-    const existingUser = await User.findOne({
-        where: { id }
-    })
-    if (!existingUser) {
-        throw new BadRequestError("User does not exist ")
-    }
-    const isPasswordValid = await bcrypt.compare(oldPassword, existingUser.dataValues.password);
-    if (!isPasswordValid) {
-        throw new BadRequestError("Old password is incorrect ")
-    }
-    const encryptedPassword = await hashPassword(newPassword)
-    await User.update({
-        password: encryptedPassword
-    }, { where: { id } })
-}
+  const { id } = req.params;
+  const { oldPassword, newPassword } = req.body;
+  const existingUser = await User.findOne({
+    where: { id },
+  });
+  if (!existingUser) {
+    throw new BadRequestError('User does not exist ');
+  }
+  const isPasswordValid = await bcrypt.compare(oldPassword, existingUser.dataValues.password);
+  if (!isPasswordValid) {
+    throw new BadRequestError('Old password is incorrect ');
+  }
+  const encryptedPassword = await hashPassword(newPassword);
+  await User.update(
+    {
+      password: encryptedPassword,
+    },
+    { where: { id } }
+  );
+};
 
 export async function verifyEmail(req) {
-    const { email, token } = req.body;
-    const user = await User.findOne({ where: { email }, raw: true });
-    if (!user) throw new BadRequestError("User not found");
-    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
-    if (
-        !user.emailVerificationToken ||
-        user.emailVerificationToken !== tokenHash ||
-        differenceInMinutes(user.emailTokenExpiresAt, new Date()) > 15
-    ) {
-        throw new BadRequestError("invalid token")
-    }
+  const { email, token } = req.body;
+  const user = await User.findOne({ where: { email }, raw: true });
+  if (!user) throw new BadRequestError('User not found');
+  const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+  if (
+    !user.emailVerificationToken ||
+    user.emailVerificationToken !== tokenHash ||
+    differenceInMinutes(user.emailTokenExpiresAt, new Date()) > 15
+  ) {
+    throw new BadRequestError('invalid token');
+  }
 
-    user.emailVerified = true;
-    user.emailVerificationToken = null;
-    user.emailTokenExpiresAt = null;
-    await User.update(user, {where: {email}});
+  user.emailVerified = true;
+  user.emailVerificationToken = null;
+  user.emailTokenExpiresAt = null;
+  await User.update(user, { where: { email } });
 }
 
 export async function resentVerificationEmail(req) {
-    const { email } = req.body;
+  const { email } = req.body;
 
-    if (!email) throw new BadRequestError("Email does not exist")
+  if (!email) throw new BadRequestError('Email does not exist');
 
-    const user = await User.findOne({ where: { email }, raw: true });
+  const user = await User.findOne({ where: { email }, raw: true });
 
-    if (!user) throw new BadRequestError("User does not exist")
-    if (user.emailVerified) {
-        throw new BadRequestError("Email already verified")
-    }
+  if (!user) throw new BadRequestError('User does not exist');
+  if (user.emailVerified) {
+    throw new BadRequestError('Email already verified');
+  }
 
-    const verificationToken = crypto.randomBytes(3).toString('hex').toUpperCase();
-    const tokenExpiry = new Date(Date.now() + 15 * 60 * 1000);
-   const tokenHash = crypto.createHash('sha256').update(verificationToken).digest('hex');
+  const verificationToken = crypto.randomBytes(3).toString('hex').toUpperCase();
+  const tokenExpiry = new Date(Date.now() + 15 * 60 * 1000);
+  const tokenHash = crypto.createHash('sha256').update(verificationToken).digest('hex');
 
-    user.emailVerificationToken = tokenHash;
-    user.emailVerificationExpiresAt = tokenExpiry;
-    await User.update({...user}, {where: {id: user.id}});
-     const customerName = `${user.firstName} ${user.lastName}`
-    await sendCustomerEmailVerificationMail(customerName, verificationToken, email)
+  user.emailVerificationToken = tokenHash;
+  user.emailVerificationExpiresAt = tokenExpiry;
+  await User.update({ ...user }, { where: { id: user.id } });
+  const customerName = `${user.firstName} ${user.lastName}`;
+  await sendCustomerEmailVerificationMail(customerName, verificationToken, email);
 }
 
 export const resetPassword = async (req) => {
@@ -169,79 +186,86 @@ export const resetPassword = async (req) => {
   const user = await User.findOne({
     where: {
       resetPasswordToken: tokenHash,
-      resetPasswordTokenExpiresAt: { [Op.gt]: Date.now() }
-    }
+      resetPasswordTokenExpiresAt: { [Op.gt]: Date.now() },
+    },
   });
 
   if (!user) {
-    throw new BadRequestError("Invalid or expired token")
+    throw new BadRequestError('Invalid or expired token');
   }
 
-  await User.update({
-    password: await hashPassword(newPassword),
-    resetPasswordToken: null,
-    resetPasswordTokenExpiresAt: null
-  }, {where:{id: user.id}});
+  await User.update(
+    {
+      password: await hashPassword(newPassword),
+      resetPasswordToken: null,
+      resetPasswordTokenExpiresAt: null,
+    },
+    { where: { id: user.id } }
+  );
 };
 
 export const forgotPassword = async (req) => {
-const clientUrl = process.env.NODE_ENV == "Development" ? process.env.LOCAL_CLIENT_URL : process.env.PROD_CLIENT_URL
+  const clientUrl =
+    process.env.NODE_ENV == 'Development'
+      ? process.env.LOCAL_CLIENT_URL
+      : process.env.PROD_CLIENT_URL;
   const { email } = req.body;
 
   const user = await User.findOne({ where: { email }, raw: true });
   if (!user) {
-    throw new BadRequestError("Invalid or expired token")
+    throw new BadRequestError('Invalid or expired token');
   }
 
   const token = crypto.randomBytes(32).toString('hex');
   const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
 
   user.resetPasswordToken = tokenHash;
-  user.resetPasswordTokenExpiresAt = new Date(Date.now() + 60 * 60 * 1000); 
-  await User.update(user, {where: {id: user.id}});
+  user.resetPasswordTokenExpiresAt = new Date(Date.now() + 60 * 60 * 1000);
+  await User.update(user, { where: { id: user.id } });
 
   const resetLink = `${clientUrl}/reset-password?token=${token}&userId=${user.id}`;
-  await sendResetPasswordLink(email, resetLink)
-}
-
+  await sendResetPasswordLink(email, resetLink);
+};
 
 export const hashPassword = async (password) => {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    return hashedPassword
-}
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+  return hashedPassword;
+};
 
 export const processRefreshToken = async (userId) => {
-    const token = generateRefreshToken()
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-    await RefreshTokens.create({ userId, token, expiresAt })
-    return token
-}
+  const token = generateRefreshToken();
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+  await RefreshTokens.create({ userId, token, expiresAt });
+  return token;
+};
 
 export const refreshToken = async (req, res) => {
-    const { refreshToken: token } = req.body
-    const existingToken = await RefreshTokens.findOne({ where: { token}, raw: true })
-    if (!existingToken || existingToken.expiresAt < new Date()) {
-        await RefreshTokens.destroy({ where: { token }});
-        throw new BadRequestError("Invalid or expired refresh token")
-    }
-    const user = await User.findOne({ where: { id: existingToken.userId }, raw: true })
-    if (!user) {
-        throw new BadRequestError("User not found")
-    }
-    const newToken = generateToken(user)
-    const newRefreshToken = generateRefreshToken()
-    const newExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-    await RefreshTokens.update({ token: newRefreshToken, expiresAt: newExpiresAt }, { where: { token } })
-    res.cookie('token', newToken, {
-        sameSite: 'None',
-        secure: true,
-        httpOnly: true,
-      })
-    return { accessToken: newToken, refreshToken: newRefreshToken }
-}
+  const { refreshToken: token } = req.body;
+  const existingToken = await RefreshTokens.findOne({ where: { token }, raw: true });
+  if (!existingToken || existingToken.expiresAt < new Date()) {
+    await RefreshTokens.destroy({ where: { token } });
+    throw new BadRequestError('Invalid or expired refresh token');
+  }
+  const user = await User.findOne({ where: { id: existingToken.userId }, raw: true });
+  if (!user) {
+    throw new BadRequestError('User not found');
+  }
+  const newToken = generateToken(user);
+  const newRefreshToken = generateRefreshToken();
+  const newExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  await RefreshTokens.update(
+    { token: newRefreshToken, expiresAt: newExpiresAt },
+    { where: { token } }
+  );
+  res.cookie('token', newToken, {
+    sameSite: 'None',
+    secure: true,
+    httpOnly: true,
+  });
+  return { accessToken: newToken, refreshToken: newRefreshToken };
+};
 
 const generateRefreshToken = () => {
-  return crypto.randomBytes(64).toString("hex");
+  return crypto.randomBytes(64).toString('hex');
 };
- 

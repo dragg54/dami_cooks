@@ -2,6 +2,8 @@ import axios from 'axios';
 import { BACKEND_SERVER_URL } from '../AppConfig';
 import { toast } from 'react-toastify'
 import { refreshTokenApi } from './user/UserService';
+import store from '@/redux/store';
+import { clearUser } from '@/redux/UserSlice';
 
 const Axios = axios.create({
   baseURL: `${BACKEND_SERVER_URL}/api/v1`,
@@ -43,12 +45,9 @@ Axios.interceptors.response.use(
             localStorage.setItem("refreshToken", data.refreshToken);
             return data.accessToken;
           } catch (err) {
-            localStorage.removeItem("authToken");
-            localStorage.removeItem("refreshToken");
-            if (!window.location.pathname.includes("/login")) {
-              window.location.href = "/login";
-            }
-            throw err;
+            store.dispatch(clearUser())
+            console.log(err)
+             
           } finally {
             refreshPromise = null;
           }

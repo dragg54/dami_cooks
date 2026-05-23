@@ -5,7 +5,7 @@ import { Euro } from '@/constants/Currency'
 
 const Item = ({ item }) => {
     return (
-        <div className='w-[48%] md:w-[32.7%] p-2 overflow-hidden h-[320px] md:h-[430px] border bg-white rounded-md shadow shadow-gray-400'>
+        <div className='w-[48%] md:w-[32.5%] p-2 overflow-hidden h-[320px] md:h-[430px] border bg-white rounded-md shadow shadow-gray-400'>
             <div className='md:w-[230px] w-[150px] h-[150px] md:h-[230px] flex items-center justify-center mt-6 rounded-full mx-auto overflow-hidden'>
             <ItemImage style={''} item={item}/>
             </div>

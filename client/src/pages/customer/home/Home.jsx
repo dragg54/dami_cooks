@@ -50,7 +50,7 @@ const Home = () => {
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.6 }} className='mt-2 flex gap-2 justify-between p-2 py-4 rounded-md md:justify-start flex-wrap'>
+              transition={{ duration: 0.6 }} className='mt-2 flex gap-2 justify-between p-2 md:p-0 py-4 rounded-md md:justify-start flex-wrap'>
               {
                 !itemData || itemData?.rows?.length < 1 ?
                   <p className='mt-10 text-gray-500 text-center w-full text-lg'>No item found</p> :
